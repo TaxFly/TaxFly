@@ -1,0 +1,1918 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TaxUSA — Viaje Grupal</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" href="icon-512.png">
+    <link rel="apple-touch-icon" href="icon-512.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800;900&display=swap" rel="stylesheet"></noscript>
+    <script>
+        const _t = localStorage.getItem('theme');
+        if (_t) document.documentElement.setAttribute('data-theme', _t);
+        else if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.setAttribute('data-theme','dark');
+    </script>
+    <style>
+        :root {
+            --primary:#2563eb; --primary-dim:rgba(37,99,235,0.1);
+            --accent:#7c3aed;  --accent-dim:rgba(124,58,237,0.1);
+            --danger:#ef4444;  --success:#10b981; --warn:#f59e0b;
+            --bg:#f1f5f9; --surface:#ffffff; --surface-2:#f8fafc;
+            --border:#e2e8f0; --input-bg:#f8fafc;
+            --text:#0f172a; --text-sub:#64748b; --text-dim:#94a3b8;
+            --header-color:#1e3a8a;
+            --radius:20px; --radius-sm:12px;
+            --shadow:0 4px 20px rgba(0,0,0,0.06); --shadow-lg:0 12px 40px rgba(0,0,0,0.1);
+            --tr:all 0.25s cubic-bezier(0.4,0,0.2,1);
+            color-scheme:light;
+        }
+        [data-theme="dark"] {
+            --bg:#0f172a; --surface:#1e293b; --surface-2:#273549;
+            --border:#334155; --input-bg:#273549;
+            --text:#f1f5f9; --text-sub:#94a3b8; --text-dim:#64748b;
+            --header-color:#2563eb;
+            --shadow:0 4px 20px rgba(0,0,0,0.3); --shadow-lg:0 12px 40px rgba(0,0,0,0.4);
+            color-scheme:dark;
+        }
+        *,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0;}
+        html{scroll-behavior:smooth;}
+        body{font-family:'DM Sans',-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:28px 16px 40px;transition:background .3s,color .3s;-webkit-font-smoothing:antialiased;}
+        .hidden{display:none!important;}
+        .wrap{width:100%;max-width:460px;}
+
+        /* Header */
+        .app-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+        .logo{display:flex;align-items:center;gap:10px;font-size:1.4rem;font-weight:900;color:var(--header-color);letter-spacing:-0.5px;}
+
+        /* Nav */
+        .nav-bar{display:flex;align-items:center;background:var(--surface);border-radius:16px;padding:6px;margin-bottom:22px;border:1px solid var(--border);box-shadow:var(--shadow);gap:2px;}
+        .btn-nav{flex:1;display:flex;flex-direction:column;align-items:center;text-decoration:none;color:var(--text-sub);font-size:8px;font-weight:700;gap:2px;padding:6px 2px;border-radius:10px;background:none;border:none;cursor:pointer;transition:var(--tr);text-transform:uppercase;letter-spacing:.3px;}
+        .btn-nav .ni{font-size:17px;line-height:1;}
+        .btn-nav:hover,.btn-nav.active{color:var(--primary);background:var(--primary-dim);}
+        .btn-nav-set{width:34px;height:34px;border-radius:50%;background:var(--surface-2);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;overflow:hidden;transition:var(--tr);background-size:cover;background-position:center;}
+        .btn-nav-set:hover{border-color:var(--primary);}
+
+        /* Card */
+        .card{background:var(--surface);border-radius:var(--radius);padding:20px;width:100%;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:14px;position:relative;}
+        .slabel{font-size:.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;display:block;}
+
+        /* Inputs */
+        input,select{width:100%;padding:14px 16px;background:var(--input-bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:.9rem;font-weight:600;outline:none;transition:var(--tr);-webkit-appearance:none;}
+        input:focus,select:focus{border-color:var(--primary);background:var(--surface);box-shadow:0 0 0 3px var(--primary-dim);}
+        input::placeholder{color:var(--text-dim);font-weight:500;}
+        .input-group{margin-bottom:12px;}
+
+        /* Buttons */
+        .btn{width:100%;padding:15px;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+        .btn:active{transform:scale(.97);}
+        .btn-primary{background:var(--primary);color:white;box-shadow:0 4px 14px rgba(37,99,235,.3);}
+        .btn-primary:hover{background:#1d4ed8;}
+        .btn-success{background:var(--success);color:white;box-shadow:0 4px 14px rgba(16,185,129,.3);}
+        .btn-ghost{background:transparent;color:var(--text-sub);border:1.5px solid var(--border);}
+        .btn-danger-txt{background:none;border:none;cursor:pointer;color:var(--danger);font-weight:800;font-size:.78rem;font-family:inherit;padding:8px 4px;}
+
+        /* Lobby */
+        .lobby-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+        @media(max-width:400px){.lobby-grid{grid-template-columns:1fr;}}
+        .demo-chip{display:flex;align-items:center;justify-content:center;gap:6px;background:var(--primary-dim);border:1.5px solid var(--primary);border-radius:var(--radius-sm);padding:13px 16px;cursor:pointer;font-size:.8rem;font-weight:800;color:var(--primary);margin-bottom:14px;width:100%;font-family:inherit;transition:var(--tr);}
+        .demo-chip:hover{opacity:.85;}
+
+        /* Group topbar */
+        .group-topbar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;}
+        .group-topbar h2{font-size:1.25rem;font-weight:900;}
+        .code-badge{display:inline-flex;align-items:center;gap:5px;background:var(--surface-2);border:1.5px solid var(--border);border-radius:20px;padding:5px 12px;font-size:.7rem;font-weight:800;color:var(--text-sub);margin-top:5px;cursor:pointer;transition:var(--tr);}
+        .code-badge:hover{border-color:var(--primary);color:var(--primary);}
+
+        /* Tabs */
+        .tabs{display:flex;background:var(--surface);border-radius:14px;padding:5px;gap:3px;margin-bottom:16px;border:1px solid var(--border);box-shadow:var(--shadow);}
+        .tab-btn{flex:1;padding:9px 4px;border:none;border-radius:10px;background:transparent;color:var(--text-sub);cursor:pointer;font-size:.7rem;font-weight:800;font-family:inherit;text-transform:uppercase;letter-spacing:.3px;transition:var(--tr);display:flex;flex-direction:column;align-items:center;gap:2px;}
+        .tab-btn .ti{font-size:15px;}
+        .tab-btn.active{background:var(--primary);color:white;box-shadow:0 2px 8px rgba(37,99,235,.3);}
+        .tab-panel{display:none;}
+        .tab-panel.active{display:block;}
+
+        /* Gasto list */
+        .gasto-list{max-height:380px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+        .gasto-item{display:flex;align-items:center;gap:12px;padding:12px 10px;border-bottom:1px solid var(--border);border-left:3px solid var(--cat-color,var(--border));border-radius:0 8px 8px 0;margin-bottom:2px;transition:border-color .2s;}
+        .gasto-item:last-child{border-bottom:none;}
+        .gasto-item.cat-comida{--cat-color:#10b981;}
+        .gasto-item.cat-transporte{--cat-color:#0ea5e9;}
+        .gasto-item.cat-alojamiento{--cat-color:#7c3aed;}
+        .gasto-item.cat-actividad{--cat-color:#f59e0b;}
+        .gasto-item.cat-compras{--cat-color:#ec4899;}
+        .gasto-item.cat-otro{--cat-color:#94a3b8;}
+        .gasto-emoji{font-size:1.4rem;flex-shrink:0;width:40px;height:40px;background:var(--surface-2);border-radius:10px;display:flex;align-items:center;justify-content:center;}
+        .gasto-body{flex:1;min-width:0;}
+        .gasto-desc{font-size:.88rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+        .gasto-meta{font-size:.68rem;font-weight:600;color:var(--text-sub);margin-top:2px;}
+        .gasto-monto{font-size:1rem;font-weight:900;color:var(--primary);flex-shrink:0;}
+        .empty-state{text-align:center;color:var(--text-dim);font-size:.85rem;font-weight:600;padding:32px 0;}
+        .empty-state .es-icon{font-size:2rem;display:block;margin-bottom:8px;}
+
+        /* Cat pills */
+        .cat-bar{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;}
+        .cat-bar::-webkit-scrollbar{display:none;}
+        .cat-pill{flex-shrink:0;padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--input-bg);font-size:.72rem;font-weight:800;color:var(--text-sub);cursor:pointer;transition:var(--tr);font-family:inherit;display:flex;align-items:center;gap:5px;}
+        .cat-pill.active{border-color:var(--primary);background:var(--primary-dim);color:var(--primary);}
+
+        /* Balances */
+        .balance-row{display:flex;align-items:center;gap:8px;padding:13px 12px;border-bottom:1px solid var(--border);background:var(--surface-2);border-radius:10px;margin-bottom:6px;border-left:3px solid var(--danger);}
+        .balance-row:last-child{margin-bottom:0;}
+        .b-de{font-weight:800;color:var(--danger);font-size:.88rem;}
+        .b-arr{color:var(--text-dim);font-size:.8rem;flex-shrink:0;}
+        .b-a{font-weight:800;color:var(--success);font-size:.88rem;}
+        .b-m{margin-left:auto;font-weight:900;font-size:1rem;color:var(--text);background:var(--surface);border-radius:8px;padding:4px 10px;border:1px solid var(--border);flex-shrink:0;}
+
+        /* Resumen */
+        .total-hero{background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:var(--radius-sm);padding:20px;color:white;text-align:center;margin-bottom:14px;box-shadow:0 6px 20px rgba(37,99,235,.25);}
+        .total-hero-lbl{font-size:.6rem;font-weight:800;opacity:.85;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;}
+        .total-hero-val{font-size:2.1rem;font-weight:900;}
+        .resumen-row{padding:12px 0;border-bottom:1px solid var(--border);}
+        .resumen-row:last-child{border-bottom:none;}
+        .resumen-nom{font-weight:800;font-size:.88rem;margin-bottom:5px;}
+        .resumen-stats{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:.74rem;color:var(--text-sub);font-weight:600;}
+        .badge-pos{background:rgba(16,185,129,.12);color:var(--success);border:1px solid rgba(16,185,129,.3);border-radius:20px;padding:3px 10px;font-size:.68rem;font-weight:800;}
+        .badge-neg{background:rgba(239,68,68,.1);color:var(--danger);border:1px solid rgba(239,68,68,.25);border-radius:20px;padding:3px 10px;font-size:.68rem;font-weight:800;}
+
+        /* Members */
+        .members-wrap{display:flex;flex-wrap:wrap;gap:6px;}
+        .member-chip{background:var(--surface-2);border:1.5px solid var(--border);border-radius:20px;padding:5px 12px;font-size:.72rem;font-weight:700;color:var(--text-sub);}
+
+        /* Settings drawer */
+        .menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:1000;backdrop-filter:blur(4px);}
+        .settings-drawer{position:fixed;top:0;right:-300px;width:290px;height:100%;background:var(--surface);z-index:1001;transition:.3s ease;padding:28px 20px;display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(0,0,0,.15);border-left:1px solid var(--border);overflow-y:auto;}
+        .settings-drawer.open{right:0;}
+        .drawer-header{font-size:1.1rem;font-weight:900;color:var(--primary);margin-bottom:4px;}
+        .drawer-email{font-size:.75rem;color:var(--text-dim);font-weight:600;margin-bottom:20px;}
+        .drawer-section-label{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:8px;display:block;}
+        .drawer-btn{width:100%;padding:12px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--input-bg);color:var(--text);cursor:pointer;font-weight:700;margin-bottom:8px;font-size:.85rem;text-align:left;font-family:inherit;transition:var(--tr);display:flex;align-items:center;gap:10px;}
+        .drawer-btn:hover{background:var(--surface-2);border-color:var(--primary);}
+        .drawer-btn.d-danger{color:var(--danger)!important;border-color:rgba(239,68,68,.3)!important;}
+        .drawer-section-label{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:8px;display:block;}
+        .lang-selector{display:flex;background:var(--input-bg);border-radius:var(--radius-sm);padding:4px;gap:4px;margin-bottom:14px;border:1.5px solid var(--border);}
+        .lang-opt{flex:1;padding:8px 4px;border-radius:8px;border:none;background:transparent;cursor:pointer;font-size:.75rem;font-weight:800;color:var(--text-sub);font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;transition:var(--tr);}
+        .lang-opt img{width:18px;border-radius:2px;}
+        .lang-opt.active{background:var(--primary);color:white;}
+        .btn-danger{color:var(--danger)!important;border-color:rgba(239,68,68,.3)!important;}
+
+        /* Toast */
+        .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:11px 20px;font-size:.8rem;font-weight:700;opacity:0;transition:opacity .3s,transform .3s;z-index:9999;pointer-events:none;box-shadow:var(--shadow-lg);white-space:nowrap;}
+        .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+        /* Shake */
+        @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+        .shake{animation:shake .35s ease;}
+
+        /* Boton eliminar gasto */
+        .gasto-del{background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:1rem;padding:4px 6px;border-radius:6px;transition:var(--tr);flex-shrink:0;}
+        .gasto-del:hover{color:var(--danger);background:rgba(239,68,68,.1);}
+
+        /* Member chip con X */
+        .member-chip{background:var(--surface-2);border:1.5px solid var(--border);border-radius:20px;padding:5px 12px;font-size:.72rem;font-weight:700;color:var(--text-sub);display:inline-flex;align-items:center;gap:6px;}
+        .member-del{background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:.75rem;font-weight:900;padding:0 2px;line-height:1;transition:var(--tr);}
+        .member-del:hover{color:var(--danger);}
+
+        /* Lista de grupos en lobby */
+        .grupos-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+        .grupo-item{display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;cursor:pointer;transition:var(--tr);}
+        .grupo-item:hover{border-color:var(--primary);}
+        .grupo-item-name{font-weight:800;font-size:.88rem;}
+        .grupo-item-code{font-size:.68rem;color:var(--text-dim);font-weight:700;margin-top:2px;}
+        .grupo-item-btn{background:var(--primary);color:white;border:none;border-radius:8px;padding:6px 12px;font-size:.72rem;font-weight:800;cursor:pointer;font-family:inherit;}
+
+        /* Explanation card */
+        .explain-card{background:rgba(37,99,235,.06);border:1.5px solid rgba(37,99,235,.2);border-radius:var(--radius-sm);padding:14px;margin-top:14px;}
+        .explain-title{font-size:.65rem;font-weight:900;text-transform:uppercase;letter-spacing:.8px;color:var(--primary);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+        .explain-step{display:flex;gap:10px;margin-bottom:8px;align-items:flex-start;}
+        .explain-num{width:20px;height:20px;border-radius:50%;background:var(--primary);color:white;font-size:.6rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+        .explain-text{font-size:.74rem;font-weight:600;color:var(--text-sub);line-height:1.4;}
+
+        /* Colapsable */
+        .collapsible-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-user-select:none;}
+        .collapsible-header .slabel{margin-bottom:0;}
+        .collapsible-toggle{font-size:.75rem;color:var(--text-dim);font-weight:800;transition:transform .25s;display:flex;align-items:center;gap:4px;}
+        .collapsible-toggle.open{transform:rotate(180deg);}
+        .collapsible-body{overflow:hidden;transition:max-height .3s cubic-bezier(.4,0,.2,1),opacity .25s;max-height:0;opacity:0;}
+        .collapsible-body.open{max-height:600px;opacity:1;}
+
+        /* Spinner */
+        .spinner{width:18px;height:18px;border-radius:50%;border:2.5px solid var(--border);border-top-color:var(--primary);animation:sp .7s linear infinite;flex-shrink:0;}
+        @keyframes sp{to{transform:rotate(360deg);}}
+
+        /* Footer */
+        .app-footer{margin-top:8px;padding:12px 0;text-align:center;font-size:.7rem;color:var(--text-dim);font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;}
+        .app-footer img{width:16px;border-radius:2px;}
+
+        .divider{height:1px;background:var(--border);margin:12px 0;}
+
+        /* ── Offline Toast ── */
+        #offline-toast{
+            position:fixed;
+            bottom:24px;
+            left:50%;
+            transform:translateX(-50%) translateY(0);
+            z-index:9999;
+            display:flex;
+            align-items:center;
+            gap:10px;
+            padding:11px 16px;
+            background:var(--surface);
+            border:0.5px solid #EF9F27;
+            border-left:3px solid #BA7517;
+            border-radius:14px;
+            box-shadow:0 8px 28px rgba(0,0,0,.18);
+            font-size:.8rem;
+            font-weight:700;
+            color:var(--text);
+            white-space:nowrap;
+            pointer-events:none;
+            opacity:0;
+            transition:opacity .35s ease, transform .35s ease;
+            max-width:calc(100vw - 32px);
+        }
+        #offline-toast.show{opacity:1;pointer-events:auto;}
+        #offline-toast.hide{opacity:0;transform:translateX(-50%) translateY(12px);}
+        #offline-dot{width:8px;height:8px;border-radius:50%;background:#BA7517;flex-shrink:0;flex-shrink:0;}
+        #offline-label{display:flex;flex-direction:column;gap:1px;}
+        #offline-label strong{font-size:.82rem;color:var(--text);}
+        #offline-label span{font-size:.7rem;font-weight:600;color:var(--text-sub);}
+
+        /* ── Sync banner (aparece cuando vuelve la conexión y hay pendientes) ── */
+        #sync-banner{
+            display:none;
+            align-items:center;
+            gap:10px;
+            padding:11px 16px;
+            background:rgba(16,185,129,.08);
+            border:0.5px solid var(--success);
+            border-radius:var(--radius-sm);
+            font-size:.8rem;
+            font-weight:700;
+            color:var(--success);
+            margin-bottom:14px;
+            animation:sb-in .3s ease;
+        }
+        @keyframes sb-in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+        #sync-banner.visible{display:flex;}
+        .sync-spinner{width:14px;height:14px;border-radius:50%;border:2px solid rgba(16,185,129,.3);border-top-color:var(--success);animation:sp .7s linear infinite;flex-shrink:0;}
+        #pending-badge{
+            display:none;
+            background:#BA7517;
+            color:white;
+            font-size:.6rem;
+            font-weight:900;
+            border-radius:20px;
+            padding:2px 7px;
+            margin-left:4px;
+            vertical-align:middle;
+        }
+    </style>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(()=>{}); });
+        }
+    </script>
+</head>
+<body>
+
+<!-- Offline toast -->
+<div id="offline-toast" role="status" aria-live="polite">
+    <div id="offline-dot"></div>
+    <div id="offline-label">
+        <strong>Sin conexión</strong>
+        <span>Los gastos se guardan localmente y se sincronizan al volver</span>
+    </div>
+</div>
+
+<div class="wrap">
+
+    <!-- Header -->
+    <div class="app-header">
+        <div class="logo">
+            <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="32" height="32" rx="8" fill="#1e3a8a"/>
+                <rect x="0" y="10" width="32" height="4" fill="#ef4444"/>
+                <rect x="0" y="18" width="32" height="4" fill="#ef4444"/>
+                <polygon points="16,4 18.4,11 26,11 20,15.5 22.4,22.5 16,18 9.6,22.5 12,15.5 6,11 13.6,11" fill="#ffffff"/>
+            </svg>
+            <span>Tax<span style="color:#ef4444;">USA</span></span>
+        </div>
+    </div>
+    <!-- Nav -->
+    <nav class="nav-bar">
+        <a href="index.html"      class="btn-nav"><span class="ni">🏠</span><span data-i18n="nav_home">INICIO</span></a>
+        <a href="compras.html"    class="btn-nav"><span class="ni">🛍️</span><span data-i18n="nav_expenses">GASTOS</span></a>
+        <a href="itinerario.html" class="btn-nav"><span class="ni">📍</span><span data-i18n="nav_itinerary">ITINERARIO</span></a>
+        <a href="unidades.html"   class="btn-nav"><span class="ni">⚖️</span><span data-i18n="nav_units">UNIDADES</span></a>
+        <a href="tickets.html"    class="btn-nav"><span class="ni">📄</span><span data-i18n="nav_tickets">DOCUMENTOS</span></a>
+        <button class="btn-nav-set" id="btnSettings" onclick="toggleSettings()"></button>
+    </nav>
+
+    <!-- S0: Loading -->
+    <div id="s-loading" class="card" style="text-align:center;padding:32px 20px;">
+        <div style="display:flex;align-items:center;justify-content:center;gap:10px;color:var(--text-sub);font-weight:700;font-size:.88rem;">
+            <div class="spinner"></div><span data-i18n="lbl_connecting">Conectando…</span>
+        </div>
+    </div>
+
+    <!-- S1: Lobby -->
+    <div id="s-lobby" class="hidden">
+        <button class="demo-chip" onclick="activarDemo()">▶ <span data-i18n="demo_btn">Probar en modo demo — sin cuenta</span></button>
+
+        <!-- Grupos existentes -->
+        <div id="mis-grupos-wrap" class="hidden">
+            <span class="slabel">📂 Mis grupos</span>
+            <div id="mis-grupos-list" class="grupos-list"></div>
+        </div>
+
+        <div class="lobby-grid">
+            <div class="card" style="margin-bottom:0;">
+                <span class="slabel" data-i18n="lbl_new_group">✈️ Nuevo grupo</span>
+                <div class="input-group">
+                    <input id="inp-nombre" type="text" placeholder="Nombre del viaje" maxlength="40" data-i18n-ph="ph_trip_name">
+                </div>
+                <div class="input-group">
+                    <input id="inp-apodo-crear" type="text" placeholder="Tu apodo en el grupo" maxlength="24" data-i18n-ph="ph_apodo">
+                </div>
+                <button id="btn-crear" class="btn btn-primary" onclick="crearGrupo()" data-i18n="btn_crear">Crear</button>
+            </div>
+            <div class="card" style="margin-bottom:0;">
+                <span class="slabel" data-i18n="lbl_join">🔗 Unirse</span>
+                <div class="input-group">
+                    <input id="inp-codigo" type="text" placeholder="Código" maxlength="6"
+                           style="text-transform:uppercase;letter-spacing:.18em;font-weight:900;text-align:center;"
+                           oninput="this.value=this.value.toUpperCase()" data-i18n-ph="ph_code">
+                </div>
+                <div class="input-group">
+                    <input id="inp-apodo-unirse" type="text" placeholder="Tu apodo en el grupo" maxlength="24" data-i18n-ph="ph_apodo">
+                </div>
+                <button id="btn-unirse" class="btn btn-ghost" onclick="unirseGrupo()" data-i18n="btn_unirse">Unirse</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- S2: Grupo activo -->
+    <div id="s-grupo" class="hidden">
+
+        <div class="group-topbar">
+            <div>
+                <h2 id="g-titulo">—</h2>
+            </div>
+            <button class="btn-danger-txt" onclick="volverLobby()" style="color:var(--text-sub);font-size:.8rem;" data-i18n="btn_volver">← Volver</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+            <div class="code-badge" onclick="copiarCodigo()" style="flex:1;justify-content:center;">🔑 <span id="g-codigo">—</span> · Copiar</div>
+            <button class="btn-danger-txt" id="btn-salir-grupo" onclick="abandonarGrupo()" style="font-size:.72rem;background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.2);border-radius:20px;padding:5px 12px;white-space:nowrap;"><span data-i18n="btn_salir_grupo">🚪 Salir</span></button>
+            <button class="btn-danger-txt" id="btn-eliminar-grupo" onclick="eliminarGrupo()" style="display:none;font-size:.72rem;background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.2);border-radius:20px;padding:5px 12px;white-space:nowrap;"><span data-i18n="btn_eliminar_grupo">🗑️ Eliminar</span></button>
+        </div>
+
+        <!-- Sync banner: aparece cuando hay gastos pendientes de sincronizar -->
+        <div id="sync-banner">
+            <div class="sync-spinner"></div>
+            <span id="sync-text">Sincronizando gastos pendientes…</span>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('gastos',this)">
+                <span class="ti">💸</span><span data-i18n="tab_gastos">GASTOS</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('balances',this)">
+                <span class="ti">⚖️</span><span data-i18n="tab_balance">BALANCE</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('resumen',this)">
+                <span class="ti">📊</span><span data-i18n="tab_resumen">RESUMEN</span>
+            </button>
+        </div>
+
+        <!-- Tab: Gastos -->
+        <div id="tab-gastos" class="tab-panel active">
+            <div class="card">
+                <div class="collapsible-header" onclick="toggleCollapsible('form-gasto','toggle-form-gasto')">
+                    <span class="slabel" data-i18n="lbl_new_expense" style="margin-bottom:0;">➕ Nuevo gasto</span>
+                    <span class="collapsible-toggle open" id="toggle-form-gasto">▼</span>
+                </div>
+                <div class="collapsible-body open" id="form-gasto" style="padding-top:14px;">
+                    <div class="input-group">
+                        <input id="g-desc" type="text" placeholder="Descripción (ej: Cena en Miami)" data-i18n-ph="ph_desc">
+                    </div>
+                    <div class="input-group">
+                        <input id="g-monto" type="number" placeholder="Monto en USD" min="0.01" step="0.01" inputmode="decimal" data-i18n-ph="ph_amount">
+                    </div>
+                    <div class="cat-bar">
+                        <button class="cat-pill active" onclick="setCategoria('comida',this)">🍽️ <span data-i18n="cat_food">Comida</span></button>
+                        <button class="cat-pill" onclick="setCategoria('transporte',this)">🚗 <span data-i18n="cat_transport">Transporte</span></button>
+                        <button class="cat-pill" onclick="setCategoria('alojamiento',this)">🏨 <span data-i18n="cat_hotel">Hotel</span></button>
+                        <button class="cat-pill" onclick="setCategoria('actividad',this)">🎡 <span data-i18n="cat_activity">Actividad</span></button>
+                        <button class="cat-pill" onclick="setCategoria('compras',this)">🛍️ <span data-i18n="cat_shopping">Compras</span></button>
+                        <button class="cat-pill" onclick="setCategoria('otro',this)">📦 <span data-i18n="cat_other">Otro</span></button>
+                    </div>
+                    <div class="input-group">
+                        <span class="slabel" data-i18n="lbl_paid_by">Pagó</span>
+                        <select id="g-pagador"></select>
+                    </div>
+                    <button id="btn-agregar" class="btn btn-success" onclick="agregarGasto()" data-i18n="btn_add_expense">✓ Registrar gasto</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="slabel" data-i18n="lbl_history">📋 Historial</span>
+                <div id="lista-gastos" class="gasto-list">
+                    <div class="empty-state" data-i18n="empty_expenses">Todavía no hay gastos 🧳</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Balances -->
+        <div id="tab-balances" class="tab-panel">
+            <div class="card">
+                <span class="slabel" data-i18n="lbl_who_owes">⚖️ Quién le debe a quién</span>
+                <p style="font-size:.73rem;color:var(--text-dim);font-weight:600;margin-bottom:14px;" data-i18n="lbl_algo">
+                    Algoritmo de transferencias mínimas — la menor cantidad de pagos posible.
+                </p>
+                <div id="balances-cont"><div class="empty-state" data-i18n="empty_data">Sin datos aún</div></div>
+
+                <!-- Explicación del algoritmo colapsable -->
+                <div class="explain-card">
+                    <div class="collapsible-header" onclick="toggleCollapsible('explain-body','toggle-explain')" style="margin-bottom:0;">
+                        <div class="explain-title" style="margin-bottom:0;" data-i18n="explain_title">💡 ¿Cómo funciona la división?</div>
+                        <span class="collapsible-toggle" id="toggle-explain">▼</span>
+                    </div>
+                    <div class="collapsible-body" id="explain-body">
+                    <div style="height:12px;"></div>
+                    <div class="explain-step">
+                        <div class="explain-num">1</div>
+                        <div class="explain-text" data-i18n="explain_step1"><strong>Se registra quién pagó</strong> cada gasto y el monto total.</div>
+                    </div>
+                    <div class="explain-step">
+                        <div class="explain-num">2</div>
+                        <div class="explain-text" data-i18n="explain_step2"><strong>Se divide en partes iguales</strong> entre todos los miembros del grupo al momento del gasto.</div>
+                    </div>
+                    <div class="explain-step">
+                        <div class="explain-num">3</div>
+                        <div class="explain-text" data-i18n="explain_step3"><strong>Se calcula el balance</strong> de cada persona: lo que pagó menos lo que le corresponde.</div>
+                    </div>
+                    <div class="explain-step">
+                        <div class="explain-num">4</div>
+                        <div class="explain-text" data-i18n="explain_step4"><strong>Se minimizan las transferencias</strong>: el algoritmo calcula la menor cantidad de pagos posibles para saldar todas las deudas.</div>
+                    </div>
+                    <div style="background:rgba(245,158,11,.1);border:1.5px solid rgba(245,158,11,.3);border-radius:8px;padding:9px 11px;margin-top:10px;">
+                        <span style="font-size:.7rem;font-weight:700;color:#f59e0b;" data-i18n="explain_warn_label">⚠️ Importante:</span>
+                        <span style="font-size:.7rem;font-weight:600;color:var(--text-sub);" data-i18n="explain_warn_text"> Si alguien se une o sale del grupo <em>después</em> de que se registraron gastos, esos gastos no se recalculan automáticamente. Verificá el historial si hubo cambios de miembros.</span>
+                    </div>
+                    </div><!-- /collapsible-body -->
+                </div>
+            </div>
+            <div class="card">
+                <span class="slabel" data-i18n="lbl_members">👥 Integrantes</span>
+                <div id="members-list" class="members-wrap"></div>
+            </div>
+        </div>
+
+        <!-- Tab: Resumen -->
+        <div id="tab-resumen" class="tab-panel">
+            <div class="total-hero">
+                <div class="total-hero-lbl" data-i18n="lbl_total_group">Total gastado por el grupo</div>
+                <div class="total-hero-val" id="total-global">USD 0.00</div>
+            </div>
+            <div class="card">
+                <span class="slabel" data-i18n="lbl_per_person">📊 Por persona</span>
+                <div id="resumen-cont"><div class="empty-state" data-i18n="empty_data">Sin datos aún</div></div>
+            </div>
+        </div>
+
+    </div><!-- /s-grupo -->
+
+    <div class="app-footer">
+        <span>Creado por Juan Cruz Bria</span>
+        <img src="https://flagcdn.com/w40/ar.png" alt="Argentina">
+    </div>
+
+</div><!-- /wrap -->
+
+<!-- Settings drawer -->
+<div id="menuOverlay" class="menu-overlay" onclick="toggleSettings()"></div>
+<div id="settingsDrawer" class="settings-drawer">
+    <div class="drawer-header"><span data-i18n="settings_title">Ajustes</span></div>
+    <p id="userEmail" class="drawer-email"></p>
+    <span class="drawer-section-label" data-i18n="label_language">Idioma</span>
+    <div class="lang-selector">
+        <button class="lang-opt" id="lang-es" onclick="window.changeLanguage('es')"><img src="https://flagcdn.com/w20/ar.png" alt=""> ES</button>
+        <button class="lang-opt" id="lang-en" onclick="window.changeLanguage('en')"><img src="https://flagcdn.com/w20/us.png" alt=""> EN</button>
+        <button class="lang-opt" id="lang-pt" onclick="window.changeLanguage('pt')"><img src="https://flagcdn.com/w20/br.png" alt=""> PT</button>
+    </div>
+    <button class="drawer-btn" onclick="changeProfile()">👤 <span data-i18n="btn_change_profile">Cambiar Perfil</span></button>
+    <button class="drawer-btn" onclick="toggleDarkMode()">🌓 <span data-i18n="btn_theme">Cambiar Tema</span></button>
+    <button class="drawer-btn" onclick="location.reload()">🔄 <span data-i18n="btn_update">Actualizar App</span></button>
+    <button class="drawer-btn" onclick="doChangeEmail()">📧 <span data-i18n="btn_email">Cambiar Correo</span></button>
+    <button class="drawer-btn" onclick="doChangePassword()">🔑 <span data-i18n="btn_password">Cambiar Contraseña</span></button>
+    <button class="drawer-btn" onclick="gestionarPIN()">🔢 <span data-i18n="btn_pin">Cambiar PIN offline</span></button>
+    <button class="drawer-btn" onclick="openSwitchApp()">🌍 <span data-i18n="btn_switch_app">Cambiar Aplicación</span></button>
+    <button class="drawer-btn" onclick="doLogout()">🚪 <span data-i18n="btn_logout">Cerrar Sesión</span></button>
+    <div style="margin-top:auto;padding-top:16px;">
+        <button class="drawer-btn btn-danger" onclick="doDeleteAccount()">🗑️ <span data-i18n="btn_delete">Eliminar Cuenta</span></button>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ── Firebase + Lógica ── -->
+<script type="module">
+import { initializeApp }        from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+    getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc,
+    arrayUnion, onSnapshot, serverTimestamp, query, collection, where, getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser, verifyBeforeUpdateEmail }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+// 🔧 Firebase config
+const firebaseConfig = {
+    apiKey:            "AIzaSyA-eeKl8guVDmTa_NpYvkB0O7-RMbPrkP0",
+    authDomain:        "viajes-db538.firebaseapp.com",
+    projectId:         "viajes-db538",
+    storageBucket:     "viajes-db538.firebasestorage.app",
+    messagingSenderId: "237311739178",
+    appId:             "1:237311739178:web:333e468b184c0402a98a53"
+};
+
+const app  = initializeApp(firebaseConfig);
+const db   = getFirestore(app);
+const auth = getAuth(app);
+
+let currentUser  = null;
+let currentGroup = null;
+let unsubscribe  = null;
+let categoriaActiva = 'comida';
+
+const perfilFoto = localStorage.getItem('perfilActivoFoto');
+// Aplicar foto de perfil inmediatamente (offline-safe)
+(function(){ const f = perfilFoto; if (f) { const b = document.getElementById('btnSettings'); if (b) { b.style.backgroundImage=`url(${f})`; b.innerText=''; } } })();
+
+const $   = id => document.getElementById(id);
+const fmt = n  => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n);
+
+function showSection(id) {
+    ['s-loading','s-lobby','s-grupo'].forEach(s => $(s).classList.add('hidden'));
+    $(id).classList.remove('hidden');
+}
+
+function showToast(msg) {
+    const t = $('toast'); t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._t);
+    t._t = setTimeout(()=>t.classList.remove('show'), 2800);
+}
+
+function shake(id) {
+    const el=$(id); el.classList.add('shake');
+    setTimeout(()=>el.classList.remove('shake'),400);
+}
+
+// Auth
+onAuthStateChanged(auth, async user => {
+    if (user) {
+        currentUser = { uid:user.uid, name:user.displayName||user.email.split('@')[0] };
+        const perfilNombre = localStorage.getItem('perfilActivoNombre');
+        document.getElementById('userEmail').innerText = perfilNombre || user.email;
+
+        // 1. Intentar restaurar desde localStorage
+        const savedCode = localStorage.getItem('grupoActivo');
+        if (savedCode) {
+            try {
+                const snap = await getDoc(doc(db, 'grupos', savedCode));
+                if (snap.exists()) { suscribirGrupo(savedCode); }
+                else { localStorage.removeItem('grupoActivo'); buscarGrupoEnFirestore(user.uid); }
+            } catch(e) { buscarGrupoEnFirestore(user.uid); }
+        } else {
+            // 2. Si no hay en localStorage, buscar en Firestore grupos donde está el usuario
+            buscarGrupoEnFirestore(user.uid);
+        }
+    } else {
+        currentUser = null;
+        showSection('s-lobby');
+    }
+    const img = perfilFoto || (user && user.photoURL);
+    if (img) {
+        const btn = document.getElementById('btnSettings');
+        btn.style.backgroundImage = `url(${img})`;
+        btn.innerText = '';
+    }
+    const lang = localStorage.getItem('appLang') || 'es';
+    window.changeLanguage(lang);
+});
+
+async function buscarGrupoEnFirestore(uid) {
+    try {
+        const q = query(collection(db, 'grupos'), where('miembroUids', 'array-contains', uid));
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+            const grupos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            grupos.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+            grupos.forEach(g => guardarGrupoEnLista(g.id, g.nombre));
+            const savedCode = localStorage.getItem('grupoActivo');
+            if (savedCode && grupos.find(g=>g.id===savedCode)) {
+                suscribirGrupo(savedCode);
+            } else {
+                showSection('s-lobby');
+                cargarMisGrupos();
+            }
+        } else {
+            showSection('s-lobby');
+            cargarMisGrupos();
+        }
+    } catch(e) {
+        showSection('s-lobby');
+        cargarMisGrupos();
+    }
+}
+
+// ── Funciones del drawer (dentro del módulo para acceder a auth/db) ──
+window.changeProfile = () => { localStorage.removeItem('perfilActivoId'); window.location.href = 'profiles.html'; };
+
+window.gestionarPIN = () => {
+    document.getElementById('settingsDrawer').classList.remove('open');
+    document.getElementById('menuOverlay').style.display = 'none';
+    if (!navigator.onLine) {
+        const lang = localStorage.getItem('appLang') || 'es';
+        alert(lang==='en' ? 'You need internet to change your PIN.' : lang==='pt' ? 'Você precisa de internet para alterar o PIN.' : 'Necesitás internet para cambiar el PIN.');
+        return;
+    }
+    localStorage.setItem('taxusa_action', 'change_pin');
+    window.location.href = 'login.html';
+};
+window.doLogout = () => {
+    signOut(auth).then(() => {
+        window.location.replace('login.html');
+    }).catch(er => showToast('❌ ' + er.message));
+};
+
+window.doChangeEmail = async () => {
+    const firebaseUser = auth.currentUser;
+    if (!firebaseUser) { showToast('⚠️ No hay sesión activa'); return; }
+    const e = prompt('Nuevo correo:');
+    if (!e) return;
+    try {
+        await verifyBeforeUpdateEmail(firebaseUser, e);
+        showToast('📧 Verificación enviada a ' + e);
+    } catch(er) { showToast('❌ ' + er.message); }
+};
+
+window.doChangePassword = async () => {
+    const firebaseUser = auth.currentUser;
+    if (!firebaseUser) { showToast('⚠️ No hay sesión activa'); return; }
+    try {
+        await sendPasswordResetEmail(auth, firebaseUser.email);
+        showToast('🔑 Correo de recuperación enviado');
+    } catch(er) { showToast('❌ ' + er.message); }
+};
+
+window.doDeleteAccount = async () => {
+    const firebaseUser = auth.currentUser;
+    if (!firebaseUser) return;
+    if (!confirm('¿Eliminar cuenta permanentemente?')) return;
+    try {
+        await deleteDoc(doc(db, 'usuarios', firebaseUser.uid));
+        await deleteUser(firebaseUser);
+        window.location.replace('login.html');
+    } catch(er) { showToast('❌ Reautenticación requerida'); }
+};
+
+window.cambiarApodo = async () => {
+    if (!currentUser) { showToast('⚠️ No hay sesión activa'); return; }
+    const nuevo = prompt('Nuevo apodo:', currentUser.name);
+    if (!nuevo || !nuevo.trim()) return;
+    const nuevoNombre = nuevo.trim();
+    try {
+        // Actualizar en Firestore si está en un grupo
+        if (currentGroup && !currentGroup._demo) {
+            const ref = doc(db, 'grupos', currentGroup.id);
+            const snap = await getDoc(ref);
+            if (snap.exists()) {
+                const data = snap.data();
+                const miembros = data.miembros.map(m =>
+                    m.uid === currentUser.uid ? { ...m, nombre: nuevoNombre } : m
+                );
+                const gastos = data.gastos.map(g =>
+                    g.pagadorUid === currentUser.uid ? { ...g, pagadorNombre: nuevoNombre } : g
+                );
+                await updateDoc(ref, { miembros, gastos });
+            }
+        }
+        // Actualizar localmente
+        currentUser.name = nuevoNombre;
+        localStorage.setItem('perfilActivoNombre', nuevoNombre);
+        document.getElementById('userEmail').innerText = nuevoNombre;
+        showToast('✅ Apodo cambiado a ' + nuevoNombre);
+        window.toggleSettings();
+    } catch(er) { showToast('❌ ' + er.message); }
+};
+window.crearGrupo = async () => {
+    const nombre = $('inp-nombre').value.trim();
+    const lang = localStorage.getItem('appLang') || 'es';
+    const t = i18n[lang] || i18n.es;
+    if (!nombre) { shake('btn-crear'); showToast('⚠️ ' + (t.warn_trip_name || 'Escribí un nombre para el viaje')); return; }
+    if (!currentUser) {
+        showToast('⚠️ ' + (t.warn_login_create || 'Iniciá sesión para crear un grupo real'));
+        activarDemo(); return;
+    }
+    const apodoInput = $('inp-apodo-crear').value.trim();
+    const apodo = apodoInput || currentUser.name;
+    const btn = $('btn-crear');
+    btn.disabled = true; btn.textContent = t.creating || 'Creando…';
+    try {
+        const code = Math.random().toString(36).substring(2,8).toUpperCase();
+        await setDoc(doc(db,'grupos',code),{
+            nombre, codigo:code, creadoPor:currentUser.uid,
+            createdAt:serverTimestamp(),
+            miembros:[{uid:currentUser.uid, nombre:apodo}],
+            miembroUids:[currentUser.uid],
+            gastos:[]
+        });
+        currentUser.name = apodo;
+        localStorage.setItem('perfilActivoNombre', apodo);
+        suscribirGrupo(code);
+    } catch(e) {
+        showToast('❌ Error: ' + (e.message || 'No se pudo crear el grupo'));
+        console.error('[crearGrupo]', e);
+    } finally {
+        btn.disabled = false; btn.textContent = t.btn_crear || 'Crear';
+    }
+};
+
+// Unirse
+window.unirseGrupo = async () => {
+    const lang = localStorage.getItem('appLang') || 'es';
+    const t = i18n[lang] || i18n.es;
+    if (!currentUser) { showToast('⚠️ ' + (t.warn_login_join || 'Iniciá sesión para unirte a un grupo')); activarDemo(); return; }
+    const code = $('inp-codigo').value.trim().toUpperCase();
+    if (code.length!==6) { shake('btn-unirse'); showToast('⚠️ ' + (t.warn_code_len || 'El código debe tener 6 caracteres')); return; }
+    const apodoInput = $('inp-apodo-unirse').value.trim();
+    const apodo = apodoInput || currentUser.name;
+    const btn = $('btn-unirse');
+    btn.disabled = true; btn.textContent = t.searching || 'Buscando…';
+    try {
+        const ref  = doc(db,'grupos',code);
+        const snap = await getDoc(ref);
+        if (!snap.exists()) { showToast('❌ Código no encontrado'); return; }
+        const data = snap.data();
+        if (!data.miembros.some(m=>m.uid===currentUser.uid)) {
+            await updateDoc(ref,{
+                miembros: arrayUnion({uid:currentUser.uid, nombre:apodo}),
+                miembroUids: arrayUnion(currentUser.uid)
+            });
+        }
+        currentUser.name = apodo;
+        localStorage.setItem('perfilActivoNombre', apodo);
+        suscribirGrupo(code);
+    } catch(e) {
+        showToast('❌ Error: ' + (e.message || 'No se pudo unir al grupo'));
+        console.error('[unirseGrupo]', e);
+    } finally {
+        btn.disabled = false; btn.textContent = t.btn_unirse || 'Unirse';
+    }
+};
+
+function suscribirGrupo(code) {
+    if (unsubscribe) unsubscribe();
+    localStorage.setItem('grupoActivo', code);
+    unsubscribe = onSnapshot(doc(db,'grupos',code), snap=>{
+        if (!snap.exists()) return;
+        currentGroup = {id:snap.id,data:snap.data()};
+        guardarGrupoEnLista(snap.id, snap.data().nombre);
+        renderGrupo();
+    });
+    showSection('s-grupo');
+    // Exponer flush para el listener de online del script global
+    window._flushPending = flushPending;
+    // Si ya hay conexión y hay pendientes, sincronizar ahora
+    if (navigator.onLine && getPending().length > 0) {
+        flushPending();
+    }
+    updatePendingBadge();
+}
+
+// ── Cola offline ──
+const PENDING_KEY = 'taxusa_pending_ops';
+
+function getPending() {
+    try { return JSON.parse(localStorage.getItem(PENDING_KEY) || '[]'); } catch(e) { return []; }
+}
+function savePending(ops) {
+    localStorage.setItem(PENDING_KEY, JSON.stringify(ops));
+    updatePendingBadge();
+}
+function updatePendingBadge() {
+    const n = getPending().length;
+    const badge = document.getElementById('pending-badge');
+    if (badge) { badge.textContent = n; badge.style.display = n ? 'inline' : 'none'; }
+}
+function queueOp(op) {
+    const ops = getPending();
+    ops.push(op);
+    savePending(ops);
+}
+
+async function flushPending() {
+    const ops = getPending();
+    if (!ops.empty && ops.length === 0) return;
+    const lang = localStorage.getItem('appLang') || 'es';
+    const t = i18n[lang] || i18n.es;
+    const banner = document.getElementById('sync-banner');
+    const syncText = document.getElementById('sync-text');
+    if (banner) { banner.classList.add('visible'); if(syncText) syncText.textContent = t.sync_syncing; }
+    const failed = [];
+    for (const op of ops) {
+        try {
+            if (op.type === 'add_gasto') {
+                await updateDoc(doc(db, 'grupos', op.groupId), { gastos: arrayUnion(op.gasto) });
+            } else if (op.type === 'del_gasto') {
+                const ref = doc(db, 'grupos', op.groupId);
+                const snap = await getDoc(ref);
+                if (snap.exists()) {
+                    const nuevosGastos = snap.data().gastos.filter(g => g.id !== op.gastoId);
+                    await updateDoc(ref, { gastos: nuevosGastos });
+                }
+            }
+        } catch(e) { failed.push(op); }
+    }
+    savePending(failed);
+    if (banner) {
+        if (failed.length === 0) {
+            if(syncText) syncText.textContent = t.sync_ok;
+            setTimeout(() => banner.classList.remove('visible'), 2200);
+        } else {
+            if(syncText) syncText.textContent = '⚠️ ' + failed.length + ' ' + (lang === 'en' ? 'expense' + (failed.length > 1 ? 's' : '') + ' not synced' : lang === 'pt' ? 'despesa' + (failed.length > 1 ? 's' : '') + ' não sincronizada' + (failed.length > 1 ? 's' : '') : 'gasto' + (failed.length > 1 ? 's' : '') + ' sin sincronizar');
+        }
+    }
+}
+
+// Agregar gasto
+window.agregarGasto = async () => {
+    const desc  = $('g-desc').value.trim();
+    const monto = parseFloat($('g-monto').value);
+    const puid  = $('g-pagador').value;
+    if (!desc||isNaN(monto)||monto<=0) { shake('btn-agregar'); return; }
+    const pagador = currentGroup.data.miembros.find(m=>m.uid===puid);
+    const gasto = {
+        id: Date.now().toString(), desc, monto, cat:categoriaActiva,
+        pagadorUid:pagador.uid, pagadorNombre:pagador.nombre,
+        fecha:new Date().toLocaleDateString('es-AR'),
+        entre:currentGroup.data.miembros.map(m=>m.uid)
+    };
+    if (currentGroup._demo) {
+        currentGroup.data.gastos.push(gasto);
+        renderGrupo();
+    } else if (!navigator.onLine) {
+        // Guardar offline: actualizar UI local y encolar para sync
+        currentGroup.data.gastos.push(gasto);
+        renderGrupo();
+        queueOp({ type: 'add_gasto', groupId: currentGroup.id, gasto });
+        showToast('📥 Gasto guardado — se sincronizará al volver la conexión');
+    } else {
+        await updateDoc(doc(db,'grupos',currentGroup.id),{gastos:arrayUnion(gasto)});
+        showToast('✅ Gasto registrado');
+    }
+    $('g-desc').value=''; $('g-monto').value='';
+};
+
+window.setCategoria = (cat,el) => {
+    categoriaActiva=cat;
+    document.querySelectorAll('.cat-pill').forEach(p=>p.classList.remove('active'));
+    el.classList.add('active');
+};
+
+window.volverLobby = () => {
+    if (unsubscribe) unsubscribe();
+    localStorage.removeItem('grupoActivo');
+    currentGroup=null;
+    showSection('s-lobby');
+    cargarMisGrupos();
+};
+
+window.abandonarGrupo = async () => {
+    if (!currentGroup || currentGroup._demo) { showToast('\u26a0\ufe0f No disponible en modo demo'); return; }
+    if (!currentUser) return;
+    const nombre = currentGroup.data.nombre;
+    const lang = localStorage.getItem('appLang') || 'es';
+    const confirmMsg = (i18n[lang] || i18n.es).confirm_salir.replace('{nombre}', nombre).replace('{nome}', nombre);
+    if (!confirm(confirmMsg)) return;
+    try {
+        const ref = doc(db, 'grupos', currentGroup.id);
+        const snap = await getDoc(ref);
+        if (!snap.exists()) return;
+        const data = snap.data();
+        const nuevosMiembros = data.miembros.filter(m => m.uid !== currentUser.uid);
+        const nuevosUids = (data.miembroUids || []).filter(uid => uid !== currentUser.uid);
+        await updateDoc(ref, { miembros: nuevosMiembros, miembroUids: nuevosUids });
+        const grupos = JSON.parse(localStorage.getItem('misGrupos')||'[]').filter(g => g.id !== currentGroup.id);
+        localStorage.setItem('misGrupos', JSON.stringify(grupos));
+        if (unsubscribe) unsubscribe();
+        localStorage.removeItem('grupoActivo');
+        currentGroup = null;
+        showSection('s-lobby');
+        cargarMisGrupos();
+        showToast('\u2705 Saliste del grupo correctamente');
+    } catch(e) {
+        showToast('\u274c Error: ' + e.message);
+    }
+};
+
+window.eliminarGrupo = async () => {
+    if (!currentGroup || currentGroup._demo) { showToast('⚠️ No disponible en modo demo'); return; }
+    if (currentGroup.data.creadoPor !== currentUser.uid) {
+        const lang = localStorage.getItem('appLang') || 'es';
+        const t = i18n[lang] || i18n.es;
+        showToast('❌ ' + (t.only_creator || 'Solo el creador puede eliminar el grupo')); return;
+    }
+    const nombre = currentGroup.data.nombre;
+    const lang = localStorage.getItem('appLang') || 'es';
+    const t = i18n[lang] || i18n.es;
+    const confirmMsg = (t.confirm_eliminar || '¿Eliminar el grupo "{nombre}" permanentemente?\n\nEsta acción no se puede deshacer y borrará todos los gastos.').replace('{nombre}', nombre).replace('{nome}', nombre);
+    if (!confirm(confirmMsg)) return;
+    try {
+        if (unsubscribe) unsubscribe();
+        await deleteDoc(doc(db, 'grupos', currentGroup.id));
+        // Quitar de la lista local
+        const grupos = JSON.parse(localStorage.getItem('misGrupos')||'[]').filter(g=>g.id!==currentGroup.id);
+        localStorage.setItem('misGrupos', JSON.stringify(grupos));
+        localStorage.removeItem('grupoActivo');
+        currentGroup = null;
+        showSection('s-lobby');
+        cargarMisGrupos();
+        showToast('🗑️ Grupo eliminado correctamente');
+    } catch(e) {
+        showToast('❌ Error al eliminar: ' + e.message);
+        console.error('[eliminarGrupo]', e);
+    }
+};
+
+window.eliminarGasto = async (gastoId) => {
+    if (!currentGroup) return;
+    const lang = localStorage.getItem('appLang') || 'es';
+    const t = i18n[lang] || i18n.es;
+    if (!confirm(t.confirm_eliminar_gasto || '¿Eliminar este gasto?')) return;
+    if (currentGroup._demo) {
+        currentGroup.data.gastos = currentGroup.data.gastos.filter(g=>g.id!==gastoId);
+        renderGrupo(); showToast('🗑️ Gasto eliminado');
+        return;
+    }
+    if (!navigator.onLine) {
+        // Remover localmente y encolar para sync
+        currentGroup.data.gastos = currentGroup.data.gastos.filter(g=>g.id!==gastoId);
+        // Si había un add_gasto pendiente para este id, cancelarlo
+        const ops = getPending().filter(op => !(op.type === 'add_gasto' && op.gasto.id === gastoId));
+        // Solo encolar delete si el gasto ya existía en Firestore (no era pendiente local)
+        const wasLocal = getPending().some(op => op.type === 'add_gasto' && op.gasto.id === gastoId);
+        savePending(wasLocal ? ops : [...ops, { type: 'del_gasto', groupId: currentGroup.id, gastoId }]);
+        renderGrupo();
+        showToast('📥 Eliminado localmente — se sincronizará al volver la conexión');
+        return;
+    }
+    try {
+        const ref = doc(db,'grupos',currentGroup.id);
+        const snap = await getDoc(ref);
+        if (!snap.exists()) return;
+        const nuevosGastos = snap.data().gastos.filter(g=>g.id!==gastoId);
+        await updateDoc(ref,{gastos:nuevosGastos});
+        showToast('🗑️ Gasto eliminado');
+    } catch(e) { showToast('❌ Error: '+e.message); }
+};
+
+window.eliminarMiembro = async (uid) => {
+    if (!currentGroup || currentGroup._demo) { showToast('⚠️ No disponible en modo demo'); return; }
+    if (currentGroup.data.creadoPor !== currentUser.uid) {
+        const lang = localStorage.getItem('appLang') || 'es';
+        const t = i18n[lang] || i18n.es;
+        showToast('❌ ' + (t.only_creator_members || 'Solo el creador puede eliminar miembros')); return;
+    }
+    const miembro = currentGroup.data.miembros.find(m=>m.uid===uid);
+    if (!miembro) return;
+    const lang = localStorage.getItem('appLang') || 'es';
+    const t = i18n[lang] || i18n.es;
+    const confirmMsg = (t.confirm_eliminar_miembro || '¿Eliminar a "{nombre}" del grupo?\n\nSus gastos registrados se mantendrán.').replace('{nombre}', miembro.nombre).replace('{nome}', miembro.nombre);
+    if (!confirm(confirmMsg)) return;
+    try {
+        const ref = doc(db,'grupos',currentGroup.id);
+        const snap = await getDoc(ref);
+        if (!snap.exists()) return;
+        const nuevosMiembros = snap.data().miembros.filter(m=>m.uid!==uid);
+        await updateDoc(ref,{miembros:nuevosMiembros});
+        showToast(`✅ ${miembro.nombre} eliminado del grupo`);
+    } catch(e) { showToast('❌ Error: '+e.message); }
+};
+
+// ── Múltiples grupos ──
+function guardarGrupoEnLista(id, nombre) {
+    const grupos = JSON.parse(localStorage.getItem('misGrupos')||'[]');
+    if (!grupos.find(g=>g.id===id)) {
+        grupos.unshift({id, nombre});
+        localStorage.setItem('misGrupos', JSON.stringify(grupos.slice(0,10)));
+    }
+}
+
+function cargarMisGrupos() {
+    const grupos = JSON.parse(localStorage.getItem('misGrupos')||'[]');
+    const wrap = $('mis-grupos-wrap');
+    const lista = $('mis-grupos-list');
+    if (!wrap || !lista) return;
+    if (!grupos.length) { wrap.classList.add('hidden'); return; }
+    const lang = localStorage.getItem('appLang') || 'es';
+    const t = i18n[lang] || i18n.es;
+    // Update "Mis grupos" label
+    const labelEl = wrap.querySelector('.slabel');
+    if (labelEl) labelEl.textContent = t.lbl_my_groups || '📂 Mis grupos';
+    wrap.classList.remove('hidden');
+    lista.innerHTML = grupos.map(g=>`
+        <div class="grupo-item" onclick="volverAGrupo('${g.id}')">
+            <div>
+                <div class="grupo-item-name">✈️ ${g.nombre}</div>
+                <div class="grupo-item-code">${g.id}</div>
+            </div>
+            <button class="grupo-item-btn">${t.btn_open || 'Abrir'}</button>
+        </div>`).join('');
+}
+
+window.volverAGrupo = async (id) => {
+    try {
+        const snap = await getDoc(doc(db,'grupos',id));
+        if (snap.exists()) { suscribirGrupo(id); }
+        else {
+            showToast('❌ Grupo no encontrado');
+            const grupos = JSON.parse(localStorage.getItem('misGrupos')||'[]').filter(g=>g.id!==id);
+            localStorage.setItem('misGrupos', JSON.stringify(grupos));
+            cargarMisGrupos();
+        }
+    } catch(e) { showToast('❌ Error al abrir grupo'); }
+};
+
+window.copiarCodigo = () => {
+    const c=$('g-codigo').textContent;
+    navigator.clipboard?.writeText(c).catch(()=>{});
+    showToast('📋 Código '+c+' copiado');
+};
+
+function renderGrupo() {
+    const {nombre,codigo,miembros,gastos,creadoPor} = currentGroup.data;
+    $('g-titulo').textContent = nombre || currentGroup.data.nome || '—';
+    $('g-codigo').textContent=codigo;
+
+    // Preservar estado de colapsables antes de re-render
+    const _formOpen    = document.getElementById('form-gasto')?.classList.contains('open');
+    const _explainOpen = document.getElementById('explain-body')?.classList.contains('open');
+
+    // Mostrar botón eliminar solo al creador
+    const btnEliminar = document.getElementById('btn-eliminar-grupo');
+    if (btnEliminar) {
+        btnEliminar.style.display = (currentUser && creadoPor === currentUser.uid && !currentGroup._demo) ? 'block' : 'none';
+    }
+
+    const sel=$('g-pagador');
+    sel.innerHTML=miembros.map(m=>
+        `<option value="${m.uid}"${currentUser&&m.uid===currentUser.uid?' selected':''}>${m.nombre}</option>`
+    ).join('');
+
+    const lista=$('lista-gastos');
+    const esCreador = currentUser && creadoPor === currentUser.uid;
+    if (!gastos.length) {
+        lista.innerHTML=`<div class="empty-state"><span class="es-icon">🧳</span>${(i18n[localStorage.getItem('appLang')||'es']||i18n.es).empty_expenses}</div>`;
+    } else {
+        lista.innerHTML=[...gastos].reverse().map(g=>`
+            <div class="gasto-item cat-${g.cat||'otro'}" id="gasto-${g.id}">
+                <div class="gasto-emoji">${catEmoji(g.cat)}</div>
+                <div class="gasto-body">
+                    <div class="gasto-desc">${g.desc}</div>
+                    <div class="gasto-meta">${g.pagadorNombre} · ${g.fecha}</div>
+                </div>
+                <div class="gasto-monto">${fmt(g.monto)}</div>
+                <button class="gasto-del" onclick="eliminarGasto('${g.id}')" title="Eliminar gasto">🗑️</button>
+            </div>`).join('');
+    }
+
+    // Members con botón eliminar (solo creador, no puede eliminarse a sí mismo)
+    $('members-list').innerHTML=miembros.map(m=>{
+        const puedeEliminar = esCreador && m.uid !== currentUser.uid && !currentGroup._demo;
+        return `<span class="member-chip">👤 ${m.nombre}${puedeEliminar ? `<button class="member-del" onclick="eliminarMiembro('${m.uid}')" title="Eliminar miembro">✕</button>` : ''}</span>`;
+    }).join('');
+
+    renderBalances(miembros,gastos);
+    renderResumen(miembros,gastos);
+}
+
+function calcularDeudas(miembros,gastos) {
+    const bal={};
+    miembros.forEach(m=>bal[m.uid]=0);
+    gastos.forEach(g=>{
+        const share=g.monto/g.entre.length;
+        g.entre.forEach(uid=>{ if(uid in bal) bal[uid]-=share; });
+        if(g.pagadorUid in bal) bal[g.pagadorUid]+=g.monto;
+    });
+    const creditors=[],debtors=[];
+    Object.entries(bal).forEach(([uid,b])=>{
+        const nombre=miembros.find(m=>m.uid===uid)?.nombre||uid;
+        if(b> 0.01) creditors.push({nombre,bal:b});
+        if(b<-0.01) debtors.push({nombre,bal:-b});
+    });
+    const txs=[]; let ci=0,di=0;
+    while(ci<creditors.length&&di<debtors.length){
+        const c=creditors[ci],d=debtors[di];
+        const amt=Math.min(c.bal,d.bal);
+        txs.push({de:d.nombre,a:c.nombre,monto:amt});
+        c.bal-=amt; d.bal-=amt;
+        if(c.bal<0.01)ci++;
+        if(d.bal<0.01)di++;
+    }
+    return txs;
+}
+
+function renderBalances(miembros,gastos){
+    const cont=$('balances-cont');
+    const txs=calcularDeudas(miembros,gastos);
+    if(!txs.length){ cont.innerHTML=`<div class="empty-state"><span class="es-icon">✅</span>${(i18n[localStorage.getItem('appLang')||'es']||i18n.es).all_good}</div>`; return; }
+    cont.innerHTML=txs.map(t=>`
+        <div class="balance-row">
+            <span class="b-de">${t.de}</span>
+            <span class="b-arr">→</span>
+            <span class="b-a">${t.a}</span>
+            <span class="b-m">${fmt(t.monto)}</span>
+        </div>`).join('');
+}
+
+function renderResumen(miembros,gastos){
+    const lang = localStorage.getItem('appLang') || 'es';
+    const t = i18n[lang] || i18n.es;
+    const totales={};
+    miembros.forEach(m=>totales[m.uid]={nombre:m.nombre,pagado:0,parte:0});
+    gastos.forEach(g=>{
+        const share=g.monto/g.entre.length;
+        g.entre.forEach(uid=>{ if(uid in totales) totales[uid].parte+=share; });
+        if(g.pagadorUid in totales) totales[g.pagadorUid].pagado+=g.monto;
+    });
+    const totalGlobal=gastos.reduce((s,g)=>s+g.monto,0);
+    $('total-global').textContent=fmt(totalGlobal);
+    $('resumen-cont').innerHTML=Object.values(totales).map(p=>{
+        const b=p.pagado-p.parte;
+        const badge=b>=0?`<span class="badge-pos">+${fmt(b)}</span>`:`<span class="badge-neg">${fmt(b)}</span>`;
+        return `<div class="resumen-row">
+            <div class="resumen-nom">${p.nombre}</div>
+            <div class="resumen-stats">
+                <span>${t.lbl_paid}: <strong>${fmt(p.pagado)}</strong></span>
+                <span>${t.lbl_share}: <strong>${fmt(p.parte)}</strong></span>
+                ${badge}
+            </div>
+        </div>`;
+    }).join('');
+
+    // Restaurar estado de colapsables
+    const formBody    = document.getElementById('form-gasto');
+    const formToggle  = document.getElementById('toggle-form-gasto');
+    const expBody     = document.getElementById('explain-body');
+    const expToggle   = document.getElementById('toggle-explain');
+    if (formBody)   { formBody.classList.toggle('open',   !!_formOpen);    if (formToggle)  formToggle.classList.toggle('open',   !!_formOpen); }
+    if (expBody)    { expBody.classList.toggle('open',    !!_explainOpen); if (expToggle)   expToggle.classList.toggle('open',    !!_explainOpen); }
+}
+
+function toggleCollapsible(bodyId, toggleId) {
+    const body = document.getElementById(bodyId);
+    const toggle = document.getElementById(toggleId);
+    if (!body) return;
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    if (toggle) toggle.classList.toggle('open', !isOpen);
+}
+
+function catEmoji(cat){
+    return {comida:'🍽️',transporte:'🚗',alojamiento:'🏨',actividad:'🎡',compras:'🛍️',otro:'📦'}[cat]||'📦';
+}
+
+window.activarDemo = () => {
+    const lang = localStorage.getItem('appLang') || 'es';
+    const demoNames = {
+        es: { you:'Vos', friend1:'Lucas', friend2:'Sofi', trip:'Viaje a Miami 🌴',
+              d1:'Cena en el restaurante', d2:'Alquiler del auto', d3:'Hotel primera noche', d4:'Entradas al parque' },
+        en: { you:'You', friend1:'Lucas', friend2:'Sofi', trip:'Miami Trip 🌴',
+              d1:'Dinner at the restaurant', d2:'Car rental', d3:'Hotel first night', d4:'Park tickets' },
+        pt: { you:'Você', friend1:'Lucas', friend2:'Sofi', trip:'Viagem a Miami 🌴',
+              d1:'Jantar no restaurante', d2:'Aluguel do carro', d3:'Hotel primeira noite', d4:'Ingressos no parque' }
+    };
+    const n = demoNames[lang] || demoNames.es;
+    currentUser = { uid:'u1', name: n.you };
+    const emailEl = document.getElementById('userEmail');
+    if (emailEl) emailEl.innerText = 'demo';
+    currentGroup = { id:'DEMO99', _demo:true, data:{
+        nome: n.trip, nombre: n.trip, codigo:'DEMO99',
+        miembros:[{uid:'u1',nombre:n.you},{uid:'u2',nombre:n.friend1},{uid:'u3',nombre:n.friend2}],
+        gastos:[
+            {id:'1',desc:n.d1,monto:150,cat:'comida',     pagadorUid:'u1',pagadorNombre:n.you,     fecha:'30/04/2026',entre:['u1','u2','u3']},
+            {id:'2',desc:n.d2,monto:300,cat:'transporte', pagadorUid:'u2',pagadorNombre:n.friend1, fecha:'01/05/2026',entre:['u1','u2','u3']},
+            {id:'3',desc:n.d3,monto:240,cat:'alojamiento',pagadorUid:'u3',pagadorNombre:n.friend2, fecha:'01/05/2026',entre:['u1','u2','u3']},
+            {id:'4',desc:n.d4,monto: 90,cat:'actividad',  pagadorUid:'u1',pagadorNombre:n.you,     fecha:'02/05/2026',entre:['u1','u2','u3']}
+        ]
+    }};
+    showSection('s-grupo');
+    renderGrupo();
+};
+</script>
+
+<script>
+function switchTab(name,btn){
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById('tab-'+name).classList.add('active');
+    btn.classList.add('active');
+}
+window.toggleSettings = () => {
+    const d = document.getElementById('settingsDrawer');
+    const open = d.classList.toggle('open');
+    document.getElementById('menuOverlay').style.display = open ? 'block' : 'none';
+};
+window.toggleDarkMode = () => {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const next = isDark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+};
+const i18n = {
+    es: {
+        nav_home:'INICIO', nav_expenses:'GASTOS', nav_itinerary:'ITINERARIO',
+        nav_units:'UNIDADES', nav_tickets:'DOCUMENTOS',
+        settings_title:'Ajustes', label_language:'Idioma',
+        btn_change_profile:'Cambiar Perfil', btn_apodo:'Cambiar Apodo', btn_theme:'Cambiar Tema',
+        btn_update:'Actualizar App', btn_email:'Cambiar Correo',
+        btn_password:'Cambiar Contraseña', btn_pin:'Cambiar PIN Offline', btn_switch_app:'Cambiar Aplicación',btn_logout:'Cerrar Sesión', btn_delete:'Eliminar Cuenta',
+        demo_btn:'Probar en modo demo — sin cuenta',
+        lbl_new_group:'✈️ Nuevo grupo', ph_trip_name:'Nombre del viaje', ph_apodo:'Tu apodo en el grupo',
+        btn_crear:'Crear', lbl_join:'🔗 Unirse', ph_code:'Código', btn_unirse:'Unirse',
+        tab_gastos:'GASTOS', tab_balance:'BALANCE', tab_resumen:'RESUMEN',
+        lbl_new_expense:'➕ Nuevo gasto', ph_desc:'Descripción (ej: Cena en Miami)',
+        ph_amount:'Monto en USD', lbl_paid_by:'Pagó', btn_add_expense:'✓ Registrar gasto',
+        cat_food:'Comida', cat_transport:'Transporte', cat_hotel:'Hotel',
+        cat_activity:'Actividad', cat_shopping:'Compras', cat_other:'Otro',
+        lbl_history:'📋 Historial', empty_expenses:'Todavía no hay gastos 🧳',
+        lbl_who_owes:'⚖️ Quién le debe a quién',
+        lbl_algo:'Algoritmo de transferencias mínimas — la menor cantidad de pagos posible.',
+        empty_data:'Sin datos aún', lbl_members:'👥 Integrantes',
+        lbl_total_group:'Total gastado por el grupo', lbl_per_person:'📊 Por persona',
+        footer_by:'Creado por Juan Cruz Bria', all_good:'¡Todos están al día! 🎉',
+        btn_volver:'← Volver', btn_salir_grupo:'🚪 Salir', btn_eliminar_grupo:'🗑️ Eliminar',
+        confirm_salir:'¿Salir del grupo "{nombre}"?\n\nVas a dejar de ser miembro. Tus gastos registrados se mantendrán.',
+        confirm_eliminar:'¿Eliminar el grupo "{nombre}" permanentemente?\n\nEsta acción no se puede deshacer y borrará todos los gastos.',
+        confirm_eliminar_miembro:'¿Eliminar a "{nombre}" del grupo?\n\nSus gastos registrados se mantendrán.',
+        confirm_eliminar_gasto:'¿Eliminar este gasto?',
+        only_creator:'Solo el creador puede eliminar el grupo',
+        only_creator_members:'Solo el creador puede eliminar miembros',
+        lbl_my_groups:'📂 Mis grupos', btn_open:'Abrir',
+        lbl_paid:'Pagó', lbl_share:'Su parte',
+        lbl_connecting:'Conectando…',
+        explain_title:'💡 ¿Cómo funciona la división?',
+        explain_step1:'<strong>Se registra quién pagó</strong> cada gasto y el monto total.',
+        explain_step2:'<strong>Se divide en partes iguales</strong> entre todos los miembros del grupo al momento del gasto.',
+        explain_step3:'<strong>Se calcula el balance</strong> de cada persona: lo que pagó menos lo que le corresponde.',
+        explain_step4:'<strong>Se minimizan las transferencias</strong>: el algoritmo calcula la menor cantidad de pagos posibles para saldar todas las deudas.',
+        explain_warn_label:'⚠️ Importante:',
+        explain_warn_text:' Si alguien se une o sale del grupo <em>después</em> de que se registraron gastos, esos gastos no se recalculan automáticamente. Verificá el historial si hubo cambios de miembros.',
+        warn_trip_name:'Escribí un nombre para el viaje',
+        warn_login_create:'Iniciá sesión para crear un grupo real',
+        warn_login_join:'Iniciá sesión para unirte a un grupo',
+        warn_code_len:'El código debe tener 6 caracteres',
+        creating:'Creando…', searching:'Buscando…',
+        offline_title:'Sin conexión',
+        offline_sub:'Los gastos se guardan localmente y se sincronizan al volver',
+        sync_syncing:'Sincronizando gastos pendientes…',
+        sync_ok:'✅ Todo sincronizado',
+    },
+    en: {
+        nav_home:'HOME', nav_expenses:'EXPENSES', nav_itinerary:'ITINERARY',
+        nav_units:'UNITS', nav_tickets:'DOCUMENTS',
+        settings_title:'Settings', label_language:'Language',
+        btn_change_profile:'Change Profile', btn_apodo:'Change Nickname', btn_theme:'Toggle Theme',
+        btn_update:'Update App', btn_email:'Change Email',
+        btn_password:'Change Password', btn_pin:'Change PIN Offline', btn_switch_app:'Switch App',btn_logout:'Sign Out', btn_delete:'Delete Account',
+        demo_btn:'Try demo mode — no account needed',
+        lbl_new_group:'✈️ New group', ph_trip_name:'Trip name', ph_apodo:'Your nickname',
+        btn_crear:'Create', lbl_join:'🔗 Join', ph_code:'Code', btn_unirse:'Join',
+        tab_gastos:'EXPENSES', tab_balance:'BALANCE', tab_resumen:'SUMMARY',
+        lbl_new_expense:'➕ New expense', ph_desc:'Description (e.g. Dinner in Miami)',
+        ph_amount:'Amount in USD', lbl_paid_by:'Paid by', btn_add_expense:'✓ Record expense',
+        cat_food:'Food', cat_transport:'Transport', cat_hotel:'Hotel',
+        cat_activity:'Activity', cat_shopping:'Shopping', cat_other:'Other',
+        lbl_history:'📋 History', empty_expenses:'No expenses yet 🧳',
+        lbl_who_owes:'⚖️ Who owes whom',
+        lbl_algo:'Minimum transfers algorithm — fewest payments possible.',
+        empty_data:'No data yet', lbl_members:'👥 Members',
+        lbl_total_group:'Total spent by the group', lbl_per_person:'📊 Per person',
+        footer_by:'Created by Juan Cruz Bria', all_good:'Everyone is settled up! 🎉',
+        btn_volver:'← Back', btn_salir_grupo:'🚪 Leave', btn_eliminar_grupo:'🗑️ Delete',
+        confirm_salir:'Leave group "{nombre}"?\n\nYou will no longer be a member. Your recorded expenses will remain.',
+        confirm_eliminar:'Delete group "{nombre}" permanently?\n\nThis cannot be undone and will delete all expenses.',
+        confirm_eliminar_miembro:'Remove "{nombre}" from the group?\n\nTheir recorded expenses will remain.',
+        confirm_eliminar_gasto:'Delete this expense?',
+        only_creator:'Only the creator can delete the group',
+        only_creator_members:'Only the creator can remove members',
+        lbl_my_groups:'📂 My groups', btn_open:'Open',
+        lbl_paid:'Paid', lbl_share:'Their share',
+        lbl_connecting:'Connecting…',
+        explain_title:'💡 How does the split work?',
+        explain_step1:'<strong>Who paid</strong> each expense and the total amount are recorded.',
+        explain_step2:'<strong>The amount is split equally</strong> among all group members at the time of the expense.',
+        explain_step3:'<strong>Each person\'s balance is calculated</strong>: what they paid minus their share.',
+        explain_step4:'<strong>Transfers are minimized</strong>: the algorithm finds the fewest payments needed to settle all debts.',
+        explain_warn_label:'⚠️ Important:',
+        explain_warn_text:' If someone joins or leaves the group <em>after</em> expenses were recorded, those expenses are not recalculated automatically. Check the history if members changed.',
+        warn_trip_name:'Enter a name for the trip',
+        warn_login_create:'Sign in to create a real group',
+        warn_login_join:'Sign in to join a group',
+        warn_code_len:'The code must be 6 characters',
+        creating:'Creating…', searching:'Looking up…',
+        offline_title:'No connection',
+        offline_sub:'Expenses are saved locally and will sync when back online',
+        sync_syncing:'Syncing pending expenses…',
+        sync_ok:'✅ All synced',
+    },
+    pt: {
+        nav_home:'INÍCIO', nav_expenses:'GASTOS', nav_itinerary:'ITINERÁRIO',
+        nav_units:'UNIDADES', nav_tickets:'DOCUMENTOS',
+        settings_title:'Configurações', label_language:'Idioma',
+        btn_change_profile:'Mudar Perfil', btn_apodo:'Mudar Apelido', btn_theme:'Mudar Tema',
+        btn_update:'Atualizar App', btn_email:'Mudar E-mail',
+        btn_password:'Mudar Senha', btn_pin:'Alterar PIN Offline', btn_switch_app:'Trocar Aplicativo',btn_logout:'Sair', btn_delete:'Excluir Conta',
+        demo_btn:'Testar modo demo — sem conta',
+        lbl_new_group:'✈️ Novo grupo', ph_trip_name:'Nome da viagem', ph_apodo:'Seu apelido no grupo',
+        btn_crear:'Criar', lbl_join:'🔗 Entrar', ph_code:'Código', btn_unirse:'Entrar',
+        tab_gastos:'GASTOS', tab_balance:'BALANÇO', tab_resumen:'RESUMO',
+        lbl_new_expense:'➕ Nova despesa', ph_desc:'Descrição (ex: Jantar em Miami)',
+        ph_amount:'Valor em USD', lbl_paid_by:'Pagou', btn_add_expense:'✓ Registrar despesa',
+        cat_food:'Comida', cat_transport:'Transporte', cat_hotel:'Hotel',
+        cat_activity:'Atividade', cat_shopping:'Compras', cat_other:'Outro',
+        lbl_history:'📋 Histórico', empty_expenses:'Ainda não há despesas 🧳',
+        lbl_who_owes:'⚖️ Quem deve a quem',
+        lbl_algo:'Algoritmo de transferências mínimas — menor número de pagamentos.',
+        empty_data:'Sem dados ainda', lbl_members:'👥 Integrantes',
+        lbl_total_group:'Total gasto pelo grupo', lbl_per_person:'📊 Por pessoa',
+        footer_by:'Criado por Juan Cruz Bria', all_good:'Todos estão quites! 🎉',
+        btn_volver:'← Voltar', btn_salir_grupo:'🚪 Sair', btn_eliminar_grupo:'🗑️ Excluir',
+        confirm_salir:'Sair do grupo "{nome}"?\n\nVocê deixará de ser membro. Suas despesas registradas serão mantidas.',
+        confirm_eliminar:'Excluir o grupo "{nome}" permanentemente?\n\nEssa ação não pode ser desfeita e apagará todas as despesas.',
+        confirm_eliminar_miembro:'Remover "{nome}" do grupo?\n\nSuas despesas registradas serão mantidas.',
+        confirm_eliminar_gasto:'Excluir esta despesa?',
+        only_creator:'Apenas o criador pode excluir o grupo',
+        only_creator_members:'Apenas o criador pode remover membros',
+        lbl_my_groups:'📂 Meus grupos', btn_open:'Abrir',
+        lbl_paid:'Pagou', lbl_share:'Sua parte',
+        lbl_connecting:'Conectando…',
+        explain_title:'💡 Como funciona a divisão?',
+        explain_step1:'<strong>Quem pagou</strong> cada despesa e o valor total são registrados.',
+        explain_step2:'<strong>O valor é dividido igualmente</strong> entre todos os membros do grupo no momento da despesa.',
+        explain_step3:'<strong>O saldo de cada pessoa é calculado</strong>: o que pagou menos a sua parte.',
+        explain_step4:'<strong>As transferências são minimizadas</strong>: o algoritmo calcula o menor número de pagamentos para quitar todas as dívidas.',
+        explain_warn_label:'⚠️ Importante:',
+        explain_warn_text:' Se alguém entrar ou sair do grupo <em>depois</em> de despesas registradas, elas não são recalculadas automaticamente. Verifique o histórico se houve mudanças de membros.',
+        warn_trip_name:'Digite um nome para a viagem',
+        warn_login_create:'Entre na sua conta para criar um grupo real',
+        warn_login_join:'Entre na sua conta para participar de um grupo',
+        warn_code_len:'O código deve ter 6 caracteres',
+        creating:'Criando…', searching:'Buscando…',
+        offline_title:'Sem conexão',
+        offline_sub:'As despesas são salvas localmente e sincronizadas ao voltar',
+        sync_syncing:'Sincronizando despesas pendentes…',
+        sync_ok:'✅ Tudo sincronizado',
+    }
+};
+
+window.changeLanguage = (lang) => {
+    localStorage.setItem('appLang', lang);
+    document.documentElement.setAttribute('lang', lang);
+    document.querySelectorAll('.lang-opt').forEach(o => o.classList.remove('active'));
+    document.getElementById('lang-' + lang)?.classList.add('active');
+    const t = i18n[lang] || i18n.es;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.getAttribute('data-i18n');
+        if (t[k]) el.innerText = t[k];
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+        const k = el.getAttribute('data-i18n-ph');
+        if (t[k]) el.placeholder = t[k];
+    });
+    // Offline toast
+    const offTitle = document.querySelector('#offline-label strong');
+    const offSub   = document.querySelector('#offline-label span');
+    if (offTitle) offTitle.textContent = t.offline_title;
+    if (offSub)   offSub.textContent   = t.offline_sub;
+    // Sync banner
+    const syncText = document.getElementById('sync-text');
+    if (syncText && syncText.textContent.indexOf('✅') === -1) {
+        syncText.textContent = t.sync_syncing;
+    }
+    // Explain card steps (use innerHTML for <strong> and <em>)
+    const inlineHtmlKeys = ['explain_step1','explain_step2','explain_step3','explain_step4','explain_warn_text'];
+    inlineHtmlKeys.forEach(k => {
+        const el = document.querySelector('[data-i18n="'+k+'"]');
+        if (el && t[k]) el.innerHTML = t[k];
+    });
+    document.title = lang === 'en' ? 'TaxUSA — Group' : lang === 'pt' ? 'TaxUSA — Grupo' : 'TaxUSA — Grupo';
+};
+// Fallback: si Firebase no carga en 2s, mostrar lobby
+setTimeout(()=>{
+    const sl=document.getElementById('s-loading');
+    if(sl&&!sl.classList.contains('hidden')){
+        sl.classList.add('hidden');
+        document.getElementById('s-lobby').classList.remove('hidden');
+    }
+},2000);
+</script>
+
+<!-- ═══════════════ TAXUSA AI CHAT ═══════════════ -->
+<style>
+#ai-bubble {
+    position: fixed; bottom: 24px; left: 20px; z-index: 3000;
+    width: 56px; height: 56px; border-radius: 50%; border: none; cursor: pointer;
+    background: linear-gradient(135deg,#2563eb,#1d4ed8);
+    box-shadow: 0 4px 20px rgba(37,99,235,0.45);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .2s, box-shadow .2s;
+}
+#ai-bubble:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(37,99,235,0.55); }
+#ai-bubble:active { transform: scale(0.95); }
+#ai-bubble svg { width: 26px; height: 26px; }
+#ai-badge {
+    position:absolute; top:6px; right:6px; width:10px; height:10px;
+    background:#22c55e; border-radius:50%; border:2px solid #1e3a8a; display:none;
+}
+#ai-chat {
+    position: fixed; bottom: 88px; left: 16px; z-index: 2999;
+    width: min(360px, calc(100vw - 32px));
+    width: 340px; max-height: 520px; border-radius: 16px; overflow: hidden;
+    display: none; flex-direction: column;
+    background: var(--card, #1e293b);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.45);
+    border: 1px solid var(--border, #334155);
+    animation: chatIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+#ai-chat.open { display: flex; }
+@keyframes chatIn {
+    from { opacity:0; transform:translateY(16px) scale(0.96); }
+    to   { opacity:1; transform:translateY(0)   scale(1); }
+}
+#ai-header {
+    display:flex; align-items:center; gap:10px; padding:12px 14px;
+    background: linear-gradient(135deg,#2563eb,#1d4ed8); flex-shrink:0;
+}
+#ai-header svg { width:22px; height:22px; flex-shrink:0; }
+.ai-header-text { flex:1; }
+.ai-header-title { font-size:0.9rem; font-weight:800; color:white; line-height:1; }
+.ai-header-sub   { font-size:0.65rem; color:rgba(255,255,255,0.75); font-weight:600; margin-top:2px; }
+#ai-close {
+    background:rgba(255,255,255,0.15); border:none; color:white; cursor:pointer;
+    width:24px; height:24px; border-radius:50%; font-size:0.75rem; display:flex;
+    align-items:center; justify-content:center; transition:background .15s;
+}
+#ai-close:hover { background:rgba(255,255,255,0.3); }
+#ai-messages {
+    flex:1; overflow-y:auto; padding:12px 12px 4px; display:flex;
+    flex-direction:column; gap:8px; scroll-behavior:smooth;
+}
+#ai-messages::-webkit-scrollbar { width:4px; }
+#ai-messages::-webkit-scrollbar-track { background:transparent; }
+#ai-messages::-webkit-scrollbar-thumb { background:var(--border,#334155); border-radius:4px; }
+.ai-msg {
+    max-width:88%; padding:9px 12px; border-radius:12px; font-size:0.82rem;
+    line-height:1.5; word-break:break-word; animation:msgIn .18s ease;
+}
+@keyframes msgIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+.ai-msg.user {
+    align-self:flex-end; background:#2563eb; color:white; border-bottom-right-radius:4px;
+}
+.ai-msg.bot {
+    align-self:flex-start; background:var(--hover,#273548); color:var(--text,#e2e8f0);
+    border-bottom-left-radius:4px;
+}
+.ai-msg.bot ul  { margin:4px 0 4px 0; padding-left:18px; }
+.ai-msg.bot li  { margin:2px 0; }
+.ai-msg.bot p   { margin:4px 0; }
+.ai-msg.bot strong { color:#93c5fd; }
+.ai-msg.bot h3  { font-size:0.85rem; font-weight:700; margin:6px 0 2px; color:#93c5fd; }
+.ai-msg.bot a   { color:#60a5fa; text-decoration:underline; }
+.ai-msg.bot.typing {
+    display:flex; gap:5px; align-items:center; padding:10px 14px;
+}
+.ai-dot {
+    width:7px; height:7px; background:var(--muted,#64748b); border-radius:50%;
+    animation:dot .9s infinite ease-in-out;
+}
+.ai-dot:nth-child(2){animation-delay:.18s}
+.ai-dot:nth-child(3){animation-delay:.36s}
+@keyframes dot { 0%,80%,100%{transform:scale(0.7);opacity:.5} 40%{transform:scale(1);opacity:1} }
+#ai-suggestions {
+    display:flex; gap:6px; flex-wrap:wrap; padding:6px 10px 2px; flex-shrink:0;
+}
+.ai-chip {
+    background:var(--hover,#273548); border:1px solid var(--border,#334155);
+    color:var(--text,#e2e8f0); border-radius:20px; padding:4px 10px; font-size:0.72rem;
+    cursor:pointer; transition:background .15s, transform .1s; white-space:nowrap;
+}
+.ai-chip:hover { background:var(--border,#334155); transform:scale(1.04); }
+#ai-input-area {
+    display:flex; gap:6px; padding:10px; border-top:1px solid var(--border,#334155);
+    flex-shrink:0; background:var(--card,#1e293b);
+}
+#ai-input {
+    flex:1; background:var(--hover,#273548); border:1px solid var(--border,#334155);
+    border-radius:10px; padding:8px 12px; color:var(--text,#e2e8f0); font-size:0.83rem;
+    resize:none; outline:none; line-height:1.4; max-height:80px; overflow-y:auto; font-family:inherit;
+}
+#ai-input:focus { border-color:#2563eb; }
+#ai-send {
+    width:36px; height:36px; border-radius:10px; border:none; background:#2563eb;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:background .15s, transform .1s; flex-shrink:0; align-self:flex-end;
+}
+#ai-send:hover { background:#1d4ed8; transform:scale(1.05); }
+#ai-send:disabled { background:var(--border,#334155); cursor:not-allowed; transform:none; }
+#ai-send svg { width:16px; fill:white; }
+</style>
+
+<button id="ai-bubble" aria-label="Taxie — Asistente de viaje">
+    <span id="ai-badge"></span>
+    <svg viewBox="0 0 32 32" fill="none">
+        <rect width="32" height="32" rx="8" fill="white" fill-opacity="0.15"/>
+        <rect x="0" y="10" width="32" height="4" fill="#ef4444" opacity="0.9"/>
+        <rect x="0" y="18" width="32" height="4" fill="#ef4444" opacity="0.9"/>
+        <polygon points="16,4 18.4,11 26,11 20,15.5 22.4,22.5 16,18 9.6,22.5 12,15.5 6,11 13.6,11" fill="#ffffff"/>
+    </svg>
+</button>
+
+<div id="ai-chat">
+    <div id="ai-header">
+        <svg viewBox="0 0 32 32" fill="none">
+            <rect x="0" y="10" width="32" height="4" fill="#ef4444" opacity="0.9"/>
+            <rect x="0" y="18" width="32" height="4" fill="#ef4444" opacity="0.9"/>
+            <polygon points="16,4 18.4,11 26,11 20,15.5 22.4,22.5 16,18 9.6,22.5 12,15.5 6,11 13.6,11" fill="#ffffff"/>
+        </svg>
+        <div class="ai-header-text">
+            <div class="ai-header-title">Taxie ✈️</div>
+            <div class="ai-header-sub" id="ai-header-sub">Tu guia de viaje a USA</div>
+        </div>
+        <button id="ai-close">x</button>
+    </div>
+    <div id="ai-messages"></div>
+    <div id="ai-suggestions"></div>
+    <div id="ai-input-area">
+        <textarea id="ai-input" rows="1"></textarea>
+        <button id="ai-send">
+            <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+        </button>
+    </div>
+</div>
+
+<script>
+(function() {
+    var GROQ_URL = 'https://taxusa.juanbria18.workers.dev';
+    var MODEL = 'llama-3.3-70b-versatile';
+    var lang = localStorage.getItem('appLang') || 'es';
+    var perfilId   = localStorage.getItem('perfilActivoId') || 'default';
+    var HISTORY_KEY = 'taxie_history_' + perfilId;
+
+    var chatHistory = [];
+    try {
+        var saved = localStorage.getItem(HISTORY_KEY);
+        if (saved) chatHistory = JSON.parse(saved);
+    } catch(e) { chatHistory = []; }
+
+    var isOpen = false;
+    var isLoading = false;
+    var hasShownWelcome = false;
+
+    var WELCOME_ES = '¡Hola! Soy **Taxie** 🗽✈️\n\nTu asistente personal para viajes a USA. Puedo ayudarte con:\n\n• 🏰 Destinos y parques temáticos\n• 🛍️ Outlets y compras sin tax\n• 💵 Propinas, impuestos y presupuesto\n• 🏨 Hoteles y transporte\n• 🌤️ Clima y documentación\n\n¿En qué puedo ayudarte hoy?';
+    var WELCOME_EN = 'Hi! I am **Taxie** 🗽✈️\n\nYour personal USA travel guide. I can help you with:\n\n• 🏰 Destinations & theme parks\n• 🛍️ Outlets & tax-free shopping\n• 💵 Tips, taxes & budgeting\n• 🏨 Hotels & transportation\n• 🌤️ Weather & travel documents\n\nWhat can I help you with today?';
+    var WELCOME_PT = 'Olá! Sou o **Taxie** 🗽✈️\n\nSeu assistente pessoal para viagens aos EUA. Posso te ajudar com:\n\n• 🏰 Destinos e parques temáticos\n• 🛍️ Outlets e compras sem tax\n• 💵 Gorjetas, impostos e orçamento\n• 🏨 Hotéis e transporte\n• 🌤️ Clima e documentação\n\nComo posso te ajudar hoje?';
+
+    var CHIPS_ES = ['🏰 Disney Orlando', '🛍️ Mejores outlets', '💰 Propinas en USA', '🌡️ Clima en Florida', '✈️ Aeropuertos', '🚗 Alquilar auto'];
+    var CHIPS_EN = ['🏰 Disney Orlando', '🛍️ Best outlets', '💰 Tipping in USA', '🌡️ Florida weather', '✈️ Airports', '🚗 Rent a car'];
+    var CHIPS_PT = ['🏰 Disney Orlando', '🛍️ Melhores outlets', '💰 Gorjetas nos EUA', '🌡️ Clima na Flórida', '✈️ Aeroportos', '🚗 Alugar carro'];
+
+    var SUB_ES = 'Tu guia de viaje a USA 🗺️';
+    var SUB_EN = 'Your USA Travel Guide 🗺️';
+    var SUB_PT = 'Seu guia de viagem aos EUA 🗺️';
+    var PH_ES  = 'Preguntale a Taxie sobre tu viaje...';
+    var PH_EN  = 'Ask Taxie about your trip...';
+    var PH_PT  = 'Pergunte ao Taxie sobre sua viagem...';
+    var ERR_ES = 'Ups, algo falló. Verificá tu conexión e intentá de nuevo.';
+    var ERR_EN = 'Oops, something went wrong. Check your connection and try again.';
+    var ERR_PT = 'Ops, algo deu errado. Verifique sua conexão e tente novamente.';
+
+    var isPt = (lang === 'pt');
+    var isEs = (lang !== 'en' && lang !== 'pt');
+    var chips  = isPt ? CHIPS_PT : isEs ? CHIPS_ES : CHIPS_EN;
+    var sub    = isPt ? SUB_PT   : isEs ? SUB_ES   : SUB_EN;
+    var ph     = isPt ? PH_PT    : isEs ? PH_ES    : PH_EN;
+    var errMsg = isPt ? ERR_PT   : isEs ? ERR_ES   : ERR_EN;
+
+    var SYSTEM = isPt
+        ? 'Você é o Taxie, assistente de viagens para os EUA. Seu tom é claro, direto e amigável. Quando alguém pergunta sobre informações em tempo real (filas nos parques, cotações, clima atual, horários ou preços atualizados), você busca as informações antes de responder. Use marcadores e **negritos** só quando realmente ajudam; para respostas simples, uma ou duas frases diretas são suficientes. Nunca comece com "Claro!", "Com certeza!" ou frases de preenchimento. Responda apenas sobre viagens aos EUA. Data atual: ' + new Date().toLocaleDateString('pt-BR') + '.'
+        : isEs
+        ? 'Eres Taxie, asistente de viajes a USA. Tu tono es claro, directo y amable — ni frío ni demasiado informal. Cuando alguien pregunta por info en tiempo real (filas en parques, cotizaciones, clima actual, horarios o precios actualizados), buscás la información actualizada antes de responder. Usás viñetas y **negritas** solo cuando realmente ayudan a organizar la info; si la respuesta es simple, una o dos oraciones directas son suficientes. Nunca empezás con "¡Claro!", "¡Por supuesto!" ni frases de relleno. Solo respondés sobre viajes a USA; si preguntan otra cosa, lo aclarás brevemente y redirigís. Fecha actual: ' + new Date().toLocaleDateString('es-AR') + '.'
+        : 'You are Taxie, a USA travel assistant. Your tone is clear, direct and warm — not overly casual, not robotic. When someone asks for real-time info (park wait times, exchange rates, current weather, updated prices), search for current data before answering. Use bullet points and **bold** only when they genuinely help organize information; for simple questions, one or two direct sentences are better. Never open with "Of course!", "Great question!" or filler phrases. Only answer about USA travel; redirect anything off-topic without making it awkward. Today\'s date: ' + new Date().toLocaleDateString('en-US') + '.';
+
+    function saveHistory() {
+        try { localStorage.setItem(HISTORY_KEY, JSON.stringify(chatHistory.slice(-40))); } catch(e) {}
+    }
+
+    function formatBotText(text) {
+        var html = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        var lines = html.split('\n');
+        var result = [];
+        var inList = false;
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i].trim();
+            var isBullet = /^[•\-\*]\s/.test(line);
+            if (isBullet) {
+                if (!inList) { result.push('<ul>'); inList = true; }
+                result.push('<li>' + line.replace(/^[•\-\*]\s+/,'') + '</li>');
+            } else {
+                if (inList) { result.push('</ul>'); inList = false; }
+                if (line !== '') result.push('<p>' + line + '</p>');
+            }
+        }
+        if (inList) result.push('</ul>');
+        return result.join('');
+    }
+
+    function init() {
+        var bubble     = document.getElementById('ai-bubble');
+        var chatEl     = document.getElementById('ai-chat');
+        var messagesEl = document.getElementById('ai-messages');
+        var inputEl    = document.getElementById('ai-input');
+        var sendBtn    = document.getElementById('ai-send');
+        var suggestEl  = document.getElementById('ai-suggestions');
+        var headerSub  = document.getElementById('ai-header-sub');
+        var closeBtn   = document.getElementById('ai-close');
+
+        if (!bubble || !chatEl) return;
+
+        if (headerSub) headerSub.textContent = sub;
+        if (inputEl)   inputEl.placeholder   = ph;
+
+        if (suggestEl) {
+            suggestEl.innerHTML = chips.map(function(c) {
+                return '<button class="ai-chip">' + c + '</button>';
+            }).join('');
+            suggestEl.querySelectorAll('.ai-chip').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    if (inputEl) inputEl.value = btn.textContent;
+                    sendMessage();
+                    suggestEl.style.display = 'none';
+                });
+            });
+        }
+
+        function toggleChat() {
+            isOpen = !isOpen;
+            if (isOpen) {
+                chatEl.style.display = 'flex';
+                chatEl.offsetHeight;
+                chatEl.classList.add('open');
+                if (!hasShownWelcome) {
+                    hasShownWelcome = true;
+                    if (chatHistory.length > 0) {
+                        chatHistory.forEach(function(m) {
+                            addMessage(m.role === 'user' ? 'user' : 'bot', m.content, true);
+                        });
+                        if (suggestEl) suggestEl.style.display = 'none';
+                    } else {
+                        var welcome = isPt ? WELCOME_PT : isEs ? WELCOME_ES : WELCOME_EN;
+                        setTimeout(function() { addMessage('bot', welcome); }, 200);
+                    }
+                }
+                setTimeout(function() { if (inputEl) inputEl.focus(); }, 300);
+            } else {
+                chatEl.classList.remove('open');
+                setTimeout(function() { chatEl.style.display = 'none'; }, 250);
+            }
+        }
+
+        bubble.addEventListener('click', function(e) { e.stopPropagation(); toggleChat(); });
+        if (closeBtn) closeBtn.addEventListener('click', function(e) { e.stopPropagation(); toggleChat(); });
+
+        document.addEventListener('click', function(e) {
+            if (isOpen && !chatEl.contains(e.target) && !bubble.contains(e.target)) {
+                isOpen = false;
+                chatEl.classList.remove('open');
+                setTimeout(function() { chatEl.style.display = 'none'; }, 250);
+            }
+        });
+
+        function addMessage(role, text, silent) {
+            if (!messagesEl) return;
+            var div = document.createElement('div');
+            div.className = 'ai-msg ' + (role === 'user' ? 'user' : 'bot');
+            if (role === 'user') { div.textContent = text; }
+            else { div.innerHTML = formatBotText(text); }
+            if (silent) div.style.animation = 'none';
+            messagesEl.appendChild(div);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        function showTyping() {
+            if (!messagesEl) return;
+            var div = document.createElement('div');
+            div.className = 'ai-msg bot typing'; div.id = 'ai-typing';
+            div.innerHTML = '<div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div>';
+            messagesEl.appendChild(div);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        function hideTyping() { var el = document.getElementById('ai-typing'); if (el) el.remove(); }
+
+        function sendMessage() {
+            window._taxieSend = sendMessage;
+            if (!inputEl) return;
+            var text = inputEl.value.trim();
+            if (!text || isLoading) return;
+            inputEl.value = ''; inputEl.style.height = 'auto';
+            addMessage('user', text);
+            if (suggestEl) suggestEl.style.display = 'none';
+            isLoading = true;
+            if (sendBtn) sendBtn.disabled = true;
+            showTyping();
+            chatHistory.push({ role: 'user', content: text });
+            fetch(GROQ_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    model: MODEL,
+                    messages: [{ role: 'system', content: SYSTEM }].concat(chatHistory.slice(-14)),
+                    max_tokens: 800, temperature: 0.7, stream: false,
+                    tools: [{ type: 'function', function: { name: 'web_search', description: 'Search the web for real-time information like park wait times, exchange rates, current weather, store hours or updated prices.', parameters: { type: 'object', properties: { query: { type: 'string', description: 'Search query' } }, required: ['query'] } } }],
+                    tool_choice: 'auto'
+                })
+            })
+            .then(function(res) { return res.json().then(function(d) { return { ok: res.ok, data: d }; }); })
+            .then(function(r) {
+                if (!r.ok) throw new Error(r.data.error && r.data.error.message || 'API error');
+                var msg = r.data.choices && r.data.choices[0] && r.data.choices[0].message;
+                if (msg && msg.tool_calls && msg.tool_calls.length > 0) {
+                    var tc = msg.tool_calls[0];
+                    var query = '';
+                    try { query = JSON.parse(tc.function.arguments).query; } catch(e) {}
+                    var msgsWithTool = [{ role: 'system', content: SYSTEM }]
+                        .concat(chatHistory.slice(-14))
+                        .concat([
+                            { role: 'assistant', content: null, tool_calls: msg.tool_calls },
+                            { role: 'tool', tool_call_id: tc.id, content: 'No se pudo obtener resultado en tiempo real para: ' + query + '. Respondé con lo que sabés e indicá que los datos pueden no ser del momento exacto.' }
+                        ]);
+                    return fetch(GROQ_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({ model: MODEL, messages: msgsWithTool, max_tokens: 800, temperature: 0.7, stream: false })
+                    }).then(function(res2) { return res2.json().then(function(d2) { return { ok: res2.ok, data: d2 }; }); })
+                    .then(function(r2) {
+                        if (!r2.ok) throw new Error(r2.data.error && r2.data.error.message || 'API error');
+                        var reply2 = r2.data.choices && r2.data.choices[0] && r2.data.choices[0].message && r2.data.choices[0].message.content || errMsg;
+                        chatHistory.push({ role: 'assistant', content: reply2 });
+                        saveHistory(); hideTyping(); addMessage('bot', reply2);
+                    });
+                }
+                var reply = msg && msg.content || errMsg;
+                chatHistory.push({ role: 'assistant', content: reply });
+                saveHistory(); hideTyping(); addMessage('bot', reply);
+            })
+            .catch(function(e) { hideTyping(); addMessage('bot', errMsg); console.error('[Taxie]', e); })
+            .finally(function() {
+                isLoading = false;
+                if (sendBtn) sendBtn.disabled = false;
+                if (inputEl) inputEl.focus();
+            });
+        }
+
+        if (sendBtn) sendBtn.addEventListener('click', sendMessage);
+        if (inputEl) {
+            inputEl.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+            });
+            inputEl.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+            });
+        }
+    }
+
+    window.taxieUpdateLang = function(newLang) {
+        isPt = (newLang === 'pt');
+        isEs = (newLang !== 'en' && newLang !== 'pt');
+        SYSTEM = isPt
+            ? 'Você é o Taxie, assistente de viagens para os EUA. Seu tom é claro, direto e amigável. Quando alguém pergunta sobre informações em tempo real (filas nos parques, cotações, clima atual, horários ou preços atualizados), você busca as informações antes de responder. Use marcadores e **negritos** só quando realmente ajudam; para respostas simples, uma ou duas frases diretas são suficientes. Nunca comece com "Claro!", "Com certeza!" ou frases de preenchimento. Responda apenas sobre viagens aos EUA. Data atual: ' + new Date().toLocaleDateString('pt-BR') + '.'
+            : isEs
+            ? 'Eres Taxie, asistente de viajes a USA. Tu tono es claro, directo y amable — ni frío ni demasiado informal. Cuando alguien pregunta por info en tiempo real (filas en parques, cotizaciones, clima actual, horarios o precios actualizados), buscás la información actualizada antes de responder. Usás viñetas y **negritas** solo cuando realmente ayudan a organizar la info; si la respuesta es simple, una o dos oraciones directas son suficientes. Nunca empezás con "¡Claro!", "¡Por supuesto!" ni frases de relleno. Solo respondés sobre viajes a USA; si preguntan otra cosa, lo aclarás brevemente y redirigís. Fecha actual: ' + new Date().toLocaleDateString('es-AR') + '.'
+            : 'You are Taxie, a USA travel assistant. Your tone is clear, direct and warm — not overly casual, not robotic. When someone asks for real-time info (park wait times, exchange rates, current weather, updated prices), search for current data before answering. Use bullet points and **bold** only when they genuinely help organize information; for simple questions, one or two direct sentences are better. Never open with "Of course!", "Great question!" or filler phrases. Only answer about USA travel; redirect anything off-topic without making it awkward. Today\'s date: ' + new Date().toLocaleDateString('en-US') + '.';
+        errMsg = isPt ? ERR_PT : isEs ? ERR_ES : ERR_EN;
+        var inputEl   = document.getElementById('ai-input');
+        var headerSub = document.getElementById('ai-header-sub');
+        var suggestEl = document.getElementById('ai-suggestions');
+        if (inputEl)   inputEl.placeholder = isPt ? PH_PT : isEs ? PH_ES : PH_EN;
+        if (headerSub) headerSub.textContent = isPt ? SUB_PT : isEs ? SUB_ES : SUB_EN;
+        if (suggestEl) {
+            var newChips = isPt ? CHIPS_PT : isEs ? CHIPS_ES : CHIPS_EN;
+            suggestEl.innerHTML = newChips.map(function(c) {
+                return '<button class="ai-chip">' + c + '</button>';
+            }).join('');
+            suggestEl.querySelectorAll('.ai-chip').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var inp = document.getElementById('ai-input');
+                    if (inp) inp.value = btn.textContent;
+                    if (window._taxieSend) window._taxieSend();
+                    suggestEl.style.display = 'none';
+                });
+            });
+        }
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+</script>
+<!-- ═══════════════ FIN TAXUSA AI CHAT ═══════════════ -->
+<!-- ── Offline Toast + Auto-sync ── -->
+<script>
+(function(){
+    var toast = document.getElementById('offline-toast');
+
+    function updateStatus() {
+        if (!navigator.onLine) {
+            toast.classList.remove('hide');
+            toast.classList.add('show');
+        } else {
+            toast.classList.remove('show');
+            toast.classList.add('hide');
+            // Intentar flush cuando vuelve la conexión
+            if (typeof window._flushPending === 'function') {
+                window._flushPending();
+            }
+        }
+    }
+
+    window.addEventListener('online',  updateStatus);
+    window.addEventListener('offline', updateStatus);
+    updateStatus();
+})();
+</script>
+
+
+<!-- ══════════ MODAL CAMBIAR APLICACIÓN ══════════ -->
+<div id="switchAppModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(12px);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--surface);border-radius:28px;padding:28px 24px;width:100%;max-width:340px;box-shadow:var(--shadow-lg);border:1px solid var(--border);text-align:center;">
+    <div id="switchAppTitle" style="font-size:1.1rem;font-weight:900;color:var(--text);margin-bottom:6px;">Cambiar Aplicación</div>
+    <div id="switchAppSub" style="font-size:.8rem;font-weight:600;color:var(--text-sub);margin-bottom:22px;">¿A qué destino querés ir?</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button onclick="doSwitchApp('usa')" style="width:100%;padding:14px;border-radius:14px;border:2px solid rgba(239,68,68,.4);background:linear-gradient(135deg,rgba(37,99,235,.1),rgba(239,68,68,.08));cursor:pointer;font-family:inherit;font-weight:800;font-size:.95rem;color:var(--text);display:flex;align-items:center;gap:12px;transition:all .2s;">
+        <span style="font-size:1.4rem;">🇺🇸</span>
+        <div style="text-align:left;">
+          <div style="color:#ef4444;font-weight:900;">TaxUSA</div>
+          <div style="font-size:.72rem;font-weight:600;color:var(--text-sub);">Estados Unidos</div>
+        </div>
+      </button>
+      <button onclick="doSwitchApp('europe')" style="width:100%;padding:14px;border-radius:14px;border:2px solid rgba(0,51,153,.4);background:linear-gradient(135deg,rgba(0,51,153,.1),rgba(255,204,0,.06));cursor:pointer;font-family:inherit;font-weight:800;font-size:.95rem;color:var(--text);display:flex;align-items:center;gap:12px;transition:all .2s;">
+        <span style="font-size:1.4rem;">🇪🇺</span>
+        <div style="text-align:left;">
+          <div style="color:#003399;font-weight:900;">TaxEurope</div>
+          <div style="font-size:.72rem;font-weight:600;color:var(--text-sub);">Europa</div>
+        </div>
+      </button>
+      <button onclick="document.getElementById('switchAppModal').style.display='none'" id="switchAppCancel" style="width:100%;padding:11px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface-2);cursor:pointer;font-family:inherit;font-weight:700;font-size:.85rem;color:var(--text-sub);margin-top:4px;">Cancelar</button>
+    </div>
+  </div>
+</div>
+<script>
+window.openSwitchApp = function() {
+  const lang = localStorage.getItem('taxfly_lang') || 'es';
+  const texts = {
+    es: { title:'Cambiar Aplicación', sub:'¿A qué destino querés ir?', cancel:'Cancelar' },
+    en: { title:'Switch App', sub:'Which destination do you want?', cancel:'Cancel' },
+    pt: { title:'Trocar Aplicativo', sub:'Para qual destino você quer ir?', cancel:'Cancelar' }
+  };
+  const t = texts[lang] || texts.es;
+  document.getElementById('switchAppTitle').textContent = t.title;
+  document.getElementById('switchAppSub').textContent = t.sub;
+  document.getElementById('switchAppCancel').textContent = t.cancel;
+  document.getElementById('switchAppModal').style.display = 'flex';
+};
+window.doSwitchApp = function(destino) {
+  localStorage.setItem('taxfly_destino', destino);
+  document.getElementById('switchAppModal').style.display = 'none';
+  if (destino === 'usa') {
+    window.location.href = 'index.html';
+  } else {
+    window.location.href = 'europe.html';
+  }
+};
+</script>
+
+</body>
+</html>

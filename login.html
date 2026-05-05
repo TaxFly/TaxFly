@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TaxFly — Login</title>
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" href="assets/iconotaxfly.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="assets/iconotaxfly.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TaxFly">
+    <meta name="theme-color" content="#EF9F27">
+    <script src="https://www.google.com/recaptcha/api.js?render=6LeK6cssAAAAALxcJy-95R2nhVMmnuIyB78AQgvw" async defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800&display=swap" rel="stylesheet"></noscript>
+    <style>
+        :root {
+            --primary:#EF9F27; --primary-dark:#BA7517; --primary-glow:rgba(239,159,39,0.18);
+            --accent:#854F0B; --danger:#ef4444; --success:#10b981;
+            --bg:#fdf8f0; --surface:#ffffff; --border:#f0e0c0; --input-bg:#fdf5e8;
+            --text:#1a0f00; --text-sub:#7a5c2e; --text-dim:#b8924a;
+            --radius:20px; --radius-sm:12px;
+            --shadow:0 4px 20px rgba(186,117,23,0.10); --shadow-lg:0 20px 60px rgba(186,117,23,0.18);
+            --tr:all 0.25s cubic-bezier(0.4,0,0.2,1);
+            color-scheme: light;
+        }
+        [data-theme="dark"] {
+            --bg:#120d04; --surface:#1e1508; --border:#3d2e10; --input-bg:#2a1f0a;
+            --text:#fdf5e8; --text-sub:#c4924a; --text-dim:#7a5c2e;
+            --shadow:0 4px 20px rgba(0,0,0,0.45); --shadow-lg:0 20px 60px rgba(0,0,0,0.6);
+            color-scheme: dark;
+        }
+        *,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0;}
+        body{
+            font-family:'DM Sans',-apple-system,system-ui,sans-serif;
+            background:var(--bg);color:var(--text);min-height:100vh;
+            display:flex;flex-direction:column;align-items:center;justify-content:center;
+            padding:24px;transition:background .3s,color .3s;-webkit-font-smoothing:antialiased;
+        }
+        body::before{
+            content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+            background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(239,159,39,0.12),transparent);
+        }
+
+        /* ── SPLASH LOADING STATE ── */
+        .splash-loading .screen,
+        .splash-loading .lang-selector-top { visibility: hidden; }
+
+        /* ── LANG SELECTOR ── */
+        .lang-selector-top{
+            position:fixed;top:16px;right:16px;z-index:100;
+            background:var(--surface);border:1.5px solid var(--border);
+            border-radius:12px;cursor:pointer;user-select:none;min-width:90px;
+            box-shadow:0 2px 12px rgba(0,0,0,0.1);
+        }
+        .selected-lang{padding:8px 12px;display:flex;align-items:center;gap:8px;font-weight:800;font-size:.85rem;}
+        .selected-lang .arrow{font-size:.55rem;color:var(--primary);margin-left:auto;}
+        .lang-options{display:none;position:absolute;top:calc(100% + 6px);left:0;width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.12);}
+        .lang-options.show{display:block;}
+        .lang-option{padding:10px 12px;display:flex;align-items:center;gap:8px;font-weight:700;font-size:.85rem;cursor:pointer;transition:.15s;}
+        .lang-option:hover{background:var(--input-bg);}
+        .lang-option img{width:18px;height:13px;object-fit:cover;border-radius:2px;}
+
+        /* ── SCREENS ── */
+        .screen{position:relative;z-index:1;width:100%;max-width:400px;animation:fadeUp .45s cubic-bezier(0.34,1.56,0.64,1) both;}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        .screen.hidden{display:none;}
+
+        /* ── CARD ── */
+        .login-card{
+            background:var(--surface);padding:36px 28px;border-radius:28px;
+            box-shadow:var(--shadow-lg);border:1.5px solid var(--border);
+        }
+        .card-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:28px;font-size:1.6rem;font-weight:900;color:var(--primary-dark);}
+        .logo-svg{animation:logoBounce .6s cubic-bezier(0.34,1.56,0.64,1) both;}
+        .logo-text{animation:textSlide .5s .15s cubic-bezier(0.34,1.56,0.64,1) both;color:var(--primary-dark);}
+        @keyframes logoBounce{from{opacity:0;transform:scale(.4) rotate(-15deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+        @keyframes textSlide{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+
+        .card-title{font-size:1.5rem;font-weight:900;text-align:center;margin-bottom:24px;color:var(--text);}
+        .card-sub{font-size:.82rem;font-weight:600;color:var(--text-sub);text-align:center;margin-bottom:20px;line-height:1.5;}
+
+        input{
+            width:100%;padding:15px 16px;background:var(--input-bg);
+            border:1.5px solid var(--border);border-radius:14px;margin-bottom:12px;
+            font-size:.95rem;font-weight:600;font-family:inherit;color:var(--text);
+            outline:none;transition:var(--tr);-webkit-appearance:none;
+        }
+        input:focus{border-color:var(--primary);background:var(--surface);box-shadow:0 0 0 3px rgba(239,159,39,.15);}
+        input::placeholder{color:var(--text-dim);font-weight:500;}
+
+        .btn{
+            width:100%;padding:16px;border:none;border-radius:14px;font-family:inherit;
+            font-size:.9rem;font-weight:800;letter-spacing:.5px;text-transform:uppercase;
+            cursor:pointer;transition:var(--tr);margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px;
+        }
+        .btn:active{transform:scale(.97);}
+        .btn-primary{background:var(--primary);color:white;box-shadow:0 4px 16px rgba(239,159,39,.4);}
+        .btn-primary:hover{background:var(--primary-dark);}
+        .btn-ghost{background:var(--input-bg);color:var(--text-sub);border:1.5px solid var(--border);}
+        .btn-ghost:hover{border-color:var(--primary);color:var(--primary);}
+        .btn-danger{background:transparent;color:var(--danger);border:1.5px solid rgba(239,68,68,.3);}
+
+        .verif-notice{
+            display:none;background:rgba(239,159,39,.1);color:var(--primary-dark);
+            padding:12px 14px;border-radius:12px;font-size:.8rem;font-weight:600;
+            margin-bottom:14px;line-height:1.45;border:1.5px solid rgba(239,159,39,.25);
+            opacity:0;transition:opacity .35s ease;
+        }
+        .verif-notice.visible{opacity:1;}
+        .links{display:flex;flex-direction:column;gap:10px;text-align:center;}
+        .link-danger{color:var(--danger);font-size:.8rem;font-weight:700;cursor:pointer;background:none;border:none;font-family:inherit;}
+        .link-toggle{color:var(--text-sub);font-size:.85rem;font-weight:600;cursor:pointer;transition:.2s;background:none;border:none;font-family:inherit;}
+        .link-toggle:hover{color:var(--primary);}
+
+        /* ── OFFLINE BADGE ── */
+        .offline-badge{
+            display:none;align-items:center;gap:8px;
+            background:rgba(245,158,11,.1);border:1.5px solid rgba(245,158,11,.3);
+            color:#d97706;border-radius:12px;padding:10px 14px;
+            font-size:.78rem;font-weight:700;margin-bottom:20px;
+        }
+        .offline-badge.show{display:flex;}
+
+        /* ── PIN SCREEN ── */
+        .pin-header{text-align:center;margin-bottom:28px;}
+        .pin-user-avatar{
+            width:72px;height:72px;border-radius:16px;margin:0 auto 12px;
+            background:var(--input-bg) no-repeat center/cover;
+            border:2.5px solid var(--border);
+        }
+        .pin-user-name{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:4px;}
+        .pin-user-email{font-size:.75rem;font-weight:600;color:var(--text-dim);}
+
+        .pin-dots{display:flex;gap:16px;justify-content:center;margin-bottom:32px;}
+        .pin-dot{
+            width:18px;height:18px;border-radius:50%;
+            border:2.5px solid var(--border);background:transparent;
+            transition:var(--tr);
+        }
+        .pin-dot.filled{background:var(--primary);border-color:var(--primary);}
+        .pin-dot.error{background:var(--danger);border-color:var(--danger);animation:shake .4s ease;}        @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+        .pin-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+        .pin-key{
+            padding:0;border:1.5px solid var(--border);border-radius:16px;
+            background:var(--surface);font-family:inherit;font-size:1.4rem;font-weight:700;
+            color:var(--text);cursor:pointer;transition:var(--tr);aspect-ratio:1;
+            display:flex;align-items:center;justify-content:center;
+        }
+        .pin-key:hover{background:var(--input-bg);border-color:var(--primary);}
+        .pin-key:active{transform:scale(.93);background:var(--primary);color:white;border-color:var(--primary);}
+        .pin-key.del{font-size:1.1rem;color:var(--text-sub);}
+        .pin-key.empty{border:none;background:transparent;pointer-events:none;}
+
+        .pin-error-msg{
+            text-align:center;font-size:.8rem;font-weight:700;color:var(--danger);
+            min-height:20px;margin-bottom:12px;transition:opacity .3s;
+        }
+
+        /* ── CREATE PIN SCREEN ── */
+        .pin-step-indicator{display:flex;gap:8px;justify-content:center;margin-bottom:24px;}
+        .pin-step-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:var(--tr);}
+        .pin-step-dot.active{background:var(--primary);transform:scale(1.2);}
+        .pin-step-dot.done{background:var(--success);}
+
+        .pin-create-title{font-size:1.2rem;font-weight:900;text-align:center;margin-bottom:8px;}
+        .pin-create-sub{font-size:.82rem;font-weight:600;color:var(--text-sub);text-align:center;margin-bottom:28px;line-height:1.5;}
+
+        /* ── CHANGE PIN SCREEN ── */
+        .info-box{
+            background:rgba(239,159,39,.08);border:1.5px solid rgba(239,159,39,.22);
+            border-radius:14px;padding:16px;margin-bottom:20px;
+            font-size:.82rem;font-weight:600;color:var(--text-sub);line-height:1.5;
+            display:flex;gap:10px;align-items:flex-start;
+        }
+        .info-box-icon{font-size:1.2rem;flex-shrink:0;margin-top:1px;}
+
+        /* ── INSTALL BUTTONS ── */
+        .install-wrap{display:none;flex-direction:column;gap:8px;margin-top:16px;}
+        .btn-install{
+            width:100%;padding:13px 16px;border:none;border-radius:14px;
+            font-family:inherit;font-size:.85rem;font-weight:800;letter-spacing:.4px;
+            cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px;
+        }
+        .btn-install:active{transform:scale(.97);}
+        .btn-android{background:#16a34a;color:white;box-shadow:0 4px 14px rgba(22,163,74,.3);}
+        .btn-ios{background:#0284c7;color:white;box-shadow:0 4px 14px rgba(2,132,199,.3);}
+
+        /* ── iOS MODAL ── */
+        .ios-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9000;backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;}
+        .ios-modal-overlay.show{display:flex;}
+        .ios-modal{background:var(--surface);border-radius:24px 24px 0 0;padding:28px 24px 40px;width:100%;max-width:460px;border:1.5px solid var(--border);box-shadow:0 -12px 40px rgba(0,0,0,.3);animation:slideUp .3s ease;}
+        @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+        .ios-modal-title{font-size:1rem;font-weight:900;text-align:center;margin-bottom:20px;}
+        .ios-step{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);}
+        .ios-step:last-of-type{border-bottom:none;}
+        .ios-step-num{width:28px;height:28px;border-radius:50%;background:#0ea5e9;color:white;font-size:.75rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+        .ios-step-text{font-size:.82rem;font-weight:600;color:var(--text-sub);line-height:1.4;}
+        .ios-step-text strong{color:var(--text);}
+        .ios-step-icon{font-size:1.2rem;flex-shrink:0;}
+        .ios-modal-close{width:100%;margin-top:20px;padding:14px;background:var(--input-bg);border:1.5px solid var(--border);border-radius:14px;font-family:inherit;font-size:.85rem;font-weight:800;cursor:pointer;color:var(--text);}
+    </style>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+        }
+    </script>
+    <script>
+        // Lanzar probe de conectividad LO ANTES POSIBLE — antes que Firebase
+        // Así cuando onAuthStateChanged dispare, la promise ya está resuelta o en vuelo
+        window._connectivityPromise = (async () => {
+            try {
+                await fetch('https://www.gstatic.com/generate_204', {
+                    method: 'HEAD', cache: 'no-store', mode: 'no-cors',
+                    signal: AbortSignal.timeout(1500)
+                });
+                window._isOnline = true;
+            } catch(e) {
+                window._isOnline = false;
+            }
+            window._connectivityPromise = null;
+            return window._isOnline;
+        })();
+        // El splash ya es visible; ocultar solo el resto del body vía clase
+        document.documentElement.classList.add('splash-loading');
+        window._splashMinEnd = Date.now() + 2800; // garantizar splash mínimo 2.8s
+    </script>
+</head>
+<body>
+
+<!-- ════ SPLASH SCREEN ════ -->
+<div id="splash-screen" style="
+    position:fixed;inset:0;z-index:9999;
+    background:#120d04;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:0;
+    transition:opacity 0.4s ease;
+">
+    <style>
+        @keyframes tfGlobeIn {
+            from { opacity:0; transform:scale(1.08); }
+            to   { opacity:1; transform:scale(1); }
+        }
+        @keyframes tfWipe {
+            from { clip-path:inset(0 100% 0 0); opacity:1; }
+            to   { clip-path:inset(0 0% 0 0);   opacity:1; }
+        }
+        @keyframes tfTagIn {
+            from { opacity:0; letter-spacing:8px; }
+            to   { opacity:1; letter-spacing:4px; }
+        }
+        @keyframes tfStarTwinkle {
+            0%,100% { opacity:0; transform:scale(0.4); }
+            50%      { opacity:0.5; transform:scale(1); }
+        }
+        @keyframes tfSweep {
+            0%   { left:-25%; opacity:0; }
+            10%  { opacity:1; }
+            90%  { opacity:1; }
+            100% { left:110%; opacity:0; }
+        }
+    </style>
+
+    <!-- Estrellas + glow ámbar de fondo -->
+    <div id="sp-stars" style="position:absolute;inset:0;"></div>
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 45%,rgba(239,159,39,0.13) 0%,transparent 70%);pointer-events:none;"></div>
+
+    <!-- Barrido de luz ámbar/blanco — Prime Video style -->
+    <div style="position:absolute;top:0;left:-25%;width:25%;height:100%;
+        background:linear-gradient(90deg,transparent 0%,rgba(255,220,120,0.06) 35%,rgba(255,255,255,0.45) 50%,rgba(255,220,120,0.06) 65%,transparent 100%);
+        animation:tfSweep 0.6s ease-in-out 0.72s forwards;pointer-events:none;z-index:2;">
+    </div>
+
+    <!-- Logo + nombre -->
+    <div style="position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;gap:0;">
+
+        <!-- Globo Eclipse -->
+        <div style="opacity:0;animation:tfGlobeIn 0.45s cubic-bezier(0.16,1,0.3,1) 0.2s forwards;margin-bottom:18px;">
+            <svg width="110" height="110" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <path d="M60 5 Q5 5 5 60 Q5 115 60 115 Z" fill="#FAEEDA" stroke="#BA7517" stroke-width="1.5"/>
+                <path d="M60 5 Q34 34 34 60 Q34 86 60 115" fill="none" stroke="#EF9F27" stroke-width="0.9" opacity="0.5"/>
+                <path d="M60 5 Q12 32 12 60 Q12 88 60 115" fill="none" stroke="#EF9F27" stroke-width="0.6" opacity="0.3"/>
+                <path d="M60 5 Q115 5 115 60 Q115 115 60 115 Z" fill="#FAC775" stroke="#BA7517" stroke-width="1.5"/>
+                <path d="M60 5 Q86 34 86 60 Q86 86 60 115" fill="none" stroke="#854F0B" stroke-width="0.9" opacity="0.4"/>
+                <path d="M60 5 Q108 32 108 60 Q108 88 60 115" fill="none" stroke="#854F0B" stroke-width="0.6" opacity="0.25"/>
+                <line x1="5" y1="60" x2="115" y2="60" stroke="#854F0B" stroke-width="0.8" opacity="0.35"/>
+                <line x1="60" y1="5" x2="60" y2="115" stroke="#854F0B" stroke-width="1.5"/>
+                <g transform="translate(60,48)">
+                    <polygon points="0,-26 20,9 0,3 -20,9" fill="#633806"/>
+                    <polygon points="0,3 -20,9 -10,17" fill="#854F0B"/>
+                    <polygon points="0,3 20,9 10,17" fill="#854F0B"/>
+                    <polygon points="0,3 -6,21 0,16" fill="#BA7517"/>
+                    <polygon points="0,3 6,21 0,16" fill="#BA7517"/>
+                </g>
+            </svg>
+        </div>
+
+        <!-- Wordmark con wipe de izquierda a derecha -->
+        <div style="clip-path:inset(0 100% 0 0);opacity:0;
+            animation:tfWipe 0.38s cubic-bezier(0.16,1,0.3,1) 0.56s forwards;
+            font-family:'DM Sans',-apple-system,system-ui,sans-serif;
+            font-size:2.8rem;font-weight:900;letter-spacing:-1.5px;line-height:1;">
+            <span style="color:#EF9F27">Tax</span><span style="color:#ffffff">Fly</span>
+        </div>
+
+        <!-- Tagline -->
+        <div style="font-family:'DM Sans',-apple-system,system-ui,sans-serif;
+            font-size:0.68rem;font-weight:600;
+            color:rgba(255,255,255,0.38);letter-spacing:4px;text-transform:uppercase;
+            opacity:0;animation:tfTagIn 0.45s ease 0.95s forwards;margin-top:10px;">
+            Global Travel Assistance
+        </div>
+    </div>
+</div>
+
+<script>
+(function(){
+    // Estrellas
+    var starsEl = document.getElementById('sp-stars');
+    for(var i=0;i<60;i++){
+        var s=document.createElement('div');
+        var sz=(Math.random()*1.6+0.6).toFixed(1);
+        s.style.cssText='position:absolute;border-radius:50%;background:white;'
+            +'width:'+sz+'px;height:'+sz+'px;'
+            +'top:'+(Math.random()*100)+'%;left:'+(Math.random()*100)+'%;'
+            +'animation:tfStarTwinkle '+(2.5+Math.random()*3).toFixed(1)+'s '+(Math.random()*5).toFixed(1)+'s ease-in-out infinite;opacity:0;';
+        starsEl.appendChild(s);
+    }
+})();
+</script>
+
+<!-- Lang selector -->
+<div class="lang-selector-top" id="langSelector" onclick="toggleLangMenu()">
+    <div class="selected-lang">
+        <img src="https://flagcdn.com/w20/ar.png" id="selectedFlag" alt="">
+        <span id="selectedCode">ES</span>
+        <span class="arrow">▼</span>
+    </div>
+    <div class="lang-options" id="langOptions">
+        <div class="lang-option" onclick="applyLanguage('es')"><img src="https://flagcdn.com/w20/ar.png" alt=""> ES</div>
+        <div class="lang-option" onclick="applyLanguage('en')"><img src="https://flagcdn.com/w20/us.png" alt=""> EN</div>
+        <div class="lang-option" onclick="applyLanguage('pt')"><img src="https://flagcdn.com/w20/br.png" alt=""> PT</div>
+    </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SCREEN 1: Login normal (online)
+════════════════════════════════════════════ -->
+<div class="screen" id="screen-login">
+    <div class="login-card">
+        <div class="card-logo">
+            <svg class="logo-svg" width="38" height="38" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <path d="M60 5 Q5 5 5 60 Q5 115 60 115 Z" fill="#FAEEDA" stroke="#BA7517" stroke-width="3"/>
+                <path d="M60 5 Q34 34 34 60 Q34 86 60 115" fill="none" stroke="#EF9F27" stroke-width="2" opacity="0.5"/>
+                <path d="M60 5 Q115 5 115 60 Q115 115 60 115 Z" fill="#FAC775" stroke="#BA7517" stroke-width="3"/>
+                <path d="M60 5 Q86 34 86 60 Q86 86 60 115" fill="none" stroke="#854F0B" stroke-width="2" opacity="0.4"/>
+                <line x1="5" y1="60" x2="115" y2="60" stroke="#854F0B" stroke-width="2" opacity="0.3"/>
+                <line x1="60" y1="5" x2="60" y2="115" stroke="#854F0B" stroke-width="3"/>
+                <g transform="translate(60,48)">
+                    <polygon points="0,-24 18,8 0,2 -18,8" fill="#633806"/>
+                    <polygon points="0,2 -18,8 -9,15" fill="#854F0B"/>
+                    <polygon points="0,2 18,8 9,15" fill="#854F0B"/>
+                    <polygon points="0,2 -5,19 0,14" fill="#BA7517"/>
+                    <polygon points="0,2 5,19 0,14" fill="#BA7517"/>
+                </g>
+            </svg>
+            <span class="logo-text">Tax<span style="color:#EF9F27">Fly</span></span>
+        </div>
+        <h1 class="card-title" id="login-title">Bienvenido</h1>
+        <input type="email" id="email" placeholder="Correo electrónico">
+        <input type="password" id="password" placeholder="Contraseña">
+        <div class="verif-notice" id="verifNotice"></div>
+        <button class="btn btn-primary" id="mainBtn" onclick="handleAuth()">INGRESAR</button>
+        <div class="links">
+            <button class="link-danger" onclick="resetPassword()" id="forgotLink">¿Olvidaste tu contraseña?</button>
+            <button class="link-toggle" id="toggleLink" onclick="toggleMode()">¿No tenés cuenta? Registrate aquí</button>
+        </div>
+    </div>
+    <div class="install-wrap" id="installWrap">
+        <button class="btn-install btn-android" id="btnAndroid" onclick="installAndroid()">➕ Agregar a inicio (Android)</button>
+        <button class="btn-install btn-ios" id="btnIos" onclick="showIosModal()">📲 Agregar a inicio (iPhone)</button>
+    </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SCREEN 2: PIN offline
+════════════════════════════════════════════ -->
+<div class="screen hidden" id="screen-pin-offline">
+    <div class="login-card">
+        <div class="offline-badge show">
+            <span>📵</span>
+            <span id="offline-badge-text">Sin conexión — ingresá con tu PIN</span>
+        </div>
+        <div class="pin-header">
+            <div class="pin-user-avatar" id="pin-avatar"></div>
+            <div class="pin-user-name" id="pin-name">Usuario</div>
+            <div class="pin-user-email" id="pin-email-display"></div>
+        </div>
+        <div class="pin-dots" id="pin-dots-offline">
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+        </div>
+        <div class="pin-error-msg" id="pin-error-offline"></div>
+        <div class="pin-keypad" id="pin-keypad-offline"></div>
+        <button class="btn btn-ghost" onclick="showOnlineLogin()" id="try-online-btn">🌐 Intentar con internet</button>
+    </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SCREEN 3: Crear PIN (primera vez, post-login)
+════════════════════════════════════════════ -->
+<div class="screen hidden" id="screen-create-pin">
+    <div class="login-card">
+        <div class="card-logo">
+            <svg width="38" height="38" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <path d="M60 5 Q5 5 5 60 Q5 115 60 115 Z" fill="#FAEEDA" stroke="#BA7517" stroke-width="3"/>
+                <path d="M60 5 Q34 34 34 60 Q34 86 60 115" fill="none" stroke="#EF9F27" stroke-width="2" opacity="0.5"/>
+                <path d="M60 5 Q115 5 115 60 Q115 115 60 115 Z" fill="#FAC775" stroke="#BA7517" stroke-width="3"/>
+                <path d="M60 5 Q86 34 86 60 Q86 86 60 115" fill="none" stroke="#854F0B" stroke-width="2" opacity="0.4"/>
+                <line x1="5" y1="60" x2="115" y2="60" stroke="#854F0B" stroke-width="2" opacity="0.3"/>
+                <line x1="60" y1="5" x2="60" y2="115" stroke="#854F0B" stroke-width="3"/>
+                <g transform="translate(60,48)">
+                    <polygon points="0,-24 18,8 0,2 -18,8" fill="#633806"/>
+                    <polygon points="0,2 -18,8 -9,15" fill="#854F0B"/>
+                    <polygon points="0,2 18,8 9,15" fill="#854F0B"/>
+                    <polygon points="0,2 -5,19 0,14" fill="#BA7517"/>
+                    <polygon points="0,2 5,19 0,14" fill="#BA7517"/>
+                </g>
+            </svg>
+        </div>
+        <div class="pin-step-indicator">
+            <div class="pin-step-dot active" id="step-dot-1"></div>
+            <div class="pin-step-dot" id="step-dot-2"></div>
+        </div>
+        <div class="pin-create-title" id="create-pin-title">Creá tu PIN offline</div>
+        <div class="pin-create-sub" id="create-pin-sub">Este PIN de 4 dígitos te permite entrar a la app aunque no tengas conexión a internet.</div>
+        <div class="pin-dots" id="pin-dots-create">
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+        </div>
+        <div class="pin-error-msg" id="pin-error-create"></div>
+        <div class="pin-keypad" id="pin-keypad-create"></div>
+        <button class="btn btn-ghost" style="margin-top:4px" onclick="skipPinCreation()" id="skip-pin-btn">Omitir por ahora</button>
+    </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SCREEN 4: Cambiar PIN (requiere internet)
+════════════════════════════════════════════ -->
+<div class="screen hidden" id="screen-change-pin">
+    <div class="login-card">
+        <div class="card-logo">
+            <svg width="38" height="38" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+
+                <path d="M60 5 Q5 5 5 60 Q5 115 60 115 Z" fill="#FAEEDA" stroke="#BA7517" stroke-width="3"/>
+                <path d="M60 5 Q34 34 34 60 Q34 86 60 115" fill="none" stroke="#EF9F27" stroke-width="2" opacity="0.5"/>
+                <path d="M60 5 Q115 5 115 60 Q115 115 60 115 Z" fill="#FAC775" stroke="#BA7517" stroke-width="3"/>
+                <path d="M60 5 Q86 34 86 60 Q86 86 60 115" fill="none" stroke="#854F0B" stroke-width="2" opacity="0.4"/>
+                <line x1="5" y1="60" x2="115" y2="60" stroke="#854F0B" stroke-width="2" opacity="0.3"/>
+                <line x1="60" y1="5" x2="60" y2="115" stroke="#854F0B" stroke-width="3"/>
+                <g transform="translate(60,48)">
+                    <polygon points="0,-24 18,8 0,2 -18,8" fill="#633806"/>
+                    <polygon points="0,2 -18,8 -9,15" fill="#854F0B"/>
+                    <polygon points="0,2 18,8 9,15" fill="#854F0B"/>
+                    <polygon points="0,2 -5,19 0,14" fill="#BA7517"/>
+                    <polygon points="0,2 5,19 0,14" fill="#BA7517"/>
+                </g>
+            </svg>
+        </div>
+        <h2 class="card-title" id="change-pin-title" style="margin-bottom:16px;">Cambiar PIN</h2>
+        <div class="info-box">
+            <span class="info-box-icon">📧</span>
+            <span id="change-pin-info">Para cambiar tu PIN, te enviaremos un correo de verificación. Una vez confirmado, podrás crear uno nuevo.</span>
+        </div>
+        <button class="btn btn-primary" onclick="sendChangePinEmail()" id="send-verify-btn">Enviar correo de verificación</button>
+        <button class="btn btn-ghost" onclick="goBackFromChangePin()">Cancelar</button>
+
+        <!-- Paso 2: ingresar nuevo PIN (aparece después del mail) -->
+        <div id="new-pin-section" style="display:none;margin-top:8px;border-top:1.5px solid var(--border);padding-top:24px;">
+            <div class="pin-create-title" id="new-pin-title" style="margin-bottom:8px;">Nuevo PIN</div>
+            <div class="pin-create-sub" id="new-pin-sub" style="margin-bottom:20px;">Ingresá tu nuevo PIN de 4 dígitos</div>
+            <div class="pin-dots" id="pin-dots-change">
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+            </div>
+            <div class="pin-error-msg" id="pin-error-change"></div>
+            <div class="pin-keypad" id="pin-keypad-change"></div>
+        </div>
+    </div>
+</div>
+
+<!-- iOS install modal -->
+<div class="ios-modal-overlay" id="iosOverlay" onclick="hideIosModal()">
+    <div class="ios-modal" onclick="event.stopPropagation()">
+        <div class="ios-modal-title">📲 Agregar TaxFly al inicio</div>
+        <div class="ios-step">
+            <div class="ios-step-num">1</div>
+            <div class="ios-step-icon">⬆️</div>
+            <div class="ios-step-text">Tocá el botón <strong>Compartir</strong> en Safari</div>
+        </div>
+        <div class="ios-step">
+            <div class="ios-step-num">2</div>
+            <div class="ios-step-icon">📋</div>
+            <div class="ios-step-text">Tocá <strong>"Agregar a pantalla de inicio"</strong></div>
+        </div>
+        <div class="ios-step">
+            <div class="ios-step-num">3</div>
+            <div class="ios-step-icon">✅</div>
+            <div class="ios-step-text">Tocá <strong>"Agregar"</strong></div>
+        </div>
+        <button class="ios-modal-close" onclick="hideIosModal()">Entendido</button>
+    </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════════════ -->
+<script>
+    // ── Install logic ──
+    let deferredPrompt = null;
+    const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const isAndroid = /android/i.test(navigator.userAgent);
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+
+    function showInstallButtons() {
+        if (isStandalone) return;
+        const wrap = document.getElementById('installWrap');
+        if (!wrap) return;
+        if (isAndroid) { wrap.style.display = 'flex'; document.getElementById('btnIos').style.display = 'none'; }
+        else if (isIos) { wrap.style.display = 'flex'; document.getElementById('btnAndroid').style.display = 'none'; }
+    }
+    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; showInstallButtons(); });
+    window.installAndroid = async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        if (outcome === 'accepted') document.getElementById('installWrap').style.display = 'none';
+    };
+    window.showIosModal = () => document.getElementById('iosOverlay').classList.add('show');
+    window.hideIosModal = () => document.getElementById('iosOverlay').classList.remove('show');
+    if (isIos && !isStandalone) showInstallButtons();
+
+    // ── Lang ──
+    window.toggleLangMenu = () => document.getElementById('langOptions').classList.toggle('show');
+    window.onclick = (e) => { if (!e.target.closest('#langSelector')) document.getElementById('langOptions').classList.remove('show'); };
+</script>
+
+<script type="module">
+import { initializeApp }                                             from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+         onAuthStateChanged, sendPasswordResetEmail, sendEmailVerification,
+         signOut }                                                   from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc }             from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+import { initializeAppCheck, ReCaptchaV3Provider }                  from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app-check.js";
+
+// ── Firebase init ──
+const FB = {
+    apiKey:"AIzaSyA-eeKl8guVDmTa_NpYvkB0O7-RMbPrkP0",
+    authDomain:"viajes-db538.firebaseapp.com",
+    projectId:"viajes-db538",
+    storageBucket:"viajes-db538.firebasestorage.app",
+    messagingSenderId:"237311739178",
+    appId:"1:237311739178:web:333e468b184c0402a98a53",
+    measurementId:"G-WYF0L0YSYJ"
+};
+const app  = initializeApp(FB);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+    
+// ── i18n ──
+const i18n = {
+    es:{
+        welcome:"Bienvenido", create:"Crear Cuenta",
+        email:"Correo electrónico", pass:"Contraseña",
+        login:"INGRESAR", register:"REGISTRARME",
+        noAccount:"¿No tenés cuenta? Registrate aquí",
+        haveAccount:"¿Ya tenés cuenta? Ingresá aquí",
+        verif:"Te enviaremos un mail de verificación. Revisá tu bandeja o SPAM. ✈️",
+        forgot:"¿Olvidaste tu contraseña?",
+        errFields:"Por favor completá todos los campos.",
+        regOk:"¡Registro exitoso! Se envió verificación a ",
+        noVerif:"Tu cuenta aún no fue verificada. Revisá tu correo.",
+        resetOk:"Correo de recuperación enviado.",
+        resetEmail:"Ingresá tu correo arriba primero.",
+        errInvalidCredential:"Usuario o contraseña incorrectos.",
+        errTooManyRequests:"Demasiados intentos. Esperá unos minutos.",
+        errUserNotFound:"No existe cuenta con ese correo.",
+        errWrongPassword:"Contraseña incorrecta.",
+        errInvalidEmail:"El correo no es válido.",
+        errNetworkFailed:"Sin conexión a internet.",
+        errDefault:"Ocurrió un error. Volvé a intentarlo.",
+        // PIN
+        offlineBadge:"Sin conexión — ingresá con tu PIN",
+        tryOnline:"🌐 Intentar con internet",
+        noPinOffline:"No hay PIN configurado para esta cuenta. Necesitás conexión para ingresar.",
+        pinWrong:"PIN incorrecto. Intentá de nuevo.",
+        pinWrongCount:"PIN incorrecto. Quedan %d intentos.",
+        pinLocked:"Demasiados intentos fallidos. Necesitás internet para ingresar.",
+        createPinTitle:"Creá tu PIN offline",
+        createPinSub:"Este PIN de 4 dígitos te permite entrar sin internet.",
+        confirmPinTitle:"Confirmá tu PIN",
+        confirmPinSub:"Ingresá el mismo PIN para confirmar.",
+        pinMismatch:"Los PINs no coinciden. Volvé a intentarlo.",
+        pinSaved:"✅ PIN guardado correctamente.",
+        skipPin:"Omitir por ahora",
+        changePinTitle:"Cambiar PIN",
+        changePinInfo:"Para cambiar tu PIN te enviaremos un correo de verificación. Una vez verificado, podrás crear uno nuevo.",
+        sendVerify:"📧 Enviar correo de verificación",
+        verifyEmailSent:"✅ Correo enviado. Verificá tu casilla y volvé aquí para continuar.",
+        pinChangedOk:"✅ PIN actualizado correctamente.",
+        cancel:"Cancelar",
+        newPinTitle:"Nuevo PIN",
+        newPinSub:"Ingresá tu nuevo PIN de 4 dígitos.",
+        iVerified:"✅ Ya verifiqué mi correo — ingresar nuevo PIN",
+    },
+    en:{
+        welcome:"Welcome", create:"Create Account",
+        email:"Email address", pass:"Password",
+        login:"LOGIN", register:"REGISTER",
+        noAccount:"Don't have an account? Sign up",
+        haveAccount:"Already have an account? Log in",
+        verif:"We'll send you a verification email. Check your inbox or SPAM. ✈️",
+        forgot:"Forgot your password?",
+        errFields:"Please fill all fields.",
+        regOk:"Registration successful! Verification sent to ",
+        noVerif:"Your account hasn't been verified yet. Check your email.",
+        resetOk:"Recovery email sent.",
+        resetEmail:"Please enter your email above first.",
+        errInvalidCredential:"Incorrect email or password.",
+        errTooManyRequests:"Too many failed attempts. Please wait.",
+        errUserNotFound:"No account found with that email.",
+        errWrongPassword:"Incorrect password.",
+        errInvalidEmail:"The email address is not valid.",
+        errNetworkFailed:"No internet connection.",
+        errDefault:"An error occurred. Please try again.",
+        offlineBadge:"Offline — enter your PIN",
+        tryOnline:"🌐 Try with internet",
+        noPinOffline:"No PIN configured for this account. You need internet to log in.",
+        pinWrong:"Wrong PIN. Try again.",
+        pinWrongCount:"Wrong PIN. %d attempts left.",
+        pinLocked:"Too many failed attempts. You need internet to log in.",
+        createPinTitle:"Create your offline PIN",
+        createPinSub:"This 4-digit PIN lets you sign in without internet.",
+        confirmPinTitle:"Confirm your PIN",
+        confirmPinSub:"Enter the same PIN again to confirm.",
+        pinMismatch:"PINs don't match. Please try again.",
+        pinSaved:"✅ PIN saved successfully.",
+        skipPin:"Skip for now",
+        changePinTitle:"Change PIN",
+        changePinInfo:"To change your PIN, we'll send a verification email. Once verified, you can set a new one.",
+        sendVerify:"📧 Send verification email",
+        verifyEmailSent:"✅ Email sent. Check your inbox and come back to continue.",
+        pinChangedOk:"✅ PIN updated successfully.",
+        cancel:"Cancel",
+        newPinTitle:"New PIN",
+        newPinSub:"Enter your new 4-digit PIN.",
+        iVerified:"✅ I verified my email — set new PIN",
+    },
+    pt:{
+        welcome:"Bem-vindo", create:"Criar Conta",
+        email:"E-mail", pass:"Senha",
+        login:"ENTRAR", register:"CADASTRAR",
+        noAccount:"Não tem conta? Cadastre-se",
+        haveAccount:"Já tem conta? Entre aqui",
+        verif:"Enviaremos um e-mail de verificação. Verifique sua caixa ou SPAM. ✈️",
+        forgot:"Esqueceu sua senha?",
+        errFields:"Por favor, preencha todos os campos.",
+        regOk:"Cadastro realizado! Verificação enviada para ",
+        noVerif:"Sua conta ainda não foi verificada. Verifique seu e-mail.",
+        resetOk:"E-mail de recuperação enviado.",
+        resetEmail:"Digite seu e-mail acima primeiro.",
+        errInvalidCredential:"E-mail ou senha incorretos.",
+        errTooManyRequests:"Muitas tentativas. Aguarde alguns minutos.",
+        errUserNotFound:"Não existe conta com esse e-mail.",
+        errWrongPassword:"Senha incorreta.",
+        errInvalidEmail:"O endereço de e-mail não é válido.",
+        errNetworkFailed:"Sem conexão com a internet.",
+        errDefault:"Ocorreu um erro. Tente novamente.",
+        offlineBadge:"Sem conexão — use seu PIN",
+        tryOnline:"🌐 Tentar com internet",
+        noPinOffline:"Nenhum PIN configurado. Você precisa de internet para entrar.",
+        pinWrong:"PIN incorreto. Tente novamente.",
+        pinWrongCount:"PIN incorreto. %d tentativas restantes.",
+        pinLocked:"Muitas tentativas. Você precisa de internet para entrar.",
+        createPinTitle:"Crie seu PIN offline",
+        createPinSub:"Este PIN de 4 dígitos permite entrar sem internet.",
+        confirmPinTitle:"Confirme seu PIN",
+        confirmPinSub:"Digite o mesmo PIN novamente para confirmar.",
+        pinMismatch:"Os PINs não coincidem. Tente novamente.",
+        pinSaved:"✅ PIN salvo com sucesso.",
+        skipPin:"Pular por agora",
+        changePinTitle:"Alterar PIN",
+        changePinInfo:"Para alterar seu PIN, enviaremos um e-mail de verificação. Após verificar, você poderá criar um novo.",
+        sendVerify:"📧 Enviar e-mail de verificação",
+        verifyEmailSent:"✅ E-mail enviado. Verifique sua caixa e volte aqui.",
+        pinChangedOk:"✅ PIN atualizado com sucesso.",
+        cancel:"Cancelar",
+        newPinTitle:"Novo PIN",
+        newPinSub:"Digite seu novo PIN de 4 dígitos.",
+        iVerified:"✅ Já verifiquei meu e-mail — criar novo PIN",
+    }
+};
+
+// ── State ──
+let currentLang = localStorage.getItem('appLang') || 'es';
+let isLoginMode = true;
+let pinBuffer   = '';       // PIN being entered
+let pinStep     = 1;        // 1 = create, 2 = confirm
+let pinFirst    = '';       // first entry for creation
+let pinAttempts = 0;
+const MAX_PIN_ATTEMPTS = 5;
+// changePinStep: 'send' | 'new_enter' | 'new_confirm'
+let changePinStep    = 'send';
+let changePinFirst   = '';
+let changePinBuffer  = '';
+
+// ── Helpers ──
+function t(key, ...args) {
+    let str = (i18n[currentLang] || i18n.es)[key] || key;
+    args.forEach(a => { str = str.replace('%d', a); });
+    return str;
+}
+
+async function sha256(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+// Probe lanzado desde <head> — usar window globals para compartir con Firebase
+// que puede disparar onAuthStateChanged antes de que este módulo ejecute
+function isOnline() { return window._isOnline === true; }
+
+async function checkRealConnectivity() {
+    // Si el probe del <head> todavía está en vuelo, esperarlo
+    if (window._connectivityPromise) return window._connectivityPromise;
+    // Si ya resolvió, retornar el resultado directo
+    if (window._isOnline !== undefined) return window._isOnline;
+    // Fallback: lanzar uno nuevo (no debería llegar acá)
+    window._connectivityPromise = (async () => {
+        try {
+            await fetch('https://www.gstatic.com/generate_204', {
+                method: 'HEAD', cache: 'no-store', mode: 'no-cors',
+                signal: AbortSignal.timeout(1500)
+            });
+            window._isOnline = true;
+        } catch(e) {
+            window._isOnline = false;
+        }
+        window._connectivityPromise = null;
+        return window._isOnline;
+    })();
+    return window._connectivityPromise;
+}
+
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+}
+
+// ── Language ──
+function applyLanguage(lang) {
+    currentLang = lang;
+    localStorage.setItem('appLang', lang);
+    const flags = { es:'https://flagcdn.com/w20/ar.png', en:'https://flagcdn.com/w20/us.png', pt:'https://flagcdn.com/w20/br.png' };
+    document.getElementById('selectedFlag').src = flags[lang];
+    document.getElementById('selectedCode').innerText = lang.toUpperCase();
+    document.getElementById('langOptions').classList.remove('show');
+    applyTexts();
+}
+window.applyLanguage = applyLanguage;
+
+function setText(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.innerText = value;
+}
+function setPlaceholder(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.placeholder = value;
+}
+
+function applyTexts() {
+    // Online login
+    setText('login-title', isLoginMode ? t('welcome') : t('create'));
+    setText('mainBtn',     isLoginMode ? t('login')   : t('register'));
+    setText('toggleLink',  isLoginMode ? t('noAccount') : t('haveAccount'));
+    setText('forgotLink',  t('forgot'));
+    setText('verifNotice', t('verif'));
+    setPlaceholder('email',    t('email'));
+    setPlaceholder('password', t('pass'));
+    // Offline PIN
+    setText('offline-badge-text', t('offlineBadge'));
+    setText('try-online-btn',     t('tryOnline'));
+    // Create PIN
+    setText('skip-pin-btn', t('skipPin'));
+    if (pinStep === 1) {
+        setText('create-pin-title', t('createPinTitle'));
+        setText('create-pin-sub',   t('createPinSub'));
+    } else {
+        setText('create-pin-title', t('confirmPinTitle'));
+        setText('create-pin-sub',   t('confirmPinSub'));
+    }
+    // Change PIN
+    setText('change-pin-title', t('changePinTitle'));
+    setText('change-pin-info',  t('changePinInfo'));
+    setText('send-verify-btn',  t('sendVerify'));
+    setText('new-pin-title',    t('newPinTitle'));
+    setText('new-pin-sub',      t('newPinSub'));
+}
+
+// ── Online auth ──
+window.toggleMode = () => {
+    isLoginMode = !isLoginMode;
+    const vn = document.getElementById('verifNotice');
+    if (isLoginMode) { vn.classList.remove('visible'); setTimeout(() => { vn.style.display='none'; }, 350); }
+    else { vn.style.display='block'; requestAnimationFrame(() => vn.classList.add('visible')); }
+    applyTexts();
+};
+
+window.handleAuth = async () => {
+    // ── Offline shortcut: if no internet and PIN is cached, go to PIN screen ──
+    if (!isOnline()) {
+        const cachedHash  = localStorage.getItem('taxusa_pin_hash');
+        const cachedEmail = localStorage.getItem('taxusa_offline_email');
+        const hasCachedPin = cachedHash && cachedHash !== '' && cachedHash !== 'null';
+        if (cachedEmail && hasCachedPin) {
+            showOfflinePinScreen();
+            return;
+        } else {
+            alert(t('errNetworkFailed'));
+            return;
+        }
+    }
+
+    const email = document.getElementById('email').value.trim();
+    const pass  = document.getElementById('password').value;
+    if (!email || !pass) { alert(t('errFields')); return; }
+    try {
+        if (isLoginMode) {
+            await signInWithEmailAndPassword(auth, email, pass);
+            // onAuthStateChanged handles the rest
+        } else {
+            const cred = await createUserWithEmailAndPassword(auth, email, pass);
+            await sendEmailVerification(cred.user);
+            alert(t('regOk') + email);
+            await signOut(auth);
+            location.reload();
+        }
+    } catch(e) {
+        const map = {
+            'auth/invalid-credential':    t('errInvalidCredential'),
+            'auth/wrong-password':        t('errWrongPassword'),
+            'auth/user-not-found':        t('errUserNotFound'),
+            'auth/invalid-email':         t('errInvalidEmail'),
+            'auth/too-many-requests':     t('errTooManyRequests'),
+            'auth/network-request-failed':t('errNetworkFailed'),
+        };
+        alert(map[e.code] || t('errDefault'));
+    }
+};
+
+window.resetPassword = async () => {
+    const email = document.getElementById('email').value.trim();
+    if (!email) { alert(t('resetEmail')); return; }
+    try { await sendPasswordResetEmail(auth, email); alert(t('resetOk')); }
+    catch(e) { alert(t('errDefault')); }
+};
+
+// ── Auth state ──
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        // No hay sesión — ocultar splash y mostrar login
+        hideSplash();
+        return;
+    }
+
+    // Esperar el probe del <head> — compartido con initScreen
+    await checkRealConnectivity();
+
+    // ── If offline: Firebase fires this with cached user. Block goToApp and show PIN instead. ──
+    if (!isOnline()) {
+        const cachedHash  = localStorage.getItem('taxusa_pin_hash');
+        const cachedEmail = localStorage.getItem('taxusa_offline_email');
+        const hasCachedPin = cachedHash && cachedHash !== '' && cachedHash !== 'null';
+        if (cachedEmail && hasCachedPin) {
+            showOfflinePinScreen();
+        }
+        // No PIN configured — stay on login screen (already shown by initScreen)
+        return;
+    }
+
+    if (!user.emailVerified) {
+        alert(t('noVerif'));
+        await signOut(auth);
+        return;
+    }
+
+    // ── User is authenticated online ──
+    // Fetch their PIN hash from Firestore and cache locally
+    try {
+        const snap = await getDoc(doc(db, 'usuarios', user.uid));
+        const data = snap.exists() ? snap.data() : {};
+        const pinHash = data.pinHash || null;
+        const pinEmail = user.email;
+
+        // Cache for offline use
+        localStorage.setItem('taxusa_offline_email', pinEmail);
+        localStorage.setItem('taxusa_offline_uid',   user.uid);
+        if (pinHash) localStorage.setItem('taxusa_pin_hash', pinHash);
+        else         localStorage.removeItem('taxusa_pin_hash');
+
+        // Cache name/avatar: try perfilActivoNombre first, then Firestore
+        const cachedName = localStorage.getItem('perfilActivoNombre') || '';
+        const cachedFoto = localStorage.getItem('perfilActivoFoto')   || '';
+        if (cachedName) localStorage.setItem('taxusa_cached_name', cachedName);
+        if (cachedFoto) localStorage.setItem('taxusa_cached_foto', cachedFoto);
+
+        if (!pinHash) {
+            showCreatePinScreen();
+        } else {
+            goToApp();
+        }
+    } catch(e) {
+        goToApp();
+    }
+});
+
+function goToApp() {
+    hideSplash(() => window.location.replace('selector.html'));
+}
+
+// ── Decide initial screen ──
+async function initScreen() {
+    applyLanguage(currentLang);
+
+    // Esperar el probe que se lanzó en <head> — ya debería estar resuelto
+    await checkRealConnectivity();
+
+    // Mostrar la pantalla correcta y luego ocultar splash con fade
+    if (isOnline()) {
+        hideSplash(() => showScreen('screen-login'));
+    } else {
+        const cachedHash  = localStorage.getItem('taxusa_pin_hash');
+        const cachedEmail = localStorage.getItem('taxusa_offline_email');
+        const hasCachedPin = cachedHash && cachedHash !== '' && cachedHash !== 'null';
+        if (cachedEmail && hasCachedPin) {
+            hideSplash(() => showOfflinePinScreen());
+        } else {
+            hideSplash(() => {
+                showScreen('screen-login');
+                const badge = document.createElement('div');
+                badge.className = 'offline-badge show';
+                badge.style.marginBottom = '16px';
+                badge.innerHTML = '<span>📵</span><span>' + t('noPinOffline') + '</span>';
+                const card = document.querySelector('#screen-login .login-card');
+                card.insertBefore(badge, card.firstChild);
+            });
+        }
+    }
+}
+
+function hideSplash(callback) {
+    const remaining = (window._splashMinEnd || 0) - Date.now();
+    const delay = Math.max(0, remaining);
+    setTimeout(() => {
+        document.documentElement.classList.remove('splash-loading');
+        const splash = document.getElementById('splash-screen');
+        if (!splash) { if (callback) callback(); return; }
+        splash.style.opacity = '0';
+        setTimeout(() => {
+            splash.style.display = 'none';
+            if (callback) callback();
+        }, 420);
+    }, delay);
+}
+
+window.addEventListener('online',  () => { if (document.getElementById('screen-pin-offline').classList.contains('hidden') === false) showScreen('screen-login'); });
+window.addEventListener('offline', () => { if (!document.getElementById('screen-login').classList.contains('hidden')) { const h = localStorage.getItem('taxusa_pin_hash'); const e = localStorage.getItem('taxusa_offline_email'); if (e && h && h !== '' && h !== 'null') showOfflinePinScreen(); } });
+
+// ── Offline PIN screen ──
+function showOfflinePinScreen() {
+    document.documentElement.classList.remove('splash-loading');
+    const name  = localStorage.getItem('taxusa_cached_name')  || '';
+    const foto  = localStorage.getItem('taxusa_cached_foto')  || '';
+    const email = localStorage.getItem('taxusa_offline_email') || '';
+
+    document.getElementById('pin-name').innerText = name || email.split('@')[0];
+    document.getElementById('pin-email-display').innerText = email;
+    if (foto) document.getElementById('pin-avatar').style.backgroundImage = `url('${foto}')`;
+
+    pinBuffer = '';
+    pinAttempts = 0;
+    document.getElementById('pin-error-offline').innerText = '';
+    updateDots('pin-dots-offline', 0);
+    renderKeypad('pin-keypad-offline', onOfflinePinKey);
+    showScreen('screen-pin-offline');
+}
+
+window.showOnlineLogin = () => showScreen('screen-login');
+
+async function onOfflinePinKey(key) {
+    if (pinAttempts >= MAX_PIN_ATTEMPTS) {
+        document.getElementById('pin-error-offline').innerText = t('pinLocked');
+        return;
+    }
+    if (key === 'del') {
+        pinBuffer = pinBuffer.slice(0, -1);
+    } else {
+        if (pinBuffer.length >= 4) return;
+        pinBuffer += key;
+    }
+    updateDots('pin-dots-offline', pinBuffer.length);
+    document.getElementById('pin-error-offline').innerText = '';
+
+    if (pinBuffer.length === 4) {
+        const entered = pinBuffer;
+        pinBuffer = '';
+        updateDots('pin-dots-offline', 0);
+
+        const hash   = await sha256(entered);
+        const stored = localStorage.getItem('taxusa_pin_hash');
+
+        if (hash === stored) {
+            // ✅ Correct PIN — bypass online auth, go straight to app
+            goToApp();
+        } else {
+            pinAttempts++;
+            const remaining = MAX_PIN_ATTEMPTS - pinAttempts;
+            if (remaining <= 0) {
+                document.getElementById('pin-error-offline').innerText = t('pinLocked');
+            } else {
+                document.getElementById('pin-error-offline').innerText = remaining < MAX_PIN_ATTEMPTS ? t('pinWrongCount', remaining) : t('pinWrong');
+            }
+            // Shake dots
+            shakeDotsError('pin-dots-offline');
+        }
+    }
+}
+
+// ── Create PIN screen (post login, first time) ──
+function showCreatePinScreen() {
+    pinStep   = 1;
+    pinFirst  = '';
+    pinBuffer = '';
+    updateStepDots(1);
+    updateDots('pin-dots-create', 0);
+    document.getElementById('pin-error-create').innerText = '';
+    applyTexts();
+    renderKeypad('pin-keypad-create', onCreatePinKey);
+    showScreen('screen-create-pin');
+}
+
+// Expose so index.html drawer can call it
+window.showCreatePinScreen = showCreatePinScreen;
+
+async function onCreatePinKey(key) {
+    if (key === 'del') {
+        pinBuffer = pinBuffer.slice(0, -1);
+    } else {
+        if (pinBuffer.length >= 4) return;
+        pinBuffer += key;
+    }
+    updateDots('pin-dots-create', pinBuffer.length);
+    document.getElementById('pin-error-create').innerText = '';
+
+    if (pinBuffer.length === 4) {
+        const entered = pinBuffer;
+        pinBuffer = '';
+
+        if (pinStep === 1) {
+            // Store first entry, ask for confirm
+            pinFirst = entered;
+            pinStep  = 2;
+            updateStepDots(2);
+            updateDots('pin-dots-create', 0);
+            document.getElementById('create-pin-title').innerText = t('confirmPinTitle');
+            document.getElementById('create-pin-sub').innerText   = t('confirmPinSub');
+        } else {
+            // Confirm
+            if (entered !== pinFirst) {
+                document.getElementById('pin-error-create').innerText = t('pinMismatch');
+                shakeDotsError('pin-dots-create');
+                pinStep = 1;
+                pinFirst = '';
+                updateStepDots(1);
+                updateDots('pin-dots-create', 0);
+                document.getElementById('create-pin-title').innerText = t('createPinTitle');
+                document.getElementById('create-pin-sub').innerText   = t('createPinSub');
+            } else {
+                await savePinToFirestore(pinFirst);
+                alert(t('pinSaved'));
+                goToApp();
+            }
+        }
+    }
+}
+
+async function savePinToFirestore(pin) {
+    const hash = await sha256(pin);
+    const user = auth.currentUser;
+    if (user) {
+        try {
+            await setDoc(doc(db, 'usuarios', user.uid), { pinHash: hash }, { merge: true });
+        } catch(e) { console.error('Error saving PIN:', e); }
+    }
+    // Always cache locally
+    localStorage.setItem('taxusa_pin_hash', hash);
+}
+
+window.skipPinCreation = () => goToApp();
+
+function updateStepDots(step) {
+    document.getElementById('step-dot-1').className = 'pin-step-dot ' + (step === 1 ? 'active' : 'done');
+    document.getElementById('step-dot-2').className = 'pin-step-dot ' + (step === 2 ? 'active' : '');
+}
+
+// ── Change PIN screen (exposed to index.html drawer) ──
+window.showChangePinScreen = () => {
+    if (!isOnline()) {
+        alert(t('errNetworkFailed'));
+        return;
+    }
+    changePinStep   = 'send';
+    changePinFirst  = '';
+    changePinBuffer = '';
+    document.getElementById('new-pin-section').style.display = 'none';
+    document.getElementById('send-verify-btn').style.display = 'block';
+    document.getElementById('pin-error-change').innerText = '';
+    updateDots('pin-dots-change', 0);
+    applyTexts();
+    showScreen('screen-change-pin');
+};
+
+window.sendChangePinEmail = async () => {
+    const user = auth.currentUser;
+    if (!user) { alert(t('errDefault')); return; }
+    try {
+        await sendEmailVerification(user);
+        alert(t('verifyEmailSent'));
+
+        // Show button to proceed after verification
+        document.getElementById('send-verify-btn').style.display = 'none';
+        const proceedBtn = document.createElement('button');
+        proceedBtn.className = 'btn btn-primary';
+        proceedBtn.innerText = t('iVerified');
+        proceedBtn.style.marginBottom = '0';
+        proceedBtn.onclick = () => {
+            // Reload user to get fresh emailVerified state
+            user.reload().then(() => {
+                changePinStep = 'new_enter';
+                document.getElementById('new-pin-section').style.display = 'block';
+                renderKeypad('pin-keypad-change', onChangePinKey);
+                proceedBtn.remove();
+            });
+        };
+        document.getElementById('send-verify-btn').parentNode.insertBefore(proceedBtn, document.getElementById('send-verify-btn'));
+    } catch(e) { alert(t('errDefault')); }
+};
+
+async function onChangePinKey(key) {
+    if (key === 'del') { changePinBuffer = changePinBuffer.slice(0, -1); }
+    else { if (changePinBuffer.length >= 4) return; changePinBuffer += key; }
+    updateDots('pin-dots-change', changePinBuffer.length);
+    document.getElementById('pin-error-change').innerText = '';
+
+    if (changePinBuffer.length === 4) {
+        const entered = changePinBuffer;
+        changePinBuffer = '';
+
+        if (changePinStep === 'new_enter') {
+            changePinFirst = entered;
+            changePinStep  = 'new_confirm';
+            updateDots('pin-dots-change', 0);
+            document.getElementById('new-pin-title').innerText = t('confirmPinTitle');
+            document.getElementById('new-pin-sub').innerText   = t('confirmPinSub');
+        } else {
+            if (entered !== changePinFirst) {
+                document.getElementById('pin-error-change').innerText = t('pinMismatch');
+                shakeDotsError('pin-dots-change');
+                changePinStep  = 'new_enter';
+                changePinFirst = '';
+                updateDots('pin-dots-change', 0);
+                document.getElementById('new-pin-title').innerText = t('newPinTitle');
+                document.getElementById('new-pin-sub').innerText   = t('newPinSub');
+            } else {
+                await savePinToFirestore(changePinFirst);
+                alert(t('pinChangedOk'));
+                goToApp();
+            }
+        }
+    }
+}
+
+window.goBackFromChangePin = () => goToApp();
+
+// ── PIN UI helpers ──
+function updateDots(containerId, filled) {
+    const dots = document.querySelectorAll(`#${containerId} .pin-dot`);
+    dots.forEach((d, i) => {
+        d.classList.toggle('filled', i < filled);
+        d.classList.remove('error');
+    });
+}
+
+function shakeDotsError(containerId) {
+    const dots = document.querySelectorAll(`#${containerId} .pin-dot`);
+    dots.forEach(d => { d.classList.add('error'); });
+    setTimeout(() => dots.forEach(d => { d.classList.remove('error'); }), 600);
+}
+
+function renderKeypad(containerId, handler) {
+    const keys = ['1','2','3','4','5','6','7','8','9','empty','0','del'];
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    keys.forEach(k => {
+        const btn = document.createElement('button');
+        btn.className = 'pin-key' + (k === 'del' ? ' del' : '') + (k === 'empty' ? ' empty' : '');
+        btn.innerText = k === 'del' ? '⌫' : k === 'empty' ? '' : k;
+        if (k !== 'empty') btn.onclick = () => handler(k === 'del' ? 'del' : k);
+        container.appendChild(btn);
+    });
+}
+
+// ── Handle redirect from index.html drawer "Cambiar PIN" ──
+onAuthStateChanged(auth, async (user) => {
+    const action = localStorage.getItem('taxusa_action');
+    if (action === 'change_pin' && user && user.emailVerified) {
+        localStorage.removeItem('taxusa_action');
+        window.showChangePinScreen();
+    }
+});
+
+// ── Init ──
+initScreen();
+// Check action flag on load too (user might already be auth'd)
+const _pendingAction = localStorage.getItem('taxusa_action');
+if (_pendingAction === 'change_pin') {
+    // Will be handled by onAuthStateChanged above once Firebase resolves
+    // But if user arrives already logged in, show login first then it triggers
+}
+</script>
+
+</body>
+</html>

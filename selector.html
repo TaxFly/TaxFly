@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tax Travel Assistant — Elegí tu destino</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <script>
+        const _t = localStorage.getItem('theme');
+        if (_t) document.documentElement.setAttribute('data-theme', _t);
+        else if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.setAttribute('data-theme','dark');
+    </script>
+    <style>
+        :root {
+            --primary: #EF9F27; --primary-dark: #BA7517; --primary-glow: rgba(239,159,39,0.18);
+            --bg: #fdf8f0; --surface: #ffffff; --border: #f0e0c0; --input-bg: #fdf5e8;
+            --text: #1a0f00; --text-sub: #7a5c2e; --text-dim: #b8924a;
+            --shadow: 0 4px 20px rgba(186,117,23,0.10); --shadow-lg: 0 20px 60px rgba(186,117,23,0.18);
+            color-scheme: light;
+        }
+        [data-theme="dark"] {
+            --bg: #120d04; --surface: #1e1508; --border: #3d2e10; --input-bg: #2a1f0a;
+            --text: #fdf5e8; --text-sub: #c4924a; --text-dim: #7a5c2e;
+            --shadow: 0 4px 20px rgba(0,0,0,0.45); --shadow-lg: 0 20px 60px rgba(0,0,0,0.6);
+            color-scheme: dark;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'DM Sans', -apple-system, system-ui, sans-serif;
+            background: var(--bg); color: var(--text);
+            min-height: 100vh; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 24px; transition: background .3s, color .3s;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* Background glow */
+        body::before {
+            content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(239,159,39,0.12), transparent);
+        }
+
+        .wrap {
+            position: relative; z-index: 1;
+            width: 100%; max-width: 460px;
+            animation: fadeUp .5s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
+        @keyframes fadeUp {
+            from { opacity:0; transform: translateY(24px); }
+            to   { opacity:1; transform: translateY(0); }
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center; margin-bottom: 36px;
+        }
+        .brand {
+            font-size: 1rem; font-weight: 800; color: var(--primary);
+            letter-spacing: 0; margin-bottom: 8px;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .page-title {
+            font-size: 1.7rem; font-weight: 900; color: var(--text);
+            line-height: 1.2; margin-bottom: 8px;
+        }
+        .page-sub {
+            font-size: .85rem; color: var(--text-sub); font-weight: 600;
+        }
+
+        /* Cards */
+        .cards { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
+
+        .region-card {
+            background: var(--surface); border-radius: 24px;
+            border: 2px solid transparent;
+            padding: 28px 24px; cursor: pointer;
+            transition: all .25s cubic-bezier(0.4,0,0.2,1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            text-decoration: none; color: inherit;
+            display: block; position: relative; overflow: hidden;
+        }
+        .region-card::before {
+            content: ''; position: absolute; inset: 0; opacity: 0;
+            transition: opacity .25s;
+            border-radius: 22px;
+        }
+        .region-card:active { transform: scale(.98); }
+
+        /* USA card */
+        .card-usa {
+            background: var(--surface);
+            border-color: rgba(239,68,68,0.35);
+            border-top: 3px solid #ef4444;
+        }
+        .card-usa::before { background: linear-gradient(135deg, rgba(37,99,235,0.08), rgba(239,68,68,0.07)); }
+        .card-usa:hover { border-color: #ef4444; box-shadow: 0 8px 32px rgba(239,68,68,0.22), 0 0 0 1px rgba(37,99,235,0.2); transform: translateY(-2px); }
+        .card-usa:hover::before { opacity: 1; }
+
+        .card-europe {
+            background: var(--surface);
+            border-color: rgba(0,51,153,0.35);
+            border-top: 3px solid #003399;
+        }
+        .card-europe::before { background: linear-gradient(135deg, rgba(0,51,153,0.07), rgba(255,204,0,0.06)); }
+        .card-europe:hover { border-color: #003399; box-shadow: 0 8px 32px rgba(0,51,153,0.22), 0 0 0 1px rgba(255,204,0,0.15); transform: translateY(-2px); }
+        .card-europe:hover::before { opacity: 1; }
+
+        .card-europe .card-arrow { background: rgba(0,51,153,.15); color: #003399; }
+
+        /* Coming soon overlay */
+        .card-europe.soon { cursor: default; opacity: .75; }
+        .card-europe.soon:hover { transform: none; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border-color: rgba(0,102,204,0.3); }
+
+        .card-inner { display: flex; align-items: center; gap: 20px; position: relative; z-index: 1; }
+
+        /* Logo SVG containers */
+        .logo-box {
+            flex-shrink: 0; width: 64px; height: 64px; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .logo-box-usa { background: transparent; box-shadow: 0 0 16px rgba(239,68,68,0.25), 0 0 6px rgba(37,99,235,0.3); }
+        .logo-box-eu  { background: linear-gradient(135deg, #002080 0%, #003399 60%, #0044bb); }
+
+        .card-body { flex: 1; }
+        .card-name {
+            font-size: 1.35rem; font-weight: 900; line-height: 1.1; margin-bottom: 4px;
+        }
+        .card-name .tax { color: #2563eb; }
+        .card-name .region-usa { color: #ef4444; text-shadow: 0 0 12px rgba(239,68,68,0.7), 0 0 24px rgba(239,68,68,0.4); }
+        .card-name .region-eu  { color: #ffcc00; text-shadow: 0 0 14px rgba(255,204,0,0.45); }
+        .card-tagline { font-size: .75rem; font-weight: 700; color: var(--text-sub); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 6px; }
+        .card-desc { font-size: .82rem; font-weight: 600; color: var(--text-sub); line-height: 1.4; }
+
+        .card-arrow {
+            flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; transition: transform .2s;
+        }
+        .card-usa .card-arrow   { background: rgba(239,68,68,.12); color: #ef4444; }
+        .region-card:hover .card-arrow { transform: translateX(4px); }
+
+        /* Soon badge */
+        .soon-badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: rgba(245,158,11,.12); border: 1px solid rgba(245,158,11,.3);
+            color: #f59e0b; border-radius: 20px; padding: 3px 10px;
+            font-size: .65rem; font-weight: 800; text-transform: uppercase;
+            letter-spacing: .5px; margin-top: 6px;
+        }
+
+        /* Features row */
+        .features {
+            display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;
+        }
+        .feat-pill {
+            background: var(--input-bg); border: 1px solid var(--border);
+            border-radius: 20px; padding: 3px 10px;
+            font-size: .65rem; font-weight: 700; color: var(--text-sub);
+        }
+        .card-europe.soon .feat-pill {
+            opacity: .45;
+            filter: grayscale(1);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center; font-size: .7rem; color: var(--text-dim);
+            font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .footer img { width: 16px; border-radius: 2px; }
+
+        /* Lang selector */
+        .lang-top {
+            position: fixed; top: 16px; right: 16px; z-index: 100;
+            background: var(--surface); border: 1.5px solid var(--border);
+            border-radius: 12px; cursor: pointer; min-width: 88px;
+            box-shadow: 0 2px 12px rgba(0,0,0,.1); user-select: none;
+        }
+        .lang-sel { padding: 8px 12px; display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: .85rem; }
+        .lang-sel .arr { font-size: .55rem; color: var(--primary); margin-left: auto; }
+        .lang-opts { display: none; position: absolute; top: calc(100% + 6px); left: 0; width: 100%; background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+        .lang-opts.show { display: block; }
+        .lang-opt { padding: 10px 12px; display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: .85rem; cursor: pointer; transition: .15s; }
+        .lang-opt:hover { background: var(--input-bg); }
+        .lang-opt img { width: 18px; height: 13px; object-fit: cover; border-radius: 2px; }
+
+        /* Theme toggle */
+        .theme-btn {
+            position: fixed; top: 16px; left: 16px; z-index: 100;
+            background: var(--surface); border: 1.5px solid var(--border);
+            border-radius: 12px; padding: 8px 12px; cursor: pointer;
+            font-size: .85rem; font-weight: 800; color: var(--text-sub);
+            box-shadow: 0 2px 12px rgba(0,0,0,.1); transition: .2s;
+        }
+        .theme-btn:hover { border-color: var(--primary); color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<!-- Lang selector -->
+<div class="lang-top" id="langSel" onclick="toggleLang()">
+    <div class="lang-sel">
+        <span id="selFlag"></span>
+        <span id="selCode">ES</span>
+        <span class="arr">▼</span>
+    </div>
+    <div class="lang-opts" id="langOpts">
+        <div class="lang-opt" onclick="setLang('es',event)"><img src="https://flagcdn.com/w20/ar.png" alt=""> ES</div>
+        <div class="lang-opt" onclick="setLang('en',event)"><img src="https://flagcdn.com/w20/us.png" alt=""> EN</div>
+        <div class="lang-opt" onclick="setLang('pt',event)"><img src="https://flagcdn.com/w20/br.png" alt=""> PT</div>
+    </div>
+</div>
+
+<!-- Theme toggle -->
+<button class="theme-btn" onclick="toggleTheme()">🌓</button>
+
+<div class="wrap">
+
+    <div class="page-header">
+        <span class="brand"><svg width="22" height="22" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><path d="M60 5 Q5 5 5 60 Q5 115 60 115 Z" fill="#FAEEDA" stroke="#BA7517" stroke-width="3"/><path d="M60 5 Q34 34 34 60 Q34 86 60 115" fill="none" stroke="#EF9F27" stroke-width="2" opacity="0.5"/><path d="M60 5 Q115 5 115 60 Q115 115 60 115 Z" fill="#FAC775" stroke="#BA7517" stroke-width="3"/><path d="M60 5 Q86 34 86 60 Q86 86 60 115" fill="none" stroke="#854F0B" stroke-width="2" opacity="0.4"/><line x1="5" y1="60" x2="115" y2="60" stroke="#854F0B" stroke-width="2" opacity="0.3"/><line x1="60" y1="5" x2="60" y2="115" stroke="#854F0B" stroke-width="3"/><g transform="translate(60,48)"><polygon points="0,-24 18,8 0,2 -18,8" fill="#633806"/><polygon points="0,2 -18,8 -9,15" fill="#854F0B"/><polygon points="0,2 18,8 9,15" fill="#854F0B"/><polygon points="0,2 -5,19 0,14" fill="#BA7517"/><polygon points="0,2 5,19 0,14" fill="#BA7517"/></g></svg><span style="font-size:1rem;font-weight:800;letter-spacing:0"><span style="color:var(--primary)">Tax</span><span style="color:var(--text)">Fly</span></span></span>
+        <h1 class="page-title" id="txt-title">¿A dónde viajás?</h1>
+        <p class="page-sub" id="txt-sub">Elegí tu destino y accedé a tu asistente de viaje</p>
+    </div>
+
+    <div class="cards">
+
+        <!-- TaxUSA -->
+        <a class="region-card card-usa" href="profiles.html" onclick="localStorage.setItem('taxfly_destino','usa')">
+            <div class="card-inner">
+                <div class="logo-box logo-box-usa">
+                    <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- fondo azul marino -->
+                        <rect width="44" height="44" rx="10" fill="#1e3a8a"/>
+                        <!-- raya roja superior -->
+                        <rect x="0" y="13" width="44" height="6" fill="#ef4444"/>
+                        <!-- raya roja inferior -->
+                        <rect x="0" y="25" width="44" height="6" fill="#ef4444"/>
+                        <!-- estrella blanca centrada -->
+                        <polygon points="22,7 24.5,14.5 32.5,14.5 26,19.5 28.5,27 22,22 15.5,27 18,19.5 11.5,14.5 19.5,14.5" fill="#ffffff"/>
+                    </svg>
+                </div>
+                <div class="card-body">
+                    <div class="card-name">
+                        <span class="tax">Tax</span><span class="region-usa">USA</span>
+                    </div>
+                    <div class="card-tagline" id="txt-usa-tag">Asistente de viaje · Estados Unidos</div>
+                    <div class="features">
+                        <span class="feat-pill" id="feat-tax">💵 Tax &amp; propinas</span>
+                        <span class="feat-pill" id="feat-parks">🏰 Parques</span>
+                        <span class="feat-pill" id="feat-outlets">🛍️ Outlets</span>
+                        <span class="feat-pill" id="feat-itin">📍 Itinerarios</span>
+                        <span class="feat-pill" id="feat-units">⚖️ Unidades</span>
+                        <span class="feat-pill" id="feat-group">👥 Gastos grupales</span>
+                    </div>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+        </a>
+
+        <!-- TaxEurope -->
+        <div class="region-card card-europe soon" onclick="localStorage.setItem('taxfly_destino','europe');showSoon()">
+            <div class="card-inner">
+                <div class="logo-box logo-box-eu">
+                    <svg width="36" height="36" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="32" height="32" rx="8" fill="#003399"/>
+                        <!-- 12 golden stars in a circle, radius 10, center 16,16 -->
+                        <g fill="#FFCC00">
+                            <!-- top -->
+                            <polygon points="16,4 16.7,6.2 19,6.2 17.2,7.5 17.9,9.7 16,8.4 14.1,9.7 14.8,7.5 13,6.2 15.3,6.2"/>
+                            <!-- top-right -->
+                            <polygon points="22.7,6.3 23.4,8.5 25.7,8.5 23.9,9.8 24.6,12 22.7,10.7 20.8,12 21.5,9.8 19.7,8.5 22,8.5"/>
+                            <!-- right -->
+                            <polygon points="27,13 27.7,15.2 30,15.2 28.2,16.5 28.9,18.7 27,17.4 25.1,18.7 25.8,16.5 24,15.2 26.3,15.2"/>
+                            <!-- bottom-right -->
+                            <polygon points="22.7,19.7 23.4,21.9 25.7,21.9 23.9,23.2 24.6,25.4 22.7,24.1 20.8,25.4 21.5,23.2 19.7,21.9 22,21.9"/>
+                            <!-- bottom -->
+                            <polygon points="16,22.3 16.7,24.5 19,24.5 17.2,25.8 17.9,28 16,26.7 14.1,28 14.8,25.8 13,24.5 15.3,24.5"/>
+                            <!-- bottom-left -->
+                            <polygon points="9.3,19.7 10,21.9 12.3,21.9 10.5,23.2 11.2,25.4 9.3,24.1 7.4,25.4 8.1,23.2 6.3,21.9 8.6,21.9"/>
+                            <!-- left -->
+                            <polygon points="5,13 5.7,15.2 8,15.2 6.2,16.5 6.9,18.7 5,17.4 3.1,18.7 3.8,16.5 2,15.2 4.3,15.2"/>
+                            <!-- top-left -->
+                            <polygon points="9.3,6.3 10,8.5 12.3,8.5 10.5,9.8 11.2,12 9.3,10.7 7.4,12 8.1,9.8 6.3,8.5 8.6,8.5"/>
+                        </g>
+                    </svg>
+                </div>
+                <div class="card-body">
+                    <div class="card-name">
+                        <span class="tax">Tax</span><span class="region-eu">Europe</span>
+                    </div>
+                    <div class="card-tagline" id="txt-eu-tag">Asistente de viaje · Europa</div>
+                    <div class="soon-badge">🚀 <span id="txt-soon">Próximamente</span></div>
+                </div>
+                <div class="card-arrow">🔒</div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <span id="txt-footer">Creado por Juan Cruz Bria</span>
+        <img src="https://flagcdn.com/w40/ar.png" alt="Argentina">
+    </div>
+
+</div>
+
+<script>
+    const i18n = {
+        es: {
+            title: '¿A dónde viajás?',
+            sub: 'Elegí tu destino y accedé a tu asistente de viaje',
+            usa_tag: 'Asistente de viaje · Estados Unidos',
+            eu_tag: 'Asistente de viaje · Europa',
+            soon: 'Próximamente',
+            footer: 'Creado por Juan Cruz Bria',
+            soon_msg: '🚀 TaxEurope estará disponible próximamente. ¡Gracias por la paciencia!',
+            feat_tax: '💵 Tax & propinas',
+            feat_parks: '🏰 Parques',
+            feat_outlets: '🛍️ Outlets',
+            feat_itin: '📍 Itinerarios',
+            feat_units: '⚖️ Unidades',
+            feat_group: '👥 Gastos grupales',
+        },
+        en: {
+            title: 'Where are you traveling?',
+            sub: 'Choose your destination and access your travel assistant',
+            usa_tag: 'Travel Assistant · United States',
+            eu_tag: 'Travel Assistant · Europe',
+            soon: 'Coming soon',
+            footer: 'Created by Juan Cruz Bria',
+            soon_msg: '🚀 TaxEurope will be available soon. Thanks for your patience!',
+            feat_tax: '💵 Tax & tips',
+            feat_parks: '🏰 Parks',
+            feat_outlets: '🛍️ Outlets',
+            feat_itin: '📍 Itineraries',
+            feat_units: '⚖️ Unit converter',
+            feat_group: '👥 Group expenses',
+        },
+        pt: {
+            title: 'Para onde você vai?',
+            sub: 'Escolha seu destino e acesse seu assistente de viagem',
+            usa_tag: 'Assistente de viagem · Estados Unidos',
+            eu_tag: 'Assistente de viagem · Europa',
+            soon: 'Em breve',
+            footer: 'Criado por Juan Cruz Bria',
+            soon_msg: '🚀 TaxEurope estará disponível em breve. Obrigado pela paciência!',
+            feat_tax: '💵 Impostos & gorjetas',
+            feat_parks: '🏰 Parques',
+            feat_outlets: '🛍️ Outlets',
+            feat_itin: '📍 Roteiros',
+            feat_units: '⚖️ Conversor de unidades',
+            feat_group: '👥 Gastos em grupo',
+        }
+    };
+
+    const flags = { es: 'ar', en: 'us', pt: 'br' };
+    let currentLang = localStorage.getItem('appLang') || 'es';
+
+    function applyLang(lang) {
+        currentLang = lang;
+        localStorage.setItem('appLang', lang);
+        const t = i18n[lang] || i18n.es;
+        document.getElementById('txt-title').textContent   = t.title;
+        document.getElementById('txt-sub').textContent     = t.sub;
+        document.getElementById('txt-usa-tag').textContent = t.usa_tag;
+        document.getElementById('txt-eu-tag').textContent  = t.eu_tag;
+        document.getElementById('txt-soon').textContent    = t.soon;
+        document.getElementById('txt-footer').textContent  = t.footer;
+        const _flagSvgs = {
+            es: '<svg width="18" height="13" viewBox="0 0 18 13" xmlns="http://www.w3.org/2000/svg"><rect width="18" height="4.3" y="0" fill="#74acdf"/><rect width="18" height="4.4" y="4.3" fill="#fff"/><rect width="18" height="4.3" y="8.7" fill="#74acdf"/><circle cx="9" cy="6.5" r="1.5" fill="#f6b40e"/></svg>',
+            en: '<img src="https://flagcdn.com/w20/us.png" width="18" height="13" alt="US" style="border-radius:2px;vertical-align:middle;object-fit:cover;">',
+            pt: '<svg width="18" height="13" viewBox="0 0 18 13" xmlns="http://www.w3.org/2000/svg"><rect width="18" height="13" fill="#009c3b"/><polygon points="9,1 17,6.5 9,12 1,6.5" fill="#FEDF00"/><circle cx="9" cy="6.5" r="2.6" fill="#002776"/></svg>'
+        };
+        const selFlag = document.getElementById('selFlag');
+        if (selFlag) selFlag.innerHTML = _flagSvgs[lang] || _flagSvgs.es;
+        document.getElementById('selCode').textContent = lang.toUpperCase();
+        document.documentElement.setAttribute('lang', lang);
+        // Feature pills
+        ['tax','parks','outlets','itin','units','group'].forEach(k => {
+            const el = document.getElementById('feat-' + k);
+            if (el && t['feat_' + k]) el.textContent = t['feat_' + k];
+        });
+        // Resaltar opción activa en el dropdown
+        document.querySelectorAll('.lang-opt').forEach(opt => {
+            const onclick = opt.getAttribute('onclick') || '';
+            if (onclick.includes("'" + lang + "'")) {
+                opt.style.background = 'var(--primary-glow)';
+                opt.style.color = 'var(--primary)';
+                opt.style.fontWeight = '900';
+            } else {
+                opt.style.background = '';
+                opt.style.color = '';
+                opt.style.fontWeight = '';
+            }
+        });
+    }
+
+    function toggleLang() {
+        document.getElementById('langOpts').classList.toggle('show');
+    }
+    function setLang(lang, e) {
+        e.stopPropagation();
+        applyLang(lang);
+        document.getElementById('langOpts').classList.remove('show');
+    }
+    document.addEventListener('click', e => {
+        if (!document.getElementById('langSel').contains(e.target))
+            document.getElementById('langOpts').classList.remove('show');
+    });
+
+    function toggleTheme() {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const next = isDark ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+    }
+
+    function showSoon() {
+        const t = i18n[currentLang] || i18n.es;
+        // Toast
+        let toast = document.getElementById('_toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = '_toast';
+            toast.style.cssText = 'position:fixed;bottom:24px;left:16px;right:16px;transform:translateY(16px);background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:12px 18px;font-size:.82rem;font-weight:700;opacity:0;transition:opacity .3s,transform .3s;z-index:9999;pointer-events:none;box-shadow:0 8px 32px rgba(0,0,0,.2);white-space:normal;text-align:center;font-family:inherit;color:var(--text);';
+            document.body.appendChild(toast);
+        }
+        toast.textContent = t.soon_msg;
+        toast.style.opacity = '1'; toast.style.transform = 'translateY(0)';
+        clearTimeout(toast._t);
+        toast._t = setTimeout(() => { toast.style.opacity='0'; toast.style.transform='translateY(16px)'; }, 3000);
+    }
+
+    // Init
+    applyLang(currentLang);
+</script>
+</body>
+</html>
