@@ -673,6 +673,36 @@ window.changeLanguage = (lang) => {
     updateTripUI();
     document.title = lang === 'en' ? 'TaxUSA — Home' : lang === 'pt' ? 'TaxUSA — Início' : 'TaxUSA — Inicio';
     if (window.taxieUpdateLang) window.taxieUpdateLang(lang);
+
+    // Retraducir label "Clima en destino" sin recargar clima (usar caché)
+    const lbl = document.getElementById('wc-label');
+    if (lbl) {
+        lbl.textContent = lang === 'en' ? 'Weather at destination' : lang === 'pt' ? 'Clima no destino' : 'Clima en destino';
+    }
+    // Retraducir descripción del clima si hay datos en caché
+    if (weatherCache && weatherCache.data) {
+        renderWeather(weatherCache.data, weatherCache.city, lang);
+    }
+
+    // Retraducir toggle del tip (SHOW/HIDE)
+    const tipToggleLbl = document.getElementById('tip-toggle-lbl');
+    if (tipToggleLbl) {
+        if (tipOpen) {
+            tipToggleLbl.textContent = lang === 'en' ? '▲ HIDE' : '▲ OCULTAR';
+        } else {
+            tipToggleLbl.textContent = lang === 'en' ? '▼ SHOW' : lang === 'pt' ? '▼ VER' : '▼ VER';
+        }
+    }
+
+    // Retraducir toggle del split (VER/OCULTAR/SHOW/HIDE)
+    const splitToggleLbl = document.getElementById('split-toggle-lbl');
+    if (splitToggleLbl) {
+        if (splitOpen) {
+            splitToggleLbl.innerHTML = '▲ <span>' + (i18n[lang].split_close || 'OCULTAR') + '</span>';
+        } else {
+            splitToggleLbl.innerHTML = '▼ <span>' + (i18n[lang].split_open || 'VER') + '</span>';
+        }
+    }
 };
 
 window.setCategory = (cat) => {
@@ -1072,8 +1102,8 @@ window.toggleTip = () => {
     const lang = localStorage.getItem('appLang') || 'es';
     body.classList.toggle('open', tipOpen);
     if (lbl) lbl.textContent = tipOpen
-        ? (lang === 'en' ? '▲ HIDE' : '▲ OCULTAR')
-        : (lang === 'en' ? '▼ SHOW' : '▼ VER');
+        ? (lang === 'en' ? '▲ HIDE' : lang === 'pt' ? '▲ OCULTAR' : '▲ OCULTAR')
+        : (lang === 'en' ? '▼ SHOW' : lang === 'pt' ? '▼ VER' : '▼ VER');
 };
 
 // Actualizar badge de propina seleccionada
@@ -2063,4 +2093,3 @@ window.doSwitchApp = function(destino) {
 
 </body>
 </html>
-
