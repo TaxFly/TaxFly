@@ -769,6 +769,11 @@ window.changeLanguage = (lang) => {
         const k=el.getAttribute('data-i18n-ph');
         if(i18n[lang]?.[k]) el.placeholder=i18n[lang][k];
     });
+    // Traducir <option> de los selects de moneda (innerText no funciona bien en <option>)
+    document.querySelectorAll('option[data-i18n]').forEach(opt=>{
+        const k=opt.getAttribute('data-i18n');
+        if(i18n[lang]?.[k]) opt.text=i18n[lang][k];
+    });
     const el=document.getElementById('tip-text');
     if(el) el.innerText=shoppingTips[lang][tipIndex];
     // Update offline toast text
@@ -777,7 +782,7 @@ window.changeLanguage = (lang) => {
     const offSub   = document.querySelector('#offline-label span');
     if (offTitle) offTitle.textContent = t.offline_title;
     if (offSub)   offSub.textContent   = t.offline_sub;
-    document.title = lang === 'en' ? 'TaxUSA — Expenses' : lang === 'pt' ? 'TaxUSA — Expenses' : 'TaxUSA — Gastos';
+    document.title = lang === 'en' ? 'TaxUSA — Expenses' : lang === 'pt' ? 'TaxUSA — Gastos' : 'TaxUSA — Gastos';
     // OCR modal dynamic texts
     const ocrTitle = document.getElementById('ocr-modal-title');
     if (ocrTitle) ocrTitle.textContent = t.ocr_modal_title || '';
@@ -801,6 +806,8 @@ window.changeLanguage = (lang) => {
         emptyDash.innerHTML = '<span>🛍️</span>' + (parts[0]||'') + '<br>' + (parts[1]||'');
     }
     if (window.taxieUpdateLang) window.taxieUpdateLang(lang);
+    // Re-renderizar el dashboard con las etiquetas de categoría en el nuevo idioma
+    if (typeof allGastos !== 'undefined' && allGastos.length) renderDashboard(allGastos);
 };
 
 async function fetchRates(){
@@ -858,7 +865,10 @@ window.deleteGasto=async(id)=>{
 let allGastos=[];
 
 const CAT_COLORS={'🛍️ Compras':'#2563eb','👟 Ropa':'#7c3aed','🍔 Comida':'#f59e0b','🎢 Entretenimiento':'#0ea5e9','🚗 Transporte':'#10b981','🏨 Alojamiento':'#8b5cf6','💊 Farmacia':'#ef4444','✈️ Vuelos':'#0284c7','📦 Otros':'#94a3b8'};
+// Mapa de claves fijas (español) → i18n key para traducción en el dashboard
+const CAT_I18N_KEY={'🛍️ Compras':'cat_shopping','👟 Ropa':'cat_clothing','🍔 Comida':'cat_food','🎢 Entretenimiento':'cat_entertainment','🚗 Transporte':'cat_transport','🏨 Alojamiento':'cat_accommodation','💊 Farmacia':'cat_pharmacy','✈️ Vuelos':'cat_flights','📦 Otros':'cat_other'};
 function catColor(cat){return CAT_COLORS[cat]||'#94a3b8';}
+function catLabel(cat){const lang=localStorage.getItem('appLang')||'es';const key=CAT_I18N_KEY[cat];return(key&&i18n[lang]?.[key])||cat;}
 
 function listenGastos(){
     if(!currentUser||!perfilId)return;
@@ -877,7 +887,7 @@ function listenGastos(){
         c.innerHTML=allGastos.map(g=>{
             const cat=g.cat||'📦 Otros';
             const catEmoji=cat.match(/^(\S+)/)?.[1]||'📦';
-            const catLabel=cat.replace(/^\S+\s*/,'');
+            const catDisplayLabel=catLabel(cat).replace(/^\S+\s*/,'');
             const thumbHtml=g.thumb
                 ?`<img class="h-thumb" src="${g.thumb}" alt="recibo" onclick="openReceiptViewer('${g.thumb}','${g.id}')">`
                 :`<div class="h-thumb-placeholder">${catEmoji}</div>`;
@@ -885,7 +895,7 @@ function listenGastos(){
                 ${thumbHtml}
                 <div style="flex:1;min-width:0;padding:0 8px;">
                     <div class="h-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${g.nombre}</div>
-                    <div style="font-size:.62rem;color:var(--text-dim);margin-top:1px;">${catLabel}</div>
+                    <div style="font-size:.62rem;color:var(--text-dim);margin-top:1px;">${catDisplayLabel}</div>
                 </div>
                 <div class="h-right">
                     <div class="h-amount">-$${fmt(g.valor)}</div>
@@ -936,9 +946,9 @@ function renderDashboard(gastos){
     });
     svg.innerHTML=paths;
     // Legend
-    document.getElementById('donut-legend').innerHTML=cats.slice(0,5).map(([cat,val])=>`<div class="legend-item"><div class="legend-dot" style="background:${catColor(cat)}"></div><div class="legend-name">${cat}</div><div class="legend-val">$${fmt(val)}</div><div class="legend-pct">${Math.round(val/total*100)}%</div></div>`).join('');
+    document.getElementById('donut-legend').innerHTML=cats.slice(0,5).map(([cat,val])=>`<div class="legend-item"><div class="legend-dot" style="background:${catColor(cat)}"></div><div class="legend-name">${catLabel(cat)}</div><div class="legend-val">$${fmt(val)}</div><div class="legend-pct">${Math.round(val/total*100)}%</div></div>`).join('');
     // Bars
-    document.getElementById('cat-bars').innerHTML=cats.map(([cat,val])=>`<div class="cat-bar-row"><div class="cat-bar-top"><div class="cat-bar-name">${cat}</div><div class="cat-bar-amount">$${fmt(val)} <span style="color:var(--text-dim);font-weight:600;">${Math.round(val/total*100)}%</span></div></div><div class="cat-bar-track"><div class="cat-bar-fill" style="width:${Math.round(val/total*100)}%;background:${catColor(cat)};"></div></div></div>`).join('');
+    document.getElementById('cat-bars').innerHTML=cats.map(([cat,val])=>`<div class="cat-bar-row"><div class="cat-bar-top"><div class="cat-bar-name">${catLabel(cat)}</div><div class="cat-bar-amount">$${fmt(val)} <span style="color:var(--text-dim);font-weight:600;">${Math.round(val/total*100)}%</span></div></div><div class="cat-bar-track"><div class="cat-bar-fill" style="width:${Math.round(val/total*100)}%;background:${catColor(cat)};"></div></div></div>`).join('');
 }
 
 window.showSec=(s)=>{
