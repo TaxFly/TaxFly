@@ -297,9 +297,9 @@
     const destinoLabel = destino === 'europe' ? 'TaxEurope' : 'TaxUSA';
 
     const i18n = {
-        es: { pageTitle: `${destinoLabel} — Perfiles`, title: "¿Quién está planificando hoy?", editTitle: "Administrar Perfiles", manage: "EDITAR PERFILES", done: "LISTO", save: "GUARDAR", cancel: "CANCELAR", delete: "Eliminar Perfil", edit: "Editar Perfil", newProfile: "Nuevo Perfil", guest: "Invitado", confirm: "¿Eliminar este perfil?", logout: "🚪 CERRAR SESIÓN", namePlaceholder: "Tu nombre" },
-        en: { pageTitle: `${destinoLabel} — Profiles`, title: "Who's planning today?", editTitle: "Manage Profiles", manage: "EDIT PROFILES", done: "DONE", save: "SAVE", cancel: "CANCEL", delete: "Delete Profile", edit: "Edit Profile", newProfile: "New Profile", guest: "Guest", confirm: "Delete this profile?", logout: "🚪 SIGN OUT", namePlaceholder: "Your name" },
-        pt: { pageTitle: `${destinoLabel} — Perfis`, title: "Quem está planejando hoje?", editTitle: "Gerenciar Perfis", manage: "EDITAR PERFIS", done: "PRONTO", save: "SALVAR", cancel: "CANCELAR", delete: "Excluir Perfil", edit: "Editar Perfil", newProfile: "Novo Perfil", guest: "Convidado", confirm: "Excluir este perfil?", logout: "🚪 SAIR", namePlaceholder: "Seu nome" }
+        es: { pageTitle: `${destinoLabel} — Perfiles`, title: "¿Quién está planificando hoy?", editTitle: "Administrar Perfiles", manage: "EDITAR PERFILES", done: "LISTO", save: "GUARDAR", cancel: "CANCELAR", delete: "Eliminar Perfil", edit: "Editar Perfil", newProfile: "Nuevo Perfil", addLabel: "Nuevo", guest: "Invitado", active: "Activo", confirm: "¿Eliminar este perfil?", logout: "🚪 CERRAR SESIÓN", namePlaceholder: "Tu nombre" },
+        en: { pageTitle: `${destinoLabel} — Profiles`, title: "Who's planning today?", editTitle: "Manage Profiles", manage: "EDIT PROFILES", done: "DONE", save: "SAVE", cancel: "CANCEL", delete: "Delete Profile", edit: "Edit Profile", newProfile: "New Profile", addLabel: "New", guest: "Guest", active: "Active", confirm: "Delete this profile?", logout: "🚪 SIGN OUT", namePlaceholder: "Your name" },
+        pt: { pageTitle: `${destinoLabel} — Perfis`, title: "Quem está planejando hoje?", editTitle: "Gerenciar Perfis", manage: "EDITAR PERFIS", done: "PRONTO", save: "SALVAR", cancel: "CANCELAR", delete: "Excluir Perfil", edit: "Editar Perfil", newProfile: "Novo Perfil", addLabel: "Novo", guest: "Convidado", active: "Ativo", confirm: "Excluir este perfil?", logout: "🚪 SAIR", namePlaceholder: "Seu nome" }
     };
 
     const photos = [
@@ -359,7 +359,7 @@
             <div class="profile-item" onclick="handleClick('${p.id}','${p.nombre}','${encodeURIComponent(p.foto)}')">
                 <div class="avatar-wrapper">
                     <div class="avatar${isActive ? ' is-active' : ''}" style="background-image:url('${p.foto}')"></div>
-                    ${isActive ? '<div class="active-badge">Activo</div>' : ''}
+                    ${isActive ? `<div class="active-badge">${t.active}</div>` : ''}
                     <div class="edit-overlay">
                         <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
                     </div>
@@ -371,7 +371,7 @@
         if (profiles.length < 5) {
             grid.innerHTML += `
                 <div class="profile-item" onclick="openEditor(null)">
-                    <div class="avatar-wrapper"><div class="add-avatar"><span>+</span><span class="add-label">Nuevo</span></div></div>
+                    <div class="avatar-wrapper"><div class="add-avatar"><span>+</span><span class="add-label">${t.addLabel}</span></div></div>
                     <div class="profile-name">${t.newProfile}</div>
                 </div>`;
         }
