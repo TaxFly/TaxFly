@@ -1,0 +1,6 @@
+<svg width="160" height="40" viewBox="0 0 160 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="1" y="1" width="38" height="38" rx="10" fill="#2563EB" stroke="#13347B" stroke-width="2"/>
+  <path d="M18 27 L27 13" stroke="#fff" stroke-width="2.3" stroke-linecap="round"/>
+  <circle cx="23" cy="16" r="3" fill="#fff"/>
+  <text x="45" y="27" font-family="DM Sans, Arial, sans-serif" font-weight="bold" font-size="22" fill="#2563EB" letter-spacing="-0.8">TaxUSA</text>
+</svg>

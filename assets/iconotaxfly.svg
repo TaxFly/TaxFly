@@ -1,0 +1,84 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <title>TaxFly Global Travel Assistance</title>
+  <defs>
+    <clipPath id="gc">
+      <circle cx="256" cy="218" r="185"/>
+    </clipPath>
+    <clipPath id="lh">
+      <rect x="71" y="33" width="185" height="370"/>
+    </clipPath>
+    <clipPath id="rh">
+      <rect x="256" y="33" width="185" height="370"/>
+    </clipPath>
+  </defs>
+
+  <!-- Fondo negro -->
+  <rect width="512" height="512" fill="#120800"/>
+
+  <!-- Círculo fondo oscuro marrón -->
+  <circle cx="256" cy="256" r="248" fill="#1e0f03"/>
+
+  <!-- ── GLOBO ── -->
+  <!-- Mitad izquierda: crema -->
+  <g clip-path="url(#lh)">
+    <circle cx="256" cy="218" r="185" fill="#f2e8d0"/>
+  </g>
+  <!-- Mitad derecha: ámbar -->
+  <g clip-path="url(#rh)">
+    <circle cx="256" cy="218" r="185" fill="#e8a84a"/>
+  </g>
+
+  <!-- Borde globo -->
+  <circle cx="256" cy="218" r="185" fill="none" stroke="#c4851a" stroke-width="2"/>
+
+  <!-- Ecuador -->
+  <line x1="71" y1="218" x2="441" y2="218" stroke="#c4851a" stroke-width="1.5" clip-path="url(#gc)"/>
+
+  <!-- Meridiano vertical -->
+  <line x1="256" y1="33" x2="256" y2="403" stroke="#c4851a" stroke-width="1.5" clip-path="url(#gc)"/>
+
+  <!-- Paralelo superior -->
+  <ellipse cx="256" cy="136" rx="158" ry="32" fill="none" stroke="#c4851a" stroke-width="1.2" clip-path="url(#gc)"/>
+
+  <!-- Paralelo inferior -->
+  <ellipse cx="256" cy="300" rx="158" ry="32" fill="none" stroke="#c4851a" stroke-width="1.2" clip-path="url(#gc)"/>
+
+  <!-- Meridiano curvo estrecho -->
+  <ellipse cx="256" cy="218" rx="92" ry="185" fill="none" stroke="#c4851a" stroke-width="1.2" clip-path="url(#gc)"/>
+
+  <!-- Meridiano curvo ancho -->
+  <ellipse cx="256" cy="218" rx="144" ry="185" fill="none" stroke="#c4851a" stroke-width="1" clip-path="url(#gc)" opacity="0.7"/>
+
+  <!-- ── ÍCONO CENTRAL ── -->
+  <g transform="translate(256, 208)">
+    <!-- Cuerpo oscuro principal -->
+    <polygon points="0,-90  43,28  0,-8  -43,28" fill="#2d1500"/>
+    <!-- Detalle izquierdo marrón -->
+    <polygon points="0,-90  -43,28  -17,46  0,-8" fill="#3d1f00"/>
+    <!-- Ala derecha dorada -->
+    <polygon points="0,-8  43,28  17,46  0,18" fill="#EF9F27"/>
+    <!-- Punta inferior dorada -->
+    <polygon points="0,18  -14,46  0,66  14,46" fill="#EF9F27"/>
+  </g>
+
+  <!-- ── TEXTO TaxFly ── -->
+  <text
+    x="256" y="452"
+    text-anchor="middle"
+    font-family="Arial Black, Impact, sans-serif"
+    font-size="82"
+    font-weight="900"
+    fill="#EF9F27"
+  >Tax<tspan fill="#ffffff">Fly</tspan></text>
+
+  <!-- ── SUBTÍTULO ── -->
+  <text
+    x="256" y="490"
+    text-anchor="middle"
+    font-family="Arial, sans-serif"
+    font-size="19"
+    font-weight="700"
+    fill="#c4924a"
+    letter-spacing="1.5"
+  >GLOBAL TRAVEL ASSISTANCE</text>
+</svg>
