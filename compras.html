@@ -909,24 +909,25 @@ window.convert=(type,dir)=>{
 window.toggleBudgetEdit=()=>{
     const row=document.getElementById('budget-set-row');
     const visible=row.style.display!=='none';
+    row._editing=!visible;
     row.style.display=visible?'none':'flex';
-    if(!visible) document.getElementById('input-fondo').focus();
+    if(!visible) setTimeout(()=>document.getElementById('input-fondo').focus(),50);
 };
 
 // ── Actualizar UI de info-row con presupuesto base ────────
-function refreshBudgetInfoRow(){
+window.refreshBudgetInfoRow=function refreshBudgetInfoRow(){
     const infoRow=document.getElementById('budget-info-row');
     const baseVal=document.getElementById('budget-base-val');
+    const setRow=document.getElementById('budget-set-row');
+    if(!infoRow||!setRow) return; // DOM no listo todavia
     if(presupuestoBase>0){
         infoRow.style.display='flex';
         if(baseVal) baseVal.textContent='USD '+fmt(presupuestoBase);
-        // Ocultar el input set-row cuando ya hay presupuesto seteado
-        const setRow=document.getElementById('budget-set-row');
-        if(setRow) setRow.style.display='none';
+        // Solo ocultar el set-row si no está en modo edición (el usuario no lo abrió manualmente)
+        if(setRow._editing!==true) setRow.style.display='none';
     } else {
         infoRow.style.display='none';
-        const setRow=document.getElementById('budget-set-row');
-        if(setRow) setRow.style.display='flex';
+        setRow.style.display='flex';
     }
 }
 
@@ -941,6 +942,8 @@ window.updateFondo=async()=>{
     updateBudgetDisplay(spent);
     input.value='';
     input.placeholder='USD 0';
+    const setRow2=document.getElementById('budget-set-row');
+    if(setRow2) setRow2._editing=false;
     refreshBudgetInfoRow();
     if(currentUser&&perfilId){
         try{
@@ -1020,52 +1023,39 @@ function listenGastos(){
 
     const q=query(collection(db,'usuarios',currentUser.uid,'perfiles',perfilId,'gastos'),orderBy('fecha','desc'));
     onSnapshot(q,(snap)=>{
-        const c=document.getElementById('listaGastos');
-        let total=0; 
-        // Si el snapshot está vacío pero hay gastos pendientes offline, no borrar la lista
+        // Si el snapshot está vacío pero hay gastos optimistas locales pendientes,
+        // no borrar la lista — Firebase todavía no confirmó el write
         if(snap.empty){
             const pending = getPendingGastos();
-            if(pending.length > 0 || allGastos.some(g=>g.id.startsWith('local_'))){
-                // Hay gastos optimistas pendientes de sincronizar, no tocar la lista
-                return;
-            }
-            c.innerHTML='<p style="text-align:center;color:var(--text-dim);font-size:.85rem;">No hay gastos.</p>';
-            guardarGastosEnCache([]);
+            const hayLocales = allGastos.some(g=>String(g.id).startsWith('local_'));
+            if(pending.length > 0 || hayLocales) return;
             allGastos=[];
-            updateBudgetDisplay(0); renderDashboard([]); return;
+            guardarGastosEnCache([]);
+            renderGastosList([]);
+            return;
         }
-        allGastos=[];
-        snap.docs.forEach(d=>{
-            const data=d.data(),val=parseFloat(data.valor)||0;
-            total+=val; allGastos.push({...data,id:d.id,valor:val});
+        // Reconstruir allGastos desde Firestore, preservando gastos locales
+        // que todavía no aparecen en el snapshot (pendientes de confirmación)
+        const firestoreIds = new Set(snap.docs.map(d=>d.id));
+        const gastosFirestore = snap.docs.map(d=>{
+            const data=d.data(), val=parseFloat(data.valor)||0;
+            return {...data, id:d.id, valor:val};
         });
-        guardarGastosEnCache(allGastos); // ← guardar en caché
-        c.innerHTML=allGastos.map(g=>{
-            const cat=g.cat||'📦 Otros';
-            const catEmoji=cat.match(/^(\S+)/)?.[1]||'📦';
-            const catDisplayLabel=catLabel(cat).replace(/^\S+\s*/,'');
-            const thumbHtml=g.thumb
-                ?`<img class="h-thumb" src="${g.thumb}" alt="recibo" onclick="openReceiptViewer('${g.thumb}','${g.id}')">`
-                :`<div class="h-thumb-placeholder">${catEmoji}</div>`;
-            return `<div class="history-item" style="border-left-color:${catColor(cat)}">
-                ${thumbHtml}
-                <div style="flex:1;min-width:0;padding:0 8px;">
-                    <div class="h-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${g.nombre}</div>
-                    <div style="font-size:.62rem;color:var(--text-dim);margin-top:1px;">${catDisplayLabel}</div>
-                </div>
-                <div class="h-right">
-                    <div class="h-amount">-$${fmt(g.valor)}</div>
-                    <button class="h-del" onclick="deleteGasto('${g.id}')">✕</button>
-                </div>
-            </div>`;
-        }).join('');
-        updateBudgetDisplay(total);
-        renderDashboard(allGastos);
+        // Gastos locales que aún no tienen ID de Firestore
+        const gastosLocalesPendientes = allGastos.filter(
+            g=>String(g.id).startsWith('local_')
+        );
+        // Combinar: primero los locales pendientes (más recientes), luego Firestore
+        allGastos = [...gastosLocalesPendientes, ...gastosFirestore];
+        guardarGastosEnCache(allGastos);
+        renderGastosList(allGastos);
     });
 }
 function updateBudgetDisplay(spent){
     const el=document.getElementById('disp-fondo');
     if(el) el.innerText='USD '+fmt(presupuestoBase-spent);
+    // Siempre refrescar la fila de info (por si cambió presupuestoBase)
+    refreshBudgetInfoRow();
 }
 
 function renderDashboard(gastos){
@@ -1419,7 +1409,7 @@ window.addGastoWithThumb=async(thumb)=>{
     const cat=selTag?selTag.dataset.cat:'📦 Otros';
     const lang=localStorage.getItem('appLang')||'es';
     const fillMsgs={es:'Completá nombre y precio.',en:'Please fill in name and price.',pt:'Por favor preencha nome e preço.'};
-    if(!n||isNaN(v)||v<=0||!perfilId){alert(fillMsgs[lang]||fillMsgs.es);return;}
+    if(!n||isNaN(v)||v<=0){alert(fillMsgs[lang]||fillMsgs.es);return;}
     const gastoData={nombre:n,valor:v,cat,fecha:Date.now(),thumb:thumb||''};
     // Actualizar caché local inmediatamente (UX optimista)
     const localId='local_'+Date.now();
@@ -1436,7 +1426,10 @@ window.addGastoWithThumb=async(thumb)=>{
     }
     try{
         await addDoc(collection(db,'usuarios',currentUser.uid,'perfiles',perfilId,'gastos'),gastoData);
-        // onSnapshot va a actualizar la lista con el ID real de Firestore
+        // Cuando onSnapshot llega con el ID real de Firestore, eliminar el local_XXX de allGastos
+        // para que no quede duplicado (el snapshot trae el item con ID real)
+        allGastos = allGastos.filter(g=>g.id!==localId);
+        guardarGastosEnCache(allGastos);
     }catch(e){ queueGastoOp({type:'add', data:gastoData}); }
 };
 
@@ -1562,6 +1555,8 @@ document.getElementById('userEmail').innerText = perfilNombre || user.email;
     }catch(e){console.error(e);}
     fetchRates();
     listenGastos();
+    // Asegurar que la fila de presupuesto esté actualizada después de cargar gastos
+    setTimeout(refreshBudgetInfoRow, 500);
     flushPendingGastos(); // Sincronizar operaciones pendientes
     const lang=localStorage.getItem('appLang')||'es';
     window.changeLanguage(lang);
