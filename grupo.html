@@ -378,6 +378,19 @@
             <span id="sync-text">Sincronizando gastos pendientes…</span>
         </div>
 
+        <!-- Banner offline: visible cuando no hay conexión -->
+        <div id="offline-group-banner" class="hidden" style="background:rgba(245,158,11,.08);border:1.5px solid rgba(186,117,23,.4);border-left:3px solid #BA7517;border-radius:var(--radius-sm);padding:13px 14px;margin-bottom:14px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
+                <span style="font-size:1rem;flex-shrink:0;">📵</span>
+                <strong style="font-size:.82rem;color:#92600D;" id="offlineBannerTitle">Sin conexión — modo offline</strong>
+            </div>
+            <div style="font-size:.73rem;font-weight:600;color:var(--text-sub);line-height:1.55;padding-left:26px;" id="offlineBannerBody">
+                ✅ Podés registrar y eliminar gastos — se guardan localmente.<br>
+                ❌ No podés crear ni unirte a grupos sin conexión.<br>
+                🔄 Todo se sincroniza automáticamente cuando vuelve el internet.
+            </div>
+        </div>
+
         <!-- Tabs -->
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('gastos',this)">
@@ -585,14 +598,37 @@ onAuthStateChanged(auth, async user => {
         // 1. Intentar restaurar desde localStorage
         const savedCode = localStorage.getItem('grupoActivo');
         if (savedCode) {
-            try {
-                const snap = await getDoc(doc(db, 'grupos', savedCode));
-                if (snap.exists()) { suscribirGrupo(savedCode); }
-                else { localStorage.removeItem('grupoActivo'); buscarGrupoEnFirestore(user.uid); }
-            } catch(e) { buscarGrupoEnFirestore(user.uid); }
+            if (!navigator.onLine) {
+                // Sin red: cargar desde caché local si está disponible
+                const grupoCache = cargarGrupoDesdeCache(savedCode);
+                if (grupoCache) {
+                    currentGroup = { id: savedCode, _offline: true, data: grupoCache };
+                    showSection('s-grupo');
+                    window._flushPending = flushPending;
+                    renderGrupo();
+                    updatePendingBadge();
+                    updateOfflineBanner(true);
+                } else {
+                    showSection('s-lobby');
+                    cargarMisGrupos();
+                    updateOfflineBanner(true);
+                }
+            } else {
+                try {
+                    const snap = await getDoc(doc(db, 'grupos', savedCode));
+                    if (snap.exists()) { suscribirGrupo(savedCode); }
+                    else { localStorage.removeItem('grupoActivo'); buscarGrupoEnFirestore(user.uid); }
+                } catch(e) { buscarGrupoEnFirestore(user.uid); }
+            }
         } else {
             // 2. Si no hay en localStorage, buscar en Firestore grupos donde está el usuario
-            buscarGrupoEnFirestore(user.uid);
+            if (!navigator.onLine) {
+                showSection('s-lobby');
+                cargarMisGrupos();
+                updateOfflineBanner(true);
+            } else {
+                buscarGrupoEnFirestore(user.uid);
+            }
         }
     } else {
         currentUser = null;
@@ -785,10 +821,13 @@ function suscribirGrupo(code) {
     unsubscribe = onSnapshot(doc(db,'grupos',code), snap=>{
         if (!snap.exists()) return;
         currentGroup = {id:snap.id,data:snap.data()};
+        // Guardar caché local para modo offline
+        guardarGrupoEnCache(snap.id, snap.data());
         guardarGrupoEnLista(snap.id, snap.data().nombre);
         renderGrupo();
     });
     showSection('s-grupo');
+    updateOfflineBanner(false);
     // Exponer flush para el listener de online del script global
     window._flushPending = flushPending;
     // Si ya hay conexión y hay pendientes, sincronizar ahora
@@ -818,6 +857,28 @@ function queueOp(op) {
     ops.push(op);
     savePending(ops);
 }
+
+// ── Caché local de grupos ──
+const CACHE_PREFIX = 'taxusa_grupo_cache_';
+
+function guardarGrupoEnCache(id, data) {
+    try { localStorage.setItem(CACHE_PREFIX + id, JSON.stringify(data)); } catch(e) {}
+}
+function cargarGrupoDesdeCache(id) {
+    try {
+        const raw = localStorage.getItem(CACHE_PREFIX + id);
+        return raw ? JSON.parse(raw) : null;
+    } catch(e) { return null; }
+}
+
+// ── Banner offline dentro del grupo ──
+window.updateOfflineBanner = function(isOffline) {
+    const banner = document.getElementById('offline-group-banner');
+    if (!banner) return;
+    if (isOffline) { banner.classList.remove('hidden'); }
+    else           { banner.classList.add('hidden'); }
+};
+function updateOfflineBanner(isOffline) { window.updateOfflineBanner(isOffline); }
 
 async function flushPending() {
     const ops = getPending();
@@ -1040,6 +1101,22 @@ function cargarMisGrupos() {
 }
 
 window.volverAGrupo = async (id) => {
+    if (!navigator.onLine) {
+        const grupoCache = cargarGrupoDesdeCache(id);
+        if (grupoCache) {
+            localStorage.setItem('grupoActivo', id);
+            currentGroup = { id, _offline: true, data: grupoCache };
+            showSection('s-grupo');
+            window._flushPending = flushPending;
+            renderGrupo();
+            updatePendingBadge();
+            updateOfflineBanner(true);
+        } else {
+            const lang = localStorage.getItem('appLang') || 'es';
+            showToast('⚠️ ' + (lang==='en' ? 'No cached data for this group' : lang==='pt' ? 'Sem dados em cache para este grupo' : 'Sin datos en caché para este grupo'));
+        }
+        return;
+    }
     try {
         const snap = await getDoc(doc(db,'grupos',id));
         if (snap.exists()) { suscribirGrupo(id); }
@@ -1286,6 +1363,10 @@ const i18n = {
         offline_sub:'Los gastos se guardan localmente y se sincronizan al volver',
         sync_syncing:'Sincronizando gastos pendientes…',
         sync_ok:'✅ Todo sincronizado',
+        offline_banner_title:'Sin conexión — modo offline',
+        offline_banner_body_ok:'✅ Podés registrar y eliminar gastos — se guardan localmente.',
+        offline_banner_body_no:'❌ No podés crear ni unirte a grupos sin conexión.',
+        offline_banner_body_sync:'🔄 Todo se sincroniza automáticamente cuando vuelve el internet.',
     },
     en: {
         nav_home:'HOME', nav_expenses:'EXPENSES', nav_itinerary:'ITINERARY',
@@ -1334,6 +1415,10 @@ const i18n = {
         offline_sub:'Expenses are saved locally and will sync when back online',
         sync_syncing:'Syncing pending expenses…',
         sync_ok:'✅ All synced',
+        offline_banner_title:'No connection — offline mode',
+        offline_banner_body_ok:'✅ You can record and delete expenses — saved locally.',
+        offline_banner_body_no:'❌ You can\'t create or join groups without internet.',
+        offline_banner_body_sync:'🔄 Everything syncs automatically when you\'re back online.',
     },
     pt: {
         nav_home:'INÍCIO', nav_expenses:'GASTOS', nav_itinerary:'ITINERÁRIO',
@@ -1382,6 +1467,10 @@ const i18n = {
         offline_sub:'As despesas são salvas localmente e sincronizadas ao voltar',
         sync_syncing:'Sincronizando despesas pendentes…',
         sync_ok:'✅ Tudo sincronizado',
+        offline_banner_title:'Sem conexão — modo offline',
+        offline_banner_body_ok:'✅ Você pode registrar e excluir despesas — salvas localmente.',
+        offline_banner_body_no:'❌ Você não pode criar nem entrar em grupos sem internet.',
+        offline_banner_body_sync:'🔄 Tudo é sincronizado automaticamente quando a internet voltar.',
     }
 };
 
@@ -1408,6 +1497,13 @@ window.changeLanguage = (lang) => {
     const syncText = document.getElementById('sync-text');
     if (syncText && syncText.textContent.indexOf('✅') === -1) {
         syncText.textContent = t.sync_syncing;
+    }
+    // Offline group banner
+    const bannerTitle = document.getElementById('offlineBannerTitle');
+    const bannerBody  = document.getElementById('offlineBannerBody');
+    if (bannerTitle && t.offline_banner_title) bannerTitle.textContent = t.offline_banner_title;
+    if (bannerBody  && t.offline_banner_body_ok) {
+        bannerBody.innerHTML = t.offline_banner_body_ok + '<br>' + t.offline_banner_body_no + '<br>' + t.offline_banner_body_sync;
     }
     // Explain card steps (use innerHTML for <strong> and <em>)
     const inlineHtmlKeys = ['explain_step1','explain_step2','explain_step3','explain_step4','explain_warn_text'];
@@ -1848,9 +1944,20 @@ setTimeout(()=>{
         if (!navigator.onLine) {
             toast.classList.remove('hide');
             toast.classList.add('show');
+            // Mostrar banner de funciones dentro del grupo si está activo
+            if (typeof window.updateOfflineBanner === 'function') {
+                window.updateOfflineBanner(true);
+            } else {
+                var b = document.getElementById('offline-group-banner');
+                var sGrupo = document.getElementById('s-grupo');
+                if (b && sGrupo && !sGrupo.classList.contains('hidden')) b.classList.remove('hidden');
+            }
         } else {
             toast.classList.remove('show');
             toast.classList.add('hide');
+            // Ocultar banner offline
+            var b = document.getElementById('offline-group-banner');
+            if (b) b.classList.add('hidden');
             // Intentar flush cuando vuelve la conexión
             if (typeof window._flushPending === 'function') {
                 window._flushPending();
