@@ -1140,9 +1140,9 @@ function renderGrupo() {
     $('g-titulo').textContent = nombre || currentGroup.data.nome || '—';
     $('g-codigo').textContent=codigo;
 
-    // Preservar estado de colapsables antes de re-render
-    const _formOpen    = document.getElementById('form-gasto')?.classList.contains('open');
-    const _explainOpen = document.getElementById('explain-body')?.classList.contains('open');
+    // Preservar estado de colapsables antes de re-render usando variables globales
+    window._formOpen    = document.getElementById('form-gasto')?.classList.contains('open') ?? window._formOpen ?? false;
+    window._explainOpen = document.getElementById('explain-body')?.classList.contains('open') ?? window._explainOpen ?? false;
 
     // Mostrar botón eliminar solo al creador
     const btnEliminar = document.getElementById('btn-eliminar-grupo');
@@ -1246,23 +1246,27 @@ function renderResumen(miembros,gastos){
         </div>`;
     }).join('');
 
-    // Restaurar estado de colapsables
+    // Restaurar estado de colapsables desde variables globales
     const formBody    = document.getElementById('form-gasto');
     const formToggle  = document.getElementById('toggle-form-gasto');
     const expBody     = document.getElementById('explain-body');
     const expToggle   = document.getElementById('toggle-explain');
-    if (formBody)   { formBody.classList.toggle('open',   !!_formOpen);    if (formToggle)  formToggle.classList.toggle('open',   !!_formOpen); }
-    if (expBody)    { expBody.classList.toggle('open',    !!_explainOpen); if (expToggle)   expToggle.classList.toggle('open',    !!_explainOpen); }
+    if (formBody)   { formBody.classList.toggle('open',   !!window._formOpen);    if (formToggle)  formToggle.classList.toggle('open',   !!window._formOpen); }
+    if (expBody)    { expBody.classList.toggle('open',    !!window._explainOpen); if (expToggle)   expToggle.classList.toggle('open',    !!window._explainOpen); }
 }
 
-function toggleCollapsible(bodyId, toggleId) {
+window._formOpen = false;
+window._explainOpen = false;
+window.toggleCollapsible = function(bodyId, toggleId) {
     const body = document.getElementById(bodyId);
     const toggle = document.getElementById(toggleId);
     if (!body) return;
     const isOpen = body.classList.contains('open');
     body.classList.toggle('open', !isOpen);
     if (toggle) toggle.classList.toggle('open', !isOpen);
-}
+    if (bodyId === 'form-gasto')   window._formOpen    = !isOpen;
+    if (bodyId === 'explain-body') window._explainOpen = !isOpen;
+};
 
 function catEmoji(cat){
     return {comida:'🍽️',transporte:'🚗',alojamiento:'🏨',actividad:'🎡',compras:'🛍️',otro:'📦'}[cat]||'📦';
