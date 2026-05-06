@@ -898,10 +898,16 @@ window.convert=(type,dir)=>{
 };
 
 window.updateFondo=async()=>{
-    const v=parseFloat(document.getElementById('input-fondo').value);
+    const input=document.getElementById('input-fondo');
+    const v=parseFloat(input.value);
     if(isNaN(v)||v<0){const lang=localStorage.getItem('appLang')||'es';const m={es:'Monto inválido.',en:'Invalid amount.',pt:'Valor inválido.'};alert(m[lang]||m.es);return;}
     presupuestoBase=v;
-    guardarPresupuestoEnCache(v); // ← guardar en caché local
+    guardarPresupuestoEnCache(v);
+    // Actualizar display inmediatamente
+    const spent=allGastos?allGastos.reduce((s,g)=>s+g.valor,0):0;
+    updateBudgetDisplay(spent);
+    input.value='';
+    input.placeholder=v>0?'USD '+fmt(v):'TOTAL USD';
     if(currentUser&&perfilId){
         try{
             await updateDoc(doc(db,'usuarios',currentUser.uid,'perfiles',perfilId),{presupuesto:v});
@@ -1492,7 +1498,7 @@ onAuthStateChanged(auth,async(user)=>{
     if(cachedBudget !== null){
         presupuestoBase = cachedBudget;
         const inputFondo = document.getElementById('input-fondo');
-        if(inputFondo) inputFondo.value = cachedBudget;
+        if(inputFondo){ inputFondo.value=''; inputFondo.placeholder=cachedBudget>0?'USD '+fmt(cachedBudget):'TOTAL USD'; }
     }
     if(!user){window.location.replace('login.html');return;}
     currentUser=user;
@@ -1506,7 +1512,8 @@ document.getElementById('userEmail').innerText = perfilNombre || user.email;
         if(snap.exists()&&snap.data().presupuesto!==undefined){
             presupuestoBase=Number(snap.data().presupuesto);
             guardarPresupuestoEnCache(presupuestoBase);
-            document.getElementById('input-fondo').value=presupuestoBase;
+            const inputF=document.getElementById('input-fondo');
+            if(inputF){ inputF.value=''; inputF.placeholder=presupuestoBase>0?'USD '+fmt(presupuestoBase):'TOTAL USD'; }
         }
     }catch(e){console.error(e);}
     fetchRates();
