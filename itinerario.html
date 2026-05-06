@@ -705,6 +705,8 @@
         }
     };
 
+    window._i18n = i18n;
+
     // ═══ Tips ═══
     const tips = {
         es: [
@@ -1244,11 +1246,112 @@ window.removeCustomItem = (customIdx) => {
         // Update transport section i18n labels
         const transportTitle = document.querySelector('[data-i18n="transport_title"]');
         if (transportTitle) transportTitle.textContent = i18n[lang].transport_title || '';
-        const transportIntro = document.querySelector('[data-i18n="transport_intro"]');
+        const transportIntro = document.getElementById('transport-intro');
         if (transportIntro) transportIntro.textContent = i18n[lang].transport_intro || '';
+
+        // Re-render activities so date headers use the correct locale
+        if (localActivities && localActivities.length > 0) renderActivities(localActivities);
+
+        // Re-render the adaptador/enchufes section with translated content
+        renderAdaptador(lang);
+
+        // Update toggle button labels that reflect open/closed state
+        const actFormBody = document.getElementById('act-form-body');
+        const actFormToggle = document.getElementById('act-form-toggle');
+        if (actFormBody && actFormToggle) {
+            const isOpen = actFormBody.style.display !== 'none' && actFormBody.style.display !== '';
+            actFormToggle.textContent = isOpen ? (i18n[lang].act_form_close || '▲ CERRAR') : (i18n[lang].act_form_open || '▼ VER');
+        }
+        const adaptadorBody = document.getElementById('adaptador-body');
+        const adaptadorToggle = document.getElementById('adaptador-toggle');
+        if (adaptadorBody && adaptadorToggle) {
+            const isOpen = adaptadorBody.style.display !== 'none';
+            adaptadorToggle.textContent = isOpen ? (i18n[lang].adaptador_close || '▲ OCULTAR') : (i18n[lang].adaptador_open || '▼ VER');
+        }
     };
 
-    // ═══ Settings ═══
+    // ═══ Adaptador / Enchufes ═══
+    const adaptadorContent = {
+        es: {
+            intro: 'En USA se usa <strong>110V / 60Hz</strong>. Si tu dispositivo dice <strong>100–240V</strong> en la etiqueta, solo necesitás un adaptador universal. Si dice solo 220V, necesitás un transformador.',
+            typeA_title: 'Tipo A — 2 enchufes planos',
+            typeA_sub: 'El más común en USA, México y Japón. Sin tierra.',
+            typeB_title: 'Tipo B — 2 planos + 1 redondo',
+            typeB_sub: 'Igual que el Tipo A pero con toma a tierra. Muy común en aires acondicionados y electrodomésticos.',
+            tip_title: '💡 ¿Necesitás adaptador desde Argentina?',
+            tip_body: 'Argentina usa enchufes <strong>Tipo I</strong> (2 enchufes en V). En USA el estándar es <strong>Tipo A/B</strong>, así que sí necesitás un adaptador universal. Los encontrás en cualquier ferretería o aeropuerto',
+            no_trans_title: '✅ Dispositivos que NO necesitan transformador',
+            items: ['📱 Cargadores de celular', '💻 Laptops y tablets', '📷 Cámaras digitales', '🎧 Auriculares con USB'],
+            warn_title: '⚠️ Revisá antes de enchufar',
+            warn_body: 'Secadores de pelo, planchas y aparatos de 220V exclusivo <strong>sí necesitan transformador</strong>. Enchufar sin transformador puede dañar el dispositivo.',
+        },
+        en: {
+            intro: 'The USA uses <strong>110V / 60Hz</strong>. If your device label says <strong>100–240V</strong>, you only need a universal adapter. If it says 220V only, you need a voltage converter.',
+            typeA_title: 'Type A — 2 flat pins',
+            typeA_sub: 'Most common in the USA, Mexico and Japan. No ground pin.',
+            typeB_title: 'Type B — 2 flat + 1 round pin',
+            typeB_sub: 'Same as Type A but with a ground pin. Common for air conditioners and appliances.',
+            tip_title: '💡 Do you need an adapter from Argentina?',
+            tip_body: 'Argentina uses <strong>Type I</strong> plugs (2 angled pins). The USA standard is <strong>Type A/B</strong>, so yes, you need a universal adapter. Find them at any hardware store or airport.',
+            no_trans_title: '✅ Devices that do NOT need a converter',
+            items: ['📱 Phone chargers', '💻 Laptops and tablets', '📷 Digital cameras', '🎧 USB headphones'],
+            warn_title: '⚠️ Check before plugging in',
+            warn_body: 'Hair dryers, straighteners and 220V-only appliances <strong>do need a voltage converter</strong>. Plugging in without one can damage the device.',
+        },
+        pt: {
+            intro: 'Nos EUA usa-se <strong>110V / 60Hz</strong>. Se o seu dispositivo diz <strong>100–240V</strong> na etiqueta, você só precisa de um adaptador universal. Se diz apenas 220V, precisa de um transformador.',
+            typeA_title: 'Tipo A — 2 pinos planos',
+            typeA_sub: 'O mais comum nos EUA, México e Japão. Sem aterramento.',
+            typeB_title: 'Tipo B — 2 planos + 1 redondo',
+            typeB_sub: 'Igual ao Tipo A mas com aterramento. Muito comum em ar-condicionado e eletrodomésticos.',
+            tip_title: '💡 Você precisa de adaptador vindo do Brasil?',
+            tip_body: 'O Brasil usa tomadas <strong>Tipo N</strong> (padrão NBR 14136). Nos EUA o padrão é <strong>Tipo A/B</strong>, então sim, você precisa de um adaptador universal. Encontre em qualquer loja de eletrônicos ou aeroporto.',
+            no_trans_title: '✅ Dispositivos que NÃO precisam de transformador',
+            items: ['📱 Carregadores de celular', '💻 Laptops e tablets', '📷 Câmeras digitais', '🎧 Fones com USB'],
+            warn_title: '⚠️ Verifique antes de ligar',
+            warn_body: 'Secadores de cabelo, chapinhas e aparelhos de 220V exclusivo <strong>precisam de transformador</strong>. Ligar sem transformador pode danificar o aparelho.',
+        }
+    };
+
+    function renderAdaptador(lang) {
+        const body = document.getElementById('adaptador-body');
+        if (!body || body.style.display === 'none') return; // only update if open
+        const c = adaptadorContent[lang] || adaptadorContent.es;
+        body.innerHTML = `
+            <p style="font-size:.78rem;color:var(--text-sub);font-weight:600;margin-bottom:12px;line-height:1.5;">${c.intro}</p>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:flex-start;gap:12px;">
+                    <div style="font-size:1.6rem;flex-shrink:0;">🔌</div>
+                    <div>
+                        <div style="font-size:.8rem;font-weight:900;color:var(--text);">${c.typeA_title}</div>
+                        <div style="font-size:.72rem;color:var(--text-sub);font-weight:600;margin-top:3px;">${c.typeA_sub}</div>
+                    </div>
+                </div>
+                <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:flex-start;gap:12px;">
+                    <div style="font-size:1.6rem;flex-shrink:0;">🔌</div>
+                    <div>
+                        <div style="font-size:.8rem;font-weight:900;color:var(--text);">${c.typeB_title}</div>
+                        <div style="font-size:.72rem;color:var(--text-sub);font-weight:600;margin-top:3px;">${c.typeB_sub}</div>
+                    </div>
+                </div>
+                <div style="background:var(--primary-dim);border:1.5px solid var(--primary);border-radius:12px;padding:12px 14px;">
+                    <div style="font-size:.75rem;font-weight:800;color:var(--primary);margin-bottom:5px;">${c.tip_title}</div>
+                    <div style="font-size:.72rem;color:var(--text);font-weight:600;line-height:1.5;">${c.tip_body}</div>
+                </div>
+                <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;">
+                    <div style="font-size:.75rem;font-weight:800;color:var(--text);margin-bottom:8px;">${c.no_trans_title}</div>
+                    <div style="display:flex;flex-direction:column;gap:4px;">
+                        ${c.items.map(i => `<div style="font-size:.72rem;color:var(--text-sub);font-weight:600;">${i}</div>`).join('')}
+                    </div>
+                </div>
+                <div style="background:rgba(239,68,68,.08);border:1.5px solid var(--danger);border-radius:12px;padding:12px 14px;">
+                    <div style="font-size:.75rem;font-weight:800;color:var(--danger);margin-bottom:5px;">${c.warn_title}</div>
+                    <div style="font-size:.72rem;color:var(--text);font-weight:600;line-height:1.5;">${c.warn_body}</div>
+                </div>
+            </div>
+        `;
+    }
+
     window.toggleAdaptador = () => {
         const lang = localStorage.getItem('appLang') || 'es';
         const t = i18n[lang];
@@ -1257,6 +1360,7 @@ window.removeCustomItem = (customIdx) => {
         const isOpen = body.style.display !== 'none';
         body.style.display = isOpen ? 'none' : 'block';
         toggle.textContent = isOpen ? (t.adaptador_open || '▼ VER') : (t.adaptador_close || '▲ OCULTAR');
+        if (!isOpen) renderAdaptador(lang);
     };
 
     window.toggleSettings = () => {
