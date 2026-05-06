@@ -19,6 +19,16 @@
         if (_t) document.documentElement.setAttribute('data-theme', _t);
         else if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.setAttribute('data-theme','dark');
     </script>
+    <script>
+        // Aplicar foto de perfil apenas carga el DOM, sin esperar a Firebase
+        document.addEventListener('DOMContentLoaded', function() {
+            const foto = localStorage.getItem('perfilActivoFoto');
+            if (foto) {
+                const btn = document.getElementById('btnSettings');
+                if (btn) { btn.style.backgroundImage = `url('${foto}')`; btn.innerText = ''; }
+            }
+        });
+    </script>
     <style>
         :root {
             --primary:#2563eb; --primary-dim:rgba(37,99,235,0.1);
@@ -873,7 +883,7 @@ onAuthStateChanged(auth, async (user) => {
             const emailEl = document.getElementById('userEmail');
             if (emailEl) emailEl.innerText = perfilNombre || pinEmail;
             const foto = localStorage.getItem('perfilActivoFoto') || '';
-            if (foto) { const btn = document.getElementById('btnSettings'); if(btn){ btn.style.backgroundImage = `url(${foto})`; btn.innerText = ''; } }
+            if (foto) { const btn = document.getElementById('btnSettings'); if(btn){ btn.style.backgroundImage = `url('${foto}')`; btn.innerText = ''; } }
             updateTripUI();
             // No llamar fetchWeather — sin internet fallará; el overlay mostrará el PIN
             return;
@@ -892,7 +902,7 @@ onAuthStateChanged(auth, async (user) => {
     if (!perfilId) { window.location.replace('profiles.html'); return; }
 
     const img = perfilFoto || user.photoURL;
-    if (img) { const btn = document.getElementById('btnSettings'); btn.style.backgroundImage = `url(${img})`; btn.innerText = ''; }
+    if (img) { const btn = document.getElementById('btnSettings'); btn.style.backgroundImage = `url('${img}')`; btn.innerText = ''; }
 
     try {
         const snap = await getDoc(doc(db, 'usuarios', user.uid, 'perfiles', perfilId));
