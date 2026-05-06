@@ -920,7 +920,7 @@ window.refreshBudgetInfoRow=function refreshBudgetInfoRow(){
     const baseVal=document.getElementById('budget-base-val');
     const setRow=document.getElementById('budget-set-row');
     if(!infoRow||!setRow) return; // DOM no listo todavia
-    if(presupuestoBase>0){
+    if(presupuestoBase>=0){
         infoRow.style.display='flex';
         if(baseVal) baseVal.textContent='USD '+fmt(presupuestoBase);
         // Solo ocultar el set-row si no está en modo edición (el usuario no lo abrió manualmente)
