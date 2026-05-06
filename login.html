@@ -16,7 +16,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800&display=swap" rel="stylesheet"></noscript>
+    <link rel="stylesheet" href="style.css">
     <style>
+        /* ── Variables del login (brand ámbar/dorado, sobreescriben style.css) ── */
         :root {
             --primary:#EF9F27; --primary-dark:#BA7517; --primary-glow:rgba(239,159,39,0.18);
             --accent:#854F0B; --danger:#ef4444; --success:#10b981;
@@ -33,176 +35,37 @@
             --shadow:0 4px 20px rgba(0,0,0,0.45); --shadow-lg:0 20px 60px rgba(0,0,0,0.6);
             color-scheme: dark;
         }
-        *,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0;}
-        body{
-            font-family:'DM Sans',-apple-system,system-ui,sans-serif;
-            background:var(--bg);color:var(--text);min-height:100vh;
-            display:flex;flex-direction:column;align-items:center;justify-content:center;
-            padding:24px;transition:background .3s,color .3s;-webkit-font-smoothing:antialiased;
+        body {
+            justify-content: center;
+            padding: 24px;
         }
-        body::before{
-            content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-            background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(239,159,39,0.12),transparent);
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(239,159,39,0.12), transparent);
         }
-
-        /* ── SPLASH LOADING STATE ── */
-        .splash-loading .screen,
-        .splash-loading .lang-selector-top { visibility: hidden; }
-
-        /* ── LANG SELECTOR ── */
-        .lang-selector-top{
-            position:fixed;top:16px;right:16px;z-index:100;
-            background:var(--surface);border:1.5px solid var(--border);
-            border-radius:12px;cursor:pointer;user-select:none;min-width:90px;
-            box-shadow:0 2px 12px rgba(0,0,0,0.1);
+        input {
+            margin-bottom: 12px;
+            padding: 15px 16px;
+            border-radius: 14px;
+            font-size: .95rem;
         }
-        .selected-lang{padding:8px 12px;display:flex;align-items:center;gap:8px;font-weight:800;font-size:.85rem;}
-        .selected-lang .arrow{font-size:.55rem;color:var(--primary);margin-left:auto;}
-        .lang-options{display:none;position:absolute;top:calc(100% + 6px);left:0;width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.12);}
-        .lang-options.show{display:block;}
-        .lang-option{padding:10px 12px;display:flex;align-items:center;gap:8px;font-weight:700;font-size:.85rem;cursor:pointer;transition:.15s;}
-        .lang-option:hover{background:var(--input-bg);}
-        .lang-option img{width:18px;height:13px;object-fit:cover;border-radius:2px;}
-
-        /* ── SCREENS ── */
-        .screen{position:relative;z-index:1;width:100%;max-width:400px;animation:fadeUp .45s cubic-bezier(0.34,1.56,0.64,1) both;}
-        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-        .screen.hidden{display:none;}
-
-        /* ── CARD ── */
-        .login-card{
-            background:var(--surface);padding:36px 28px;border-radius:28px;
-            box-shadow:var(--shadow-lg);border:1.5px solid var(--border);
+        input:focus { box-shadow: 0 0 0 3px rgba(239,159,39,.15); }
+        .btn {
+            padding: 16px;
+            border-radius: 14px;
+            font-size: .9rem;
+            letter-spacing: .5px;
+            margin-bottom: 12px;
         }
-        .card-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:28px;font-size:1.6rem;font-weight:900;color:var(--primary-dark);}
-        .logo-svg{animation:logoBounce .6s cubic-bezier(0.34,1.56,0.64,1) both;}
-        .logo-text{animation:textSlide .5s .15s cubic-bezier(0.34,1.56,0.64,1) both;color:var(--primary-dark);}
-        @keyframes logoBounce{from{opacity:0;transform:scale(.4) rotate(-15deg)}to{opacity:1;transform:scale(1) rotate(0)}}
-        @keyframes textSlide{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
-
-        .card-title{font-size:1.5rem;font-weight:900;text-align:center;margin-bottom:24px;color:var(--text);}
-        .card-sub{font-size:.82rem;font-weight:600;color:var(--text-sub);text-align:center;margin-bottom:20px;line-height:1.5;}
-
-        input{
-            width:100%;padding:15px 16px;background:var(--input-bg);
-            border:1.5px solid var(--border);border-radius:14px;margin-bottom:12px;
-            font-size:.95rem;font-weight:600;font-family:inherit;color:var(--text);
-            outline:none;transition:var(--tr);-webkit-appearance:none;
-        }
-        input:focus{border-color:var(--primary);background:var(--surface);box-shadow:0 0 0 3px rgba(239,159,39,.15);}
-        input::placeholder{color:var(--text-dim);font-weight:500;}
-
-        .btn{
-            width:100%;padding:16px;border:none;border-radius:14px;font-family:inherit;
-            font-size:.9rem;font-weight:800;letter-spacing:.5px;text-transform:uppercase;
-            cursor:pointer;transition:var(--tr);margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px;
-        }
-        .btn:active{transform:scale(.97);}
-        .btn-primary{background:var(--primary);color:white;box-shadow:0 4px 16px rgba(239,159,39,.4);}
-        .btn-primary:hover{background:var(--primary-dark);}
-        .btn-ghost{background:var(--input-bg);color:var(--text-sub);border:1.5px solid var(--border);}
-        .btn-ghost:hover{border-color:var(--primary);color:var(--primary);}
-        .btn-danger{background:transparent;color:var(--danger);border:1.5px solid rgba(239,68,68,.3);}
-
-        .verif-notice{
-            display:none;background:rgba(239,159,39,.1);color:var(--primary-dark);
-            padding:12px 14px;border-radius:12px;font-size:.8rem;font-weight:600;
-            margin-bottom:14px;line-height:1.45;border:1.5px solid rgba(239,159,39,.25);
-            opacity:0;transition:opacity .35s ease;
-        }
-        .verif-notice.visible{opacity:1;}
-        .links{display:flex;flex-direction:column;gap:10px;text-align:center;}
-        .link-danger{color:var(--danger);font-size:.8rem;font-weight:700;cursor:pointer;background:none;border:none;font-family:inherit;}
-        .link-toggle{color:var(--text-sub);font-size:.85rem;font-weight:600;cursor:pointer;transition:.2s;background:none;border:none;font-family:inherit;}
-        .link-toggle:hover{color:var(--primary);}
-
-        /* ── OFFLINE BADGE ── */
-        .offline-badge{
-            display:none;align-items:center;gap:8px;
-            background:rgba(245,158,11,.1);border:1.5px solid rgba(245,158,11,.3);
-            color:#d97706;border-radius:12px;padding:10px 14px;
-            font-size:.78rem;font-weight:700;margin-bottom:20px;
-        }
-        .offline-badge.show{display:flex;}
-
-        /* ── PIN SCREEN ── */
-        .pin-header{text-align:center;margin-bottom:28px;}
-        .pin-user-avatar{
-            width:72px;height:72px;border-radius:16px;margin:0 auto 12px;
-            background:var(--input-bg) no-repeat center/cover;
-            border:2.5px solid var(--border);
-        }
-        .pin-user-name{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:4px;}
-        .pin-user-email{font-size:.75rem;font-weight:600;color:var(--text-dim);}
-
-        .pin-dots{display:flex;gap:16px;justify-content:center;margin-bottom:32px;}
-        .pin-dot{
-            width:18px;height:18px;border-radius:50%;
-            border:2.5px solid var(--border);background:transparent;
-            transition:var(--tr);
-        }
-        .pin-dot.filled{background:var(--primary);border-color:var(--primary);}
-        .pin-dot.error{background:var(--danger);border-color:var(--danger);animation:shake .4s ease;}        @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-
-        .pin-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
-        .pin-key{
-            padding:0;border:1.5px solid var(--border);border-radius:16px;
-            background:var(--surface);font-family:inherit;font-size:1.4rem;font-weight:700;
-            color:var(--text);cursor:pointer;transition:var(--tr);aspect-ratio:1;
-            display:flex;align-items:center;justify-content:center;
-        }
-        .pin-key:hover{background:var(--input-bg);border-color:var(--primary);}
-        .pin-key:active{transform:scale(.93);background:var(--primary);color:white;border-color:var(--primary);}
-        .pin-key.del{font-size:1.1rem;color:var(--text-sub);}
-        .pin-key.empty{border:none;background:transparent;pointer-events:none;}
-
-        .pin-error-msg{
-            text-align:center;font-size:.8rem;font-weight:700;color:var(--danger);
-            min-height:20px;margin-bottom:12px;transition:opacity .3s;
-        }
-
-        /* ── CREATE PIN SCREEN ── */
-        .pin-step-indicator{display:flex;gap:8px;justify-content:center;margin-bottom:24px;}
-        .pin-step-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:var(--tr);}
-        .pin-step-dot.active{background:var(--primary);transform:scale(1.2);}
-        .pin-step-dot.done{background:var(--success);}
-
-        .pin-create-title{font-size:1.2rem;font-weight:900;text-align:center;margin-bottom:8px;}
-        .pin-create-sub{font-size:.82rem;font-weight:600;color:var(--text-sub);text-align:center;margin-bottom:28px;line-height:1.5;}
-
-        /* ── CHANGE PIN SCREEN ── */
-        .info-box{
-            background:rgba(239,159,39,.08);border:1.5px solid rgba(239,159,39,.22);
-            border-radius:14px;padding:16px;margin-bottom:20px;
-            font-size:.82rem;font-weight:600;color:var(--text-sub);line-height:1.5;
-            display:flex;gap:10px;align-items:flex-start;
-        }
-        .info-box-icon{font-size:1.2rem;flex-shrink:0;margin-top:1px;}
-
-        /* ── INSTALL BUTTONS ── */
-        .install-wrap{display:none;flex-direction:column;gap:8px;margin-top:16px;}
-        .btn-install{
-            width:100%;padding:13px 16px;border:none;border-radius:14px;
-            font-family:inherit;font-size:.85rem;font-weight:800;letter-spacing:.4px;
-            cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px;
-        }
-        .btn-install:active{transform:scale(.97);}
-        .btn-android{background:#16a34a;color:white;box-shadow:0 4px 14px rgba(22,163,74,.3);}
-        .btn-ios{background:#0284c7;color:white;box-shadow:0 4px 14px rgba(2,132,199,.3);}
-
-        /* ── iOS MODAL ── */
-        .ios-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9000;backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;}
-        .ios-modal-overlay.show{display:flex;}
-        .ios-modal{background:var(--surface);border-radius:24px 24px 0 0;padding:28px 24px 40px;width:100%;max-width:460px;border:1.5px solid var(--border);box-shadow:0 -12px 40px rgba(0,0,0,.3);animation:slideUp .3s ease;}
-        @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-        .ios-modal-title{font-size:1rem;font-weight:900;text-align:center;margin-bottom:20px;}
-        .ios-step{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);}
-        .ios-step:last-of-type{border-bottom:none;}
-        .ios-step-num{width:28px;height:28px;border-radius:50%;background:#0ea5e9;color:white;font-size:.75rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-        .ios-step-text{font-size:.82rem;font-weight:600;color:var(--text-sub);line-height:1.4;}
-        .ios-step-text strong{color:var(--text);}
-        .ios-step-icon{font-size:1.2rem;flex-shrink:0;}
-        .ios-modal-close{width:100%;margin-top:20px;padding:14px;background:var(--input-bg);border:1.5px solid var(--border);border-radius:14px;font-family:inherit;font-size:.85rem;font-weight:800;cursor:pointer;color:var(--text);}
+        .btn-primary { box-shadow: 0 4px 16px rgba(239,159,39,.4); }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-ghost { background: var(--input-bg); color: var(--text-sub); border: 1.5px solid var(--border); }
+        .btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-danger { background: transparent; color: var(--danger); border: 1.5px solid rgba(239,68,68,.3); }
     </style>
 
     <script>
