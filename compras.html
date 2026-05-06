@@ -286,8 +286,16 @@
     <div class="budget-card">
         <div class="budget-label" data-i18n="label_budget">Presupuesto Restante</div>
         <div class="budget-value" id="disp-fondo">USD 0.00</div>
-        <div class="budget-set">
-            <input type="number" id="input-fondo" placeholder="TOTAL USD" step="0.01" inputmode="decimal">
+
+        <!-- Fila: presupuesto base + boton cambiar (visible cuando ya hay un presupuesto) -->
+        <div id="budget-info-row" style="display:none;align-items:center;justify-content:space-between;margin-bottom:10px;background:rgba(255,255,255,.12);border-radius:10px;padding:7px 12px;">
+            <span style="font-size:.7rem;font-weight:700;opacity:.85;">Total: <span id="budget-base-val">—</span></span>
+            <button onclick="toggleBudgetEdit()" id="btn-change-budget" style="background:rgba(255,255,255,.25);border:none;color:white;padding:5px 12px;border-radius:8px;font-size:.72rem;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap;">✏️ Cambiar</button>
+        </div>
+
+        <!-- Input para setear/cambiar presupuesto -->
+        <div class="budget-set" id="budget-set-row">
+            <input type="number" id="input-fondo" placeholder="USD 0" step="0.01" inputmode="decimal">
             <button onclick="updateFondo()" data-i18n="btn_set">SET</button>
         </div>
     </div>
@@ -897,17 +905,43 @@ window.convert=(type,dir)=>{
     else u.value=fmt(cleanVal(l.value)/r);
 };
 
+// ── Mostrar/ocultar el input de presupuesto ──────────────
+window.toggleBudgetEdit=()=>{
+    const row=document.getElementById('budget-set-row');
+    const visible=row.style.display!=='none';
+    row.style.display=visible?'none':'flex';
+    if(!visible) document.getElementById('input-fondo').focus();
+};
+
+// ── Actualizar UI de info-row con presupuesto base ────────
+function refreshBudgetInfoRow(){
+    const infoRow=document.getElementById('budget-info-row');
+    const baseVal=document.getElementById('budget-base-val');
+    if(presupuestoBase>0){
+        infoRow.style.display='flex';
+        if(baseVal) baseVal.textContent='USD '+fmt(presupuestoBase);
+        // Ocultar el input set-row cuando ya hay presupuesto seteado
+        const setRow=document.getElementById('budget-set-row');
+        if(setRow) setRow.style.display='none';
+    } else {
+        infoRow.style.display='none';
+        const setRow=document.getElementById('budget-set-row');
+        if(setRow) setRow.style.display='flex';
+    }
+}
+
 window.updateFondo=async()=>{
     const input=document.getElementById('input-fondo');
     const v=parseFloat(input.value);
-    if(isNaN(v)||v<0){const lang=localStorage.getItem('appLang')||'es';const m={es:'Monto inválido.',en:'Invalid amount.',pt:'Valor inválido.'};alert(m[lang]||m.es);return;}
+    if(isNaN(v)||v<=0){const lang=localStorage.getItem('appLang')||'es';const m={es:'Ingresá un presupuesto mayor a 0.',en:'Enter a budget greater than 0.',pt:'Insira um orçamento maior que 0.'};alert(m[lang]||m.es);return;}
     presupuestoBase=v;
     guardarPresupuestoEnCache(v);
-    // Actualizar display inmediatamente
+    // Recalcular restante con los gastos ya cargados
     const spent=allGastos?allGastos.reduce((s,g)=>s+g.valor,0):0;
     updateBudgetDisplay(spent);
     input.value='';
     input.placeholder='USD 0';
+    refreshBudgetInfoRow();
     if(currentUser&&perfilId){
         try{
             await updateDoc(doc(db,'usuarios',currentUser.uid,'perfiles',perfilId),{presupuesto:v});
@@ -1507,6 +1541,7 @@ onAuthStateChanged(auth,async(user)=>{
         presupuestoBase = cachedBudget;
         const inputFondo = document.getElementById('input-fondo');
         if(inputFondo){ inputFondo.value=''; inputFondo.placeholder='USD 0'; }
+        refreshBudgetInfoRow();
     }
     if(!user){window.location.replace('login.html');return;}
     currentUser=user;
@@ -1522,6 +1557,7 @@ document.getElementById('userEmail').innerText = perfilNombre || user.email;
             guardarPresupuestoEnCache(presupuestoBase);
             const inputF=document.getElementById('input-fondo');
             if(inputF){ inputF.value=''; inputF.placeholder='USD 0'; }
+            refreshBudgetInfoRow();
         }
     }catch(e){console.error(e);}
     fetchRates();
