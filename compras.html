@@ -604,8 +604,65 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 initializeAppCheck(app, { provider: new ReCaptchaV3Provider('6LeK6cssAAAAALxcJy-95R2nhVMmnuIyB78AQgvw'), isTokenAutoRefreshEnabled: true });
 
+// ── Service Worker registration ──
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+}
+
 let currentUser = null;
 const perfilId = localStorage.getItem('perfilActivoId');
+
+// ── Caché local de gastos ──
+const GASTOS_CACHE_KEY = 'taxusa_gastos_cache_' + (perfilId || 'default');
+const BUDGET_CACHE_KEY = 'taxusa_budget_cache_' + (perfilId || 'default');
+const PENDING_GASTOS_KEY = 'taxusa_gastos_pending_' + (perfilId || 'default');
+
+function guardarGastosEnCache(gastos) {
+    try { localStorage.setItem(GASTOS_CACHE_KEY, JSON.stringify(gastos)); } catch(e) {}
+}
+function cargarGastosDesdeCache() {
+    try {
+        const raw = localStorage.getItem(GASTOS_CACHE_KEY);
+        return raw ? JSON.parse(raw) : null;
+    } catch(e) { return null; }
+}
+function guardarPresupuestoEnCache(v) {
+    try { localStorage.setItem(BUDGET_CACHE_KEY, String(v)); } catch(e) {}
+}
+function cargarPresupuestoDesdeCache() {
+    const v = localStorage.getItem(BUDGET_CACHE_KEY);
+    return v !== null ? parseFloat(v) : null;
+}
+
+// ── Cola offline para gastos ──
+function getPendingGastos() {
+    try { return JSON.parse(localStorage.getItem(PENDING_GASTOS_KEY) || '[]'); } catch(e) { return []; }
+}
+function savePendingGastos(ops) {
+    try { localStorage.setItem(PENDING_GASTOS_KEY, JSON.stringify(ops)); } catch(e) {}
+}
+function queueGastoOp(op) {
+    const ops = getPendingGastos();
+    ops.push({ ...op, ts: Date.now() });
+    savePendingGastos(ops);
+}
+async function flushPendingGastos() {
+    if (!currentUser || !perfilId) return;
+    const ops = getPendingGastos();
+    if (!ops.length) return;
+    const failed = [];
+    for (const op of ops) {
+        try {
+            if (op.type === 'add') {
+                await addDoc(collection(db,'usuarios',currentUser.uid,'perfiles',perfilId,'gastos'), op.data);
+            } else if (op.type === 'del') {
+                await deleteDoc(doc(db,'usuarios',currentUser.uid,'perfiles',perfilId,'gastos',op.id));
+            }
+        } catch(e) { failed.push(op); }
+    }
+    savePendingGastos(failed);
+}
+window.addEventListener('online', () => { flushPendingGastos(); });
 const perfilFoto = localStorage.getItem('perfilActivoFoto');
 let presupuestoBase = 0;
 let allRates = {};
@@ -843,11 +900,12 @@ window.convert=(type,dir)=>{
 window.updateFondo=async()=>{
     const v=parseFloat(document.getElementById('input-fondo').value);
     if(isNaN(v)||v<0){const lang=localStorage.getItem('appLang')||'es';const m={es:'Monto inválido.',en:'Invalid amount.',pt:'Valor inválido.'};alert(m[lang]||m.es);return;}
+    presupuestoBase=v;
+    guardarPresupuestoEnCache(v); // ← guardar en caché local
     if(currentUser&&perfilId){
         try{
             await updateDoc(doc(db,'usuarios',currentUser.uid,'perfiles',perfilId),{presupuesto:v});
-            presupuestoBase=v;
-        }catch(e){const lang=localStorage.getItem('appLang')||'es';const m={es:'Error al guardar.',en:'Error saving.',pt:'Erro ao salvar.'};alert(m[lang]||m.es);}
+        }catch(e){console.warn('Budget save failed, cached locally',e);}
     }
 };
 
@@ -857,9 +915,18 @@ window.addGasto=async()=>{
 window.deleteGasto=async(id)=>{
     const lang=localStorage.getItem('appLang')||'es';
     const msgs={es:'¿Eliminar este gasto?',en:'Delete this expense?',pt:'Excluir este gasto?'};
-    if(!confirm(msgs[lang]||msgs.es)||!currentUser||!perfilId)return;
+    if(!confirm(msgs[lang]||msgs.es)||!perfilId)return;
+    // Actualizar caché local inmediatamente (UX optimista)
+    const cached = cargarGastosDesdeCache() || [];
+    guardarGastosEnCache(cached.filter(g => g.id !== id));
+    allGastos = allGastos.filter(g => g.id !== id);
+    renderGastosList(allGastos);
+    if(!navigator.onLine || !currentUser){
+        queueGastoOp({type:'del', id});
+        return;
+    }
     try{await deleteDoc(doc(db,'usuarios',currentUser.uid,'perfiles',perfilId,'gastos',id));}
-    catch(e){console.error(e);}
+    catch(e){ queueGastoOp({type:'del', id}); }
 };
 
 let allGastos=[];
@@ -870,20 +937,61 @@ const CAT_I18N_KEY={'🛍️ Compras':'cat_shopping','👟 Ropa':'cat_clothing',
 function catColor(cat){return CAT_COLORS[cat]||'#94a3b8';}
 function catLabel(cat){const lang=localStorage.getItem('appLang')||'es';const key=CAT_I18N_KEY[cat];return(key&&i18n[lang]?.[key])||cat;}
 
+function renderGastosList(gastos){
+    const c=document.getElementById('listaGastos');
+    if(!gastos||!gastos.length){
+        c.innerHTML='<p style="text-align:center;color:var(--text-dim);font-size:.85rem;">No hay gastos.</p>';
+        updateBudgetDisplay(0); renderDashboard([]); return;
+    }
+    let total=0;
+    gastos.forEach(g=>total+=(parseFloat(g.valor)||0));
+    c.innerHTML=gastos.map(g=>{
+            const cat=g.cat||'📦 Otros';
+            const catEmoji=cat.match(/^(\S+)/)?.[1]||'📦';
+            const catDisplayLabel=catLabel(cat).replace(/^\S+\s*/,'');
+            const thumbHtml=g.thumb
+                ?`<img class="h-thumb" src="${g.thumb}" alt="recibo" onclick="openReceiptViewer('${g.thumb}','${g.id}')">`
+                :`<div class="h-thumb-placeholder">${catEmoji}</div>`;
+            return `<div class="history-item" style="border-left-color:${catColor(cat)}">
+                ${thumbHtml}
+                <div style="flex:1;min-width:0;padding:0 8px;">
+                    <div class="h-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${g.nombre}</div>
+                    <div style="font-size:.62rem;color:var(--text-dim);margin-top:1px;">${catDisplayLabel}</div>
+                </div>
+                <div class="h-right">
+                    <div class="h-amount">-$${fmt(g.valor)}</div>
+                    <button class="h-del" onclick="deleteGasto('${g.id}')">✕</button>
+                </div>
+            </div>`;
+        }).join('');
+    updateBudgetDisplay(total);
+    renderDashboard(gastos);
+}
+
 function listenGastos(){
     if(!currentUser||!perfilId)return;
+
+    // Mostrar caché inmediatamente mientras Firebase carga
+    const cached = cargarGastosDesdeCache();
+    if(cached && cached.length) {
+        allGastos = cached;
+        renderGastosList(cached);
+    }
+
     const q=query(collection(db,'usuarios',currentUser.uid,'perfiles',perfilId,'gastos'),orderBy('fecha','desc'));
     onSnapshot(q,(snap)=>{
         const c=document.getElementById('listaGastos');
         let total=0; allGastos=[];
         if(snap.empty){
             c.innerHTML='<p style="text-align:center;color:var(--text-dim);font-size:.85rem;">No hay gastos.</p>';
+            guardarGastosEnCache([]);
             updateBudgetDisplay(0); renderDashboard([]); return;
         }
         snap.docs.forEach(d=>{
             const data=d.data(),val=parseFloat(data.valor)||0;
             total+=val; allGastos.push({...data,id:d.id,valor:val});
         });
+        guardarGastosEnCache(allGastos); // ← guardar en caché
         c.innerHTML=allGastos.map(g=>{
             const cat=g.cat||'📦 Otros';
             const catEmoji=cat.match(/^(\S+)/)?.[1]||'📦';
@@ -1263,13 +1371,25 @@ window.addGastoWithThumb=async(thumb)=>{
     const cat=selTag?selTag.dataset.cat:'📦 Otros';
     const lang=localStorage.getItem('appLang')||'es';
     const fillMsgs={es:'Completá nombre y precio.',en:'Please fill in name and price.',pt:'Por favor preencha nome e preço.'};
-    if(!n||isNaN(v)||v<=0||!currentUser||!perfilId){alert(fillMsgs[lang]||fillMsgs.es);return;}
+    if(!n||isNaN(v)||v<=0||!perfilId){alert(fillMsgs[lang]||fillMsgs.es);return;}
+    const gastoData={nombre:n,valor:v,cat,fecha:Date.now(),thumb:thumb||''};
+    // Actualizar caché local inmediatamente (UX optimista)
+    const localId='local_'+Date.now();
+    const cached=cargarGastosDesdeCache()||[];
+    cached.unshift({...gastoData,id:localId});
+    guardarGastosEnCache(cached);
+    allGastos.unshift({...gastoData,id:localId});
+    renderGastosList(allGastos);
+    document.getElementById('nombre').value='';
+    document.getElementById('valor').value='';
+    if(!navigator.onLine || !currentUser){
+        queueGastoOp({type:'add', data:gastoData});
+        return;
+    }
     try{
-        await addDoc(collection(db,'usuarios',currentUser.uid,'perfiles',perfilId,'gastos'),
-            {nombre:n,valor:v,cat,fecha:Date.now(),thumb:thumb||''});
-        document.getElementById('nombre').value='';
-        document.getElementById('valor').value='';
-    }catch(e){console.error(e);}
+        await addDoc(collection(db,'usuarios',currentUser.uid,'perfiles',perfilId,'gastos'),gastoData);
+        // onSnapshot va a actualizar la lista con el ID real de Firestore
+    }catch(e){ queueGastoOp({type:'add', data:gastoData}); }
 };
 
 // ── Receipt viewer ───────────────────────────────────────
@@ -1367,6 +1487,13 @@ window.doChangeEmail=async()=>{if(!currentUser)return;const l=localStorage.getIt
 window.doChangePassword=async()=>{if(!currentUser)return;const l=localStorage.getItem('appLang')||'es',m={es:{s:"Correo de recuperación enviado.",e:"Error: "},en:{s:"Recovery email sent.",e:"Error: "}},t=m[l];try{await sendPasswordResetEmail(auth,currentUser.email);alert(t.s);}catch(er){alert(t.e+er.message);}};
 window.doDeleteAccount=async()=>{const l=localStorage.getItem('appLang')||'es',m={es:{c:"¿Eliminar cuenta permanentemente?",e:"Reautenticación requerida. Cerrá sesión y volvé a entrar para eliminar tu cuenta."},en:{c:"Permanently delete account?",e:"Re-authentication required. Please log out and back in to delete your account."}},t=m[l];if(!confirm(t.c))return;try{await deleteUser(currentUser);window.location.replace('login.html');}catch(e){alert(t.e);}};   
 onAuthStateChanged(auth,async(user)=>{
+    // Cargar presupuesto cacheado inmediatamente (antes de que Firebase resuelva)
+    const cachedBudget = cargarPresupuestoDesdeCache();
+    if(cachedBudget !== null){
+        presupuestoBase = cachedBudget;
+        const inputFondo = document.getElementById('input-fondo');
+        if(inputFondo) inputFondo.value = cachedBudget;
+    }
     if(!user){window.location.replace('login.html');return;}
     currentUser=user;
     const perfilNombre = localStorage.getItem('perfilActivoNombre');
@@ -1378,11 +1505,13 @@ document.getElementById('userEmail').innerText = perfilNombre || user.email;
         const snap=await getDoc(doc(db,'usuarios',user.uid,'perfiles',perfilId));
         if(snap.exists()&&snap.data().presupuesto!==undefined){
             presupuestoBase=Number(snap.data().presupuesto);
+            guardarPresupuestoEnCache(presupuestoBase);
             document.getElementById('input-fondo').value=presupuestoBase;
         }
     }catch(e){console.error(e);}
     fetchRates();
     listenGastos();
+    flushPendingGastos(); // Sincronizar operaciones pendientes
     const lang=localStorage.getItem('appLang')||'es';
     window.changeLanguage(lang);
     document.getElementById('tip-text').innerText=shoppingTips[lang][0];
