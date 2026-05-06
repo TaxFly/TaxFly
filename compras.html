@@ -933,26 +933,8 @@ window.refreshBudgetInfoRow=function refreshBudgetInfoRow(){
 
 window.updateFondo=async()=>{
     const input=document.getElementById('input-fondo');
-    const raw=input.value;
-    const v=parseFloat(raw);
-    if(isNaN(v)||v<0){const lang=localStorage.getItem('appLang')||'es';const m={es:'Ingresá un monto válido.',en:'Enter a valid amount.',pt:'Insira um valor válido.'};alert(m[lang]||m.es);return;}
-
-    // Si pone 0 → resetear presupuesto
-    if(v===0){
-        presupuestoBase=0;
-        guardarPresupuestoEnCache(0);
-        input.value='';
-        input.placeholder='USD 0';
-        const setRow2=document.getElementById('budget-set-row');
-        if(setRow2){ setRow2._editing=false; setRow2.style.display='flex'; }
-        document.getElementById('budget-info-row').style.display='none';
-        document.getElementById('disp-fondo').innerText='USD 0.00';
-        if(currentUser&&perfilId){
-            try{ await updateDoc(doc(db,'usuarios',currentUser.uid,'perfiles',perfilId),{presupuesto:0}); }catch(e){}
-        }
-        return;
-    }
-
+    const v=parseFloat(input.value);
+    if(isNaN(v)||v<0){const lang=localStorage.getItem('appLang')||'es';const m={es:'Ingresá un presupuesto mayor a 0.',en:'Enter a budget greater than 0.',pt:'Insira um orçamento maior que 0.'};alert(m[lang]||m.es);return;}
     presupuestoBase=v;
     guardarPresupuestoEnCache(v);
     // Recalcular restante con los gastos ya cargados
@@ -1052,19 +1034,13 @@ function listenGastos(){
             renderGastosList([]);
             return;
         }
-        // Reconstruir allGastos desde Firestore, preservando gastos locales
-        // que todavía no aparecen en el snapshot (pendientes de confirmación)
-        const firestoreIds = new Set(snap.docs.map(d=>d.id));
+        // Reconstruir allGastos desde Firestore
         const gastosFirestore = snap.docs.map(d=>{
             const data=d.data(), val=parseFloat(data.valor)||0;
             return {...data, id:d.id, valor:val};
         });
-        // Gastos locales que aún no tienen ID de Firestore
-        const gastosLocalesPendientes = allGastos.filter(
-            g=>String(g.id).startsWith('local_')
-        );
-        // Combinar: primero los locales pendientes (más recientes), luego Firestore
-        allGastos = [...gastosLocalesPendientes, ...gastosFirestore];
+        // Usar solo los datos de Firestore — ya confirmó todos los writes
+        allGastos = gastosFirestore;
         guardarGastosEnCache(allGastos);
         renderGastosList(allGastos);
     });
