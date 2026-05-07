@@ -10,7 +10,19 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="icon" href="icon-512.png">
     <link rel="apple-touch-icon" href="icon-512.png">
-    <script src="https://www.google.com/recaptcha/api.js?render=6LeK6cssAAAAALxcJy-95R2nhVMmnuIyB78AQgvw" async defer></script>
+    <!-- reCAPTCHA: solo cargar si hay conexión para evitar errores visuales offline -->
+    <script>
+        if (navigator.onLine) {
+            var s = document.createElement('script');
+            s.src = 'https://www.google.com/recaptcha/api.js?render=6LeK6cssAAAAALxcJy-95R2nhVMmnuIyB78AQgvw';
+            s.async = true; s.defer = true;
+            document.head.appendChild(s);
+        }
+    </script>
+    <!-- Ocultar cualquier badge/error de reCAPTCHA que pueda aparecer -->
+    <style>
+        .grecaptcha-badge { visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
+    </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800&display=swap" rel="stylesheet"></noscript>
@@ -287,7 +299,7 @@
     <div id="offline-dot"></div>
     <div id="offline-label">
         <strong data-i18n="offline_title">Sin conexión</strong>
-        <span data-i18n="offline_sub">El clima, el chat y la calculadora de tax funcionan igual</span>
+        <span data-i18n="offline_sub">La calculadora, propina y dividir cuenta siguen funcionando normalmente</span>
     </div>
 </div>
 
@@ -350,6 +362,13 @@
             <span class="slabel" data-i18n="label_city">Ciudad / Condado</span>
             <select id="city-select" onchange="calculate()"></select>
         </div>
+        <!-- Fallback manual: ingresar tax a mano si el usuario no encuentra su ciudad -->
+        <div class="input-group" id="manual-tax-group" style="display:none;">
+            <span class="slabel">TAX MANUAL (%)</span>
+            <input type="number" id="manual-tax-input" placeholder="Ej: 8.25" step="0.01" inputmode="decimal" min="0" max="20" oninput="applyManualTax()" style="border-color:var(--warn);">
+            <div style="font-size:.65rem;font-weight:600;color:var(--text-dim);margin-top:4px;">Ingresá el % de tax si no encontrás tu ciudad.</div>
+        </div>
+        <button id="toggle-manual-tax" onclick="toggleManualTax()" style="background:none;border:none;color:var(--text-dim);font-size:.65rem;font-weight:700;cursor:pointer;padding:2px 0 10px;text-decoration:underline;display:block;">✏️ Ingresar tax manualmente</button>
 
         <div class="result-box">
             <div class="result-value" id="total-with-tax">USD 0.00</div>
@@ -460,7 +479,7 @@
 
     <div class="app-footer">
         <span data-i18n="footer_by">Creado por Juan Cruz Bria</span>
-        <img src="https://flagcdn.com/w40/ar.png" alt="Argentina">
+        <img src="https://flagcdn.com/w40/ar.png" alt="Argentina" onerror="this.outerHTML='🇦🇷';">
     </div>
     <div class="api-note">Firebase · FlagCDN · reCAPTCHA v3</div>
 
@@ -490,9 +509,9 @@
     <p id="userEmail" class="drawer-email"></p>
     <span class="drawer-section-label" data-i18n="label_language">Idioma</span>
     <div class="lang-selector">
-        <button class="lang-opt" id="lang-es" onclick="window.changeLanguage('es')"><img src="https://flagcdn.com/w20/ar.png" alt=""> ES</button>
-        <button class="lang-opt" id="lang-en" onclick="window.changeLanguage('en')"><img src="https://flagcdn.com/w20/us.png" alt=""> EN</button>
-        <button class="lang-opt" id="lang-pt" onclick="window.changeLanguage('pt')"><img src="https://flagcdn.com/w20/br.png" alt=""> PT</button>
+        <button class="lang-opt" id="lang-es" onclick="window.changeLanguage('es')"><img src="https://flagcdn.com/w20/ar.png" alt="" onerror="this.outerHTML='🇦🇷';"> ES</button>
+        <button class="lang-opt" id="lang-en" onclick="window.changeLanguage('en')"><img src="https://flagcdn.com/w20/us.png" alt="" onerror="this.outerHTML='🇺🇸';"> EN</button>
+        <button class="lang-opt" id="lang-pt" onclick="window.changeLanguage('pt')"><img src="https://flagcdn.com/w20/br.png" alt="" onerror="this.outerHTML='🇧🇷';"> PT</button>
     </div>
     <button class="drawer-btn" onclick="changeProfile()">👤 <span data-i18n="btn_change_profile">Cambiar Perfil</span></button>
     <button class="drawer-btn" onclick="toggleDarkMode()">🌓 <span data-i18n="btn_theme">Cambiar Tema</span></button>
@@ -597,7 +616,7 @@ const i18n = {
         split_per_person:"por persona",split_total:"total cuenta",
         split_subtotal:"subtotal",split_tax:"tax",split_tip_amt:"propina",
         offline_title:"Sin conexión",
-        offline_sub:"El clima, el chat y la calculadora de tax funcionan igual"
+        offline_sub:"La calculadora, propina y dividir cuenta siguen funcionando normalmente"
     },
     en:{
         nav_expenses:"EXPENSES",nav_itinerary:"ITINERARY",nav_compare:"COMPARE",nav_units:"UNITS", nav_tickets: "DOCUMENTS", nav_group: "GROUP",
@@ -619,7 +638,7 @@ const i18n = {
         split_per_person:"per person",split_total:"total bill",
         split_subtotal:"subtotal",split_tax:"tax",split_tip_amt:"tip",
         offline_title:"No connection",
-        offline_sub:"Weather, chat and the tax calculator still work"
+        offline_sub:"Calculator, tip and split bill work normally without internet"
     },
     pt:{
         nav_expenses:"GASTOS",nav_itinerary:"ITINERÁRIO",nav_compare:"COMPARAR",nav_units:"UNIDADES", nav_tickets: "DOCUMENTOS", nav_group: "GRUPO",
@@ -641,7 +660,7 @@ const i18n = {
         split_per_person:"por pessoa",split_total:"total conta",
         split_subtotal:"subtotal",split_tax:"tax",split_tip_amt:"gorjeta",
         offline_title:"Sem conexão",
-        offline_sub:"Clima, chat e a calculadora de tax continuam funcionando"
+        offline_sub:"Calculadora, gorjeta e dividir conta funcionam normalmente sem internet"
     }
 };
 
@@ -735,9 +754,18 @@ window.setCustomTip = () => {
     calculate();
     updateTipBadge();
 };
+// ── Tax manual fallback ──────────────────────────────────────────────────
+let manualTaxActive = false;
+
 window.calculate = () => {
     const price = parseFloat(document.getElementById('price').value) || 0;
-    let tax = parseFloat(document.getElementById('city-select').value) || 0;
+    let tax;
+    if (manualTaxActive) {
+        const manVal = parseFloat(document.getElementById('manual-tax-input')?.value);
+        tax = isNaN(manVal) ? 0 : manVal;
+    } else {
+        tax = parseFloat(document.getElementById('city-select').value) || 0;
+    }
     const cat = document.querySelector('.cat-btn.active');
     if (cat && (cat.id === 'btn-med' || cat.id === 'btn-food')) tax = 0;
     const subtotal = price * (1 + tax / 100);
@@ -750,6 +778,37 @@ window.calculate = () => {
     document.getElementById('tax-detail').innerText = `${i18n[lang].tax_applied}: ${tax}%`;
     document.getElementById('final-total').innerText = `USD ${fmt(subtotal * (1 + currentTip/100))}`;
 };
+window.toggleManualTax = () => {
+    manualTaxActive = !manualTaxActive;
+    const lang = localStorage.getItem('appLang') || 'es';
+    const grp = document.getElementById('manual-tax-group');
+    const btn = document.getElementById('toggle-manual-tax');
+    const stateG = document.getElementById('state-select')?.closest('.input-group');
+    const cityG  = document.getElementById('city-select')?.closest('.input-group');
+    const lblManual = document.querySelector('#manual-tax-group .slabel');
+    const lblHint   = document.querySelector('#manual-tax-group div');
+    if (manualTaxActive) {
+        if (grp) grp.style.display = 'block';
+        if (btn) btn.textContent = lang==='en' ? '✕ Use state/city selector' : '✕ Usar selector de estado/ciudad';
+        if (lblManual) lblManual.textContent = lang==='en' ? 'MANUAL TAX (%)' : 'TAX MANUAL (%)';
+        if (lblHint) lblHint.textContent = lang==='en' ? 'Enter the tax % if your city is not listed.' : 'Ingresá el % de tax si no encontrás tu ciudad.';
+        if (stateG) stateG.style.opacity = '.4';
+        if (cityG)  cityG.style.opacity  = '.4';
+        document.getElementById('manual-tax-input')?.focus();
+    } else {
+        if (grp) grp.style.display = 'none';
+        if (btn) btn.textContent = lang==='en' ? '✏️ Enter tax manually' : '✏️ Ingresar tax manualmente';
+        if (stateG) stateG.style.opacity = '1';
+        if (cityG)  cityG.style.opacity  = '1';
+        const inp = document.getElementById('manual-tax-input');
+        if (inp) inp.value = '';
+        calculate();
+    }
+};
+window.applyManualTax = () => {
+    calculate();
+};
+
 window.loadCities = () => {
     const state = document.getElementById('state-select').value;
     const cs = document.getElementById('city-select');
@@ -764,6 +823,8 @@ window.saveTripSettings = async () => {
     const dest = document.getElementById('input-destination').value || 'Orlando';
     const date = document.getElementById('input-date').value || '2027-01-01';
     tripData = { destination: dest, date };
+    // Cache locally for offline use
+    try { localStorage.setItem('taxusa_cached_trip', JSON.stringify(tripData)); } catch(e) {}
     if (currentUser && perfilId) {
         try { await setDoc(doc(db, 'usuarios', currentUser.uid, 'perfiles', perfilId), { trip: tripData }, { merge: true }); }
         catch(e) { console.error(e); }
@@ -884,8 +945,22 @@ onAuthStateChanged(auth, async (user) => {
             if (emailEl) emailEl.innerText = perfilNombre || pinEmail;
             const foto = localStorage.getItem('perfilActivoFoto') || '';
             if (foto) { const btn = document.getElementById('btnSettings'); if(btn){ btn.style.backgroundImage = `url('${foto}')`; btn.innerText = ''; } }
+            // Leer datos del viaje cacheados en localStorage
+            try {
+                const cachedTrip = localStorage.getItem('taxusa_cached_trip');
+                if (cachedTrip) tripData = JSON.parse(cachedTrip);
+            } catch(e) {}
             updateTripUI();
-            // No llamar fetchWeather — sin internet fallará; el overlay mostrará el PIN
+            // Auto-seleccionar estado/ciudad desde el destino cacheado (datos offline, sin API)
+            autoSelectTaxByCity(tripData.destination);
+            // Mostrar clima cacheado si existe, u ocultar el widget
+            if (weatherCache && weatherCache.data) {
+                const lang = localStorage.getItem('appLang') || 'es';
+                renderWeather(weatherCache.data, weatherCache.city, lang);
+            } else {
+                const wc = document.getElementById('wc-body');
+                if (wc) wc.innerHTML = '<div class="wc-error">⚠️ Sin conexión — clima no disponible</div>';
+            }
             return;
         }
         // Sin PIN ni sesión cacheada → redirigir a login
@@ -906,7 +981,11 @@ onAuthStateChanged(auth, async (user) => {
 
     try {
         const snap = await getDoc(doc(db, 'usuarios', user.uid, 'perfiles', perfilId));
-        if (snap.exists() && snap.data().trip) tripData = snap.data().trip;
+        if (snap.exists() && snap.data().trip) {
+            tripData = snap.data().trip;
+            // Cache for offline use
+            try { localStorage.setItem('taxusa_cached_trip', JSON.stringify(tripData)); } catch(e) {}
+        }
         autoSelectTaxByCity(tripData.destination);
     } catch(e) { console.error(e); }
 
@@ -966,6 +1045,17 @@ window.fetchWeather = async function(city) {
     if (weatherCache.city === city && weatherCache.data && (now - weatherCache.ts) < 1800000) {
         renderWeather(weatherCache.data, city, lang);
         if (refreshBtn) refreshBtn.classList.remove('spinning');
+        return;
+    }
+
+    // Si no hay conexión, mostrar cache o mensaje sin spinner infinito
+    if (!navigator.onLine) {
+        if (refreshBtn) refreshBtn.classList.remove('spinning');
+        if (weatherCache && weatherCache.data) {
+            renderWeather(weatherCache.data, weatherCache.city, lang);
+        } else {
+            body.innerHTML = '<div class="wc-error">📵 Sin conexión — clima no disponible</div>';
+        }
         return;
     }
 
@@ -2058,14 +2148,14 @@ window.onload = () => {
     <div id="switchAppSub" style="font-size:.8rem;font-weight:600;color:var(--text-sub);margin-bottom:22px;">¿A qué destino querés ir?</div>
     <div style="display:flex;flex-direction:column;gap:10px;">
       <button onclick="doSwitchApp('usa')" style="width:100%;padding:14px;border-radius:14px;border:2px solid rgba(239,68,68,.4);background:linear-gradient(135deg,rgba(37,99,235,.1),rgba(239,68,68,.08));cursor:pointer;font-family:inherit;font-weight:800;font-size:.95rem;color:var(--text);display:flex;align-items:center;gap:12px;transition:all .2s;">
-        <img src="https://flagcdn.com/w40/us.png" style="width:32px;border-radius:4px;flex-shrink:0;" alt="US">
+        <img src="https://flagcdn.com/w40/us.png" style="width:32px;border-radius:4px;flex-shrink:0;" alt="US" onerror="this.outerHTML='🇺🇸';">
         <div style="text-align:left;">
           <div style="color:#ef4444;font-weight:900;">TaxUSA</div>
           <div style="font-size:.72rem;font-weight:600;color:var(--text-sub);">Estados Unidos</div>
         </div>
       </button>
       <button onclick="doSwitchApp('europe')" style="width:100%;padding:14px;border-radius:14px;border:2px solid rgba(0,51,153,.4);background:linear-gradient(135deg,rgba(0,51,153,.1),rgba(255,204,0,.06));cursor:pointer;font-family:inherit;font-weight:800;font-size:.95rem;color:var(--text);display:flex;align-items:center;gap:12px;transition:all .2s;">
-        <img src="https://flagcdn.com/w40/eu.png" style="width:32px;border-radius:4px;flex-shrink:0;" alt="EU">
+        <img src="https://flagcdn.com/w40/eu.png" style="width:32px;border-radius:4px;flex-shrink:0;" alt="EU" onerror="this.outerHTML='🇪🇺';">
         <div style="text-align:left;">
           <div style="color:#003399;font-weight:900;">TaxEurope</div>
           <div style="font-size:.72rem;font-weight:600;color:var(--text-sub);">Europa</div>
