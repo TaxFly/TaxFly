@@ -290,7 +290,7 @@
         <!-- Fila: presupuesto base + boton cambiar (visible cuando ya hay un presupuesto) -->
         <div id="budget-info-row" style="display:none;align-items:center;justify-content:space-between;margin-bottom:10px;background:rgba(255,255,255,.12);border-radius:10px;padding:7px 12px;">
             <span style="font-size:.7rem;font-weight:700;opacity:.85;">Total: <span id="budget-base-val">—</span></span>
-            <button onclick="toggleBudgetEdit()" id="btn-change-budget" style="background:rgba(255,255,255,.25);border:none;color:white;padding:5px 12px;border-radius:8px;font-size:.72rem;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap;">✏️ Cambiar</button>
+            <button onclick="toggleBudgetEdit()" id="btn-change-budget" style="background:rgba(255,255,255,.25);border:none;color:white;padding:5px 12px;border-radius:8px;font-size:.72rem;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap;" data-i18n="btn_change_budget">✏️ Cambiar</button>
         </div>
 
         <!-- Input para setear/cambiar presupuesto -->
@@ -692,7 +692,7 @@ let video, stream;
 const i18n = {
     es:{
         nav_home:"INICIO", nav_itinerary:"ITINERARIO", nav_compare:"COMPARAR", nav_units:"UNIDADES", nav_tickets:"DOCUMENTOS", nav_group:"GRUPO",
-        label_budget:"Presupuesto Restante", btn_set:"SET",
+        label_budget:"Presupuesto Restante", btn_set:"SET", btn_change_budget:"✏️ Cambiar",
         ocr_analyzing:"Analizando ticket... 🧐", ocr_detecting:"Detectando Totales y Taxes",
         shopping_guide:"GUÍA DE COMPRAS", tab_list:"GASTOS", tab_summary:"RESUMEN", tab_sizes:"TALLES",
         scanner_beta_msg:"⚠️ El escáner está en beta. Verificá siempre el monto detectado.",
@@ -726,7 +726,7 @@ const i18n = {
     },
     en:{
         nav_home:"HOME", nav_itinerary:"ITINERARY", nav_compare:"COMPARE", nav_units:"UNITS", nav_tickets:"DOCUMENTS", nav_group:"GROUP",
-        label_budget:"Remaining Budget", btn_set:"SET",
+        label_budget:"Remaining Budget", btn_set:"SET", btn_change_budget:"✏️ Change",
         ocr_analyzing:"Analyzing ticket... 🧐", ocr_detecting:"Detecting Totals and Taxes",
         shopping_guide:"SHOPPING GUIDE", tab_list:"EXPENSES", tab_summary:"SUMMARY", tab_sizes:"SIZES",
         scanner_beta_msg:"⚠️ Scanner is in beta. Always verify the detected amount.",
@@ -760,7 +760,7 @@ const i18n = {
     },
     pt:{
         nav_home:"INÍCIO", nav_itinerary:"ITINERÁRIO", nav_compare:"COMPARAR", nav_units:"UNIDADES", nav_tickets:"DOCUMENTOS", nav_group:"GRUPO",
-        label_budget:"Orçamento Restante", btn_set:"SET",
+        label_budget:"Orçamento Restante", btn_set:"SET", btn_change_budget:"✏️ Alterar",
         ocr_analyzing:"Analisando ticket... 🧐", ocr_detecting:"Detectando Totais e Taxes",
         shopping_guide:"GUIA DE COMPRAS", tab_list:"GASTOS", tab_summary:"RESUMO", tab_sizes:"TAMANHOS",
         scanner_beta_msg:"⚠️ O scanner está em beta. Verifique sempre o valor detectado.",
@@ -1034,18 +1034,14 @@ function listenGastos(){
             renderGastosList([]);
             return;
         }
-        // Reconstruir desde Firestore (fuente de verdad)
+        // Reconstruir allGastos desde Firestore
         const gastosFirestore = snap.docs.map(d=>{
             const data=d.data(), val=parseFloat(data.valor)||0;
             return {...data, id:d.id, valor:val};
         });
-        // Conservar solo los locales que aún no tienen confirmación en Firestore
-        const localesPendientes = allGastos.filter(g=>
-            String(g.id).startsWith('local_') &&
-            !gastosFirestore.some(f=>f.nombre===g.nombre&&f.valor===g.valor&&Math.abs(f.fecha-g.fecha)<5000)
-        );
-        allGastos = [...localesPendientes, ...gastosFirestore];
-        guardarGastosEnCache(gastosFirestore);
+        // Usar solo los datos de Firestore — ya confirmó todos los writes
+        allGastos = gastosFirestore;
+        guardarGastosEnCache(allGastos);
         renderGastosList(allGastos);
     });
 }
@@ -1424,8 +1420,10 @@ window.addGastoWithThumb=async(thumb)=>{
     }
     try{
         await addDoc(collection(db,'usuarios',currentUser.uid,'perfiles',perfilId,'gastos'),gastoData);
-        // onSnapshot llegará con el ID real y reemplazará la lista completa —
-        // NO tocar allGastos acá para evitar duplicados
+        // Cuando onSnapshot llega con el ID real de Firestore, eliminar el local_XXX de allGastos
+        // para que no quede duplicado (el snapshot trae el item con ID real)
+        allGastos = allGastos.filter(g=>g.id!==localId);
+        guardarGastosEnCache(allGastos);
     }catch(e){ queueGastoOp({type:'add', data:gastoData}); }
 };
 
