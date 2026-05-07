@@ -182,6 +182,67 @@
 
         /* ── INSTALL BUTTONS ── */
         .install-wrap{display:none;flex-direction:column;gap:8px;margin-top:16px;}
+
+        /* ── OFFLINE INFO COLLAPSIBLE ── */
+        .offline-info-wrap{
+            margin-top:16px;border-radius:18px;
+            border:1.5px solid rgba(239,159,39,.25);
+            overflow:hidden;background:rgba(239,159,39,.06);
+        }
+        .offline-info-trigger{
+            width:100%;display:flex;align-items:center;gap:10px;
+            padding:14px 16px;background:none;border:none;
+            font-family:inherit;cursor:pointer;text-align:left;
+            color:var(--text);
+        }
+        .offline-info-trigger:hover{ background:rgba(239,159,39,.07); }
+        .oi-icon{ font-size:1.05rem; flex-shrink:0; }
+        .oi-title{
+            flex:1;font-size:.85rem;font-weight:800;color:var(--primary-dark);
+        }
+        .oi-arrow{
+            font-size:1.1rem;font-weight:900;color:var(--primary);
+            transition:transform .3s cubic-bezier(0.4,0,0.2,1);
+            display:inline-block;line-height:1;
+        }
+        .oi-arrow.open{ transform:rotate(90deg); }
+
+        .offline-info-body{
+            max-height:0;overflow:hidden;
+            transition:max-height .4s cubic-bezier(0.4,0,0.2,1);
+            padding:0 16px;
+        }
+        .offline-info-body.open{
+            max-height:300px;
+            padding:0 16px 16px;
+        }
+        .oi-step{
+            display:flex;align-items:flex-start;gap:12px;
+            padding:9px 0;border-bottom:1px solid rgba(239,159,39,.15);
+        }
+        .oi-step:last-of-type{ border-bottom:none; }
+        .oi-step-num{
+            width:22px;height:22px;border-radius:50%;flex-shrink:0;
+            background:var(--primary);color:white;
+            font-size:.7rem;font-weight:900;
+            display:flex;align-items:center;justify-content:center;
+            margin-top:1px;
+        }
+        .oi-step-text{
+            font-size:.82rem;font-weight:600;
+            color:var(--text-sub);line-height:1.45;
+        }
+        .oi-note{
+            display:flex;align-items:flex-start;gap:8px;
+            margin-top:12px;padding:10px 12px;
+            background:rgba(239,159,39,.1);border-radius:10px;
+            border:1px solid rgba(239,159,39,.2);
+        }
+        .oi-note span:first-child{ font-size:.9rem;flex-shrink:0; }
+        #oi-note-txt{
+            font-size:.78rem;font-weight:700;
+            color:var(--primary-dark);line-height:1.4;
+        }
         .btn-install{
             width:100%;padding:13px 16px;border:none;border-radius:14px;
             font-family:inherit;font-size:.85rem;font-weight:800;letter-spacing:.4px;
@@ -386,6 +447,33 @@
         <button class="btn-install btn-android" id="btnAndroid" onclick="installAndroid()">➕ Agregar a inicio (Android)</button>
         <button class="btn-install btn-ios" id="btnIos" onclick="showIosModal()">📲 Agregar a inicio (iPhone)</button>
     </div>
+
+    <!-- ── Offline info collapsible ── -->
+    <div class="offline-info-wrap" id="offlineInfoWrap">
+        <button class="offline-info-trigger" onclick="toggleOfflineInfo()" id="offlineInfoBtn" aria-expanded="false">
+            <span class="oi-icon">✈️</span>
+            <span class="oi-title" id="oi-title-txt">¿Cómo usarla sin internet?</span>
+            <span class="oi-arrow" id="offlineInfoArrow">›</span>
+        </button>
+        <div class="offline-info-body" id="offlineInfoBody">
+            <div class="oi-step">
+                <div class="oi-step-num">1</div>
+                <div class="oi-step-text" id="oi-step1">Iniciá sesión al menos una vez con WiFi.</div>
+            </div>
+            <div class="oi-step">
+                <div class="oi-step-num">2</div>
+                <div class="oi-step-text" id="oi-step2">Creá tu PIN de 4 dígitos cuando te lo pida.</div>
+            </div>
+            <div class="oi-step">
+                <div class="oi-step-num">3</div>
+                <div class="oi-step-text" id="oi-step3">¡Listo! La próxima vez podés entrar con el PIN aunque no tengas conexión.</div>
+            </div>
+            <div class="oi-note" id="oi-note">
+                <span>💡</span>
+                <span id="oi-note-txt">La calculadora, propina, conversores y gastos siguen funcionando offline.</span>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- ════════════════════════════════════════════
@@ -553,6 +641,16 @@
     window.hideIosModal = () => document.getElementById('iosOverlay').classList.remove('show');
     if (isIos && !isStandalone) showInstallButtons();
 
+    // ── Offline info collapsible ──
+    window.toggleOfflineInfo = () => {
+        const body  = document.getElementById('offlineInfoBody');
+        const arrow = document.getElementById('offlineInfoArrow');
+        const btn   = document.getElementById('offlineInfoBtn');
+        const open  = body.classList.toggle('open');
+        arrow.classList.toggle('open', open);
+        btn.setAttribute('aria-expanded', open);
+    };
+
     // ── Lang ──
     window.toggleLangMenu = () => document.getElementById('langOptions').classList.toggle('show');
     window.onclick = (e) => { if (!e.target.closest('#langSelector')) document.getElementById('langOptions').classList.remove('show'); };
@@ -625,6 +723,11 @@ const i18n = {
         newPinTitle:"Nuevo PIN",
         newPinSub:"Ingresá tu nuevo PIN de 4 dígitos.",
         iVerified:"✅ Ya verifiqué mi correo — ingresar nuevo PIN",
+        offlineInfoTitle:"¿Cómo usarla sin internet?",
+        offlineStep1:"Iniciá sesión al menos una vez con WiFi.",
+        offlineStep2:"Creá tu PIN de 4 dígitos cuando te lo pida.",
+        offlineStep3:"¡Listo! La próxima vez podés entrar con el PIN aunque no tengas conexión.",
+        offlineNote:"La calculadora, propina, conversores y gastos siguen funcionando offline.",
     },
     en:{
         welcome:"Welcome", create:"Create Account",
@@ -668,6 +771,11 @@ const i18n = {
         newPinTitle:"New PIN",
         newPinSub:"Enter your new 4-digit PIN.",
         iVerified:"✅ I verified my email — set new PIN",
+        offlineInfoTitle:"How to use it offline?",
+        offlineStep1:"Sign in at least once with WiFi.",
+        offlineStep2:"Create your 4-digit PIN when prompted.",
+        offlineStep3:"Done! Next time you can enter with your PIN even without internet.",
+        offlineNote:"Calculator, tips, unit converter and expenses keep working offline.",
     },
     pt:{
         welcome:"Bem-vindo", create:"Criar Conta",
@@ -711,6 +819,11 @@ const i18n = {
         newPinTitle:"Novo PIN",
         newPinSub:"Digite seu novo PIN de 4 dígitos.",
         iVerified:"✅ Já verifiquei meu e-mail — criar novo PIN",
+        offlineInfoTitle:"Como usar sem internet?",
+        offlineStep1:"Entre pelo menos uma vez com WiFi.",
+        offlineStep2:"Crie seu PIN de 4 dígitos quando solicitado.",
+        offlineStep3:"Pronto! Da próxima vez pode entrar com o PIN sem internet.",
+        offlineNote:"Calculadora, gorjetas, conversores e gastos continuam funcionando offline.",
     }
 };
 
@@ -822,6 +935,12 @@ function applyTexts() {
     setText('send-verify-btn',  t('sendVerify'));
     setText('new-pin-title',    t('newPinTitle'));
     setText('new-pin-sub',      t('newPinSub'));
+    // Offline info banner
+    setText('oi-title-txt', t('offlineInfoTitle'));
+    setText('oi-step1',     t('offlineStep1'));
+    setText('oi-step2',     t('offlineStep2'));
+    setText('oi-step3',     t('offlineStep3'));
+    setText('oi-note-txt',  t('offlineNote'));
 }
 
 // ── Online auth ──
