@@ -8,7 +8,10 @@
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="icon" href="icon-512.png">
     <link rel="apple-touch-icon" href="icon-512.png">
-    <script src="https://www.google.com/recaptcha/api.js?render=6LeK6cssAAAAALxcJy-95R2nhVMmnuIyB78AQgvw" async defer></script>
+    <!-- reCAPTCHA: solo cargar con conexión para evitar errores visuales offline -->
+    <script>if(navigator.onLine){var s=document.createElement('script');s.src='https://www.google.com/recaptcha/api.js?render=6LeK6cssAAAAALxcJy-95R2nhVMmnuIyB78AQgvw';s.async=true;s.defer=true;document.head.appendChild(s);}
+    </script>
+    <style>.grecaptcha-badge{visibility:hidden!important;opacity:0!important;pointer-events:none!important;}</style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800;900&display=swap" rel="stylesheet"></noscript>
@@ -295,7 +298,7 @@
         <p data-i18n="empty_docs">Todavía no tenés documentos guardados.<br>Agregá tu boarding pass, vouchers y más.</p>
     </div>
 
-    <div class="app-footer"><span data-i18n="footer_by">Creado por Juan Cruz Bria</span><img src="https://flagcdn.com/w40/ar.png" alt="AR"></div>
+    <div class="app-footer"><span data-i18n="footer_by">Creado por Juan Cruz Bria</span><img src="https://flagcdn.com/w40/ar.png" alt="AR" onerror="this.outerHTML='🇦🇷';"></div>
 </div>
 
 <!-- ═══════════ ADD SHEET ═══════════ -->
@@ -379,9 +382,9 @@
     <p id="userEmail" class="drawer-email"></p>
     <span class="drawer-section-label" data-i18n="label_lang">Idioma</span>
     <div class="lang-selector">
-        <button class="lang-opt" id="lang-es" onclick="changeLanguage('es')"><img src="https://flagcdn.com/w20/ar.png" alt=""> ES</button>
-        <button class="lang-opt" id="lang-en" onclick="changeLanguage('en')"><img src="https://flagcdn.com/w20/us.png" alt=""> EN</button>
-        <button class="lang-opt" id="lang-pt" onclick="changeLanguage('pt')"><img src="https://flagcdn.com/w20/br.png" alt=""> PT</button>
+        <button class="lang-opt" id="lang-es" onclick="changeLanguage('es')"><img src="https://flagcdn.com/w20/ar.png" alt="" onerror="this.outerHTML='🇦🇷';"> ES</button>
+        <button class="lang-opt" id="lang-en" onclick="changeLanguage('en')"><img src="https://flagcdn.com/w20/us.png" alt="" onerror="this.outerHTML='🇺🇸';"> EN</button>
+        <button class="lang-opt" id="lang-pt" onclick="changeLanguage('pt')"><img src="https://flagcdn.com/w20/br.png" alt="" onerror="this.outerHTML='🇧🇷';"> PT</button>
     </div>
     <button class="drawer-btn" onclick="changeProfile()">👤 <span data-i18n="btn_profile">Cambiar Perfil</span></button>
     <button class="drawer-btn" onclick="toggleDarkMode()">🌓 <span data-i18n="btn_theme">Cambiar Tema</span></button>
@@ -1857,14 +1860,14 @@ document.addEventListener('DOMContentLoaded', () => {
     <div id="switchAppSub" style="font-size:.8rem;font-weight:600;color:var(--text-sub);margin-bottom:22px;">¿A qué destino querés ir?</div>
     <div style="display:flex;flex-direction:column;gap:10px;">
       <button onclick="doSwitchApp('usa')" style="width:100%;padding:14px;border-radius:14px;border:2px solid rgba(239,68,68,.4);background:linear-gradient(135deg,rgba(37,99,235,.1),rgba(239,68,68,.08));cursor:pointer;font-family:inherit;font-weight:800;font-size:.95rem;color:var(--text);display:flex;align-items:center;gap:12px;transition:all .2s;">
-        <img src="https://flagcdn.com/w40/us.png" style="width:32px;border-radius:4px;flex-shrink:0;" alt="US">
+        <img src="https://flagcdn.com/w40/us.png" style="width:32px;border-radius:4px;flex-shrink:0;" alt="US" onerror="this.outerHTML='🇺🇸';">
         <div style="text-align:left;">
           <div style="color:#ef4444;font-weight:900;">TaxUSA</div>
           <div style="font-size:.72rem;font-weight:600;color:var(--text-sub);">Estados Unidos</div>
         </div>
       </button>
       <button onclick="doSwitchApp('europe')" style="width:100%;padding:14px;border-radius:14px;border:2px solid rgba(0,51,153,.4);background:linear-gradient(135deg,rgba(0,51,153,.1),rgba(255,204,0,.06));cursor:pointer;font-family:inherit;font-weight:800;font-size:.95rem;color:var(--text);display:flex;align-items:center;gap:12px;transition:all .2s;">
-        <img src="https://flagcdn.com/w40/eu.png" style="width:32px;border-radius:4px;flex-shrink:0;" alt="EU">
+        <img src="https://flagcdn.com/w40/eu.png" style="width:32px;border-radius:4px;flex-shrink:0;" alt="EU" onerror="this.outerHTML='🇪🇺';">
         <div style="text-align:left;">
           <div style="color:#003399;font-weight:900;">TaxEurope</div>
           <div style="font-size:.72rem;font-weight:600;color:var(--text-sub);">Europa</div>
