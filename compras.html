@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TaxUSA — Gastos</title>
-    <script src="https://www.google.com/recaptcha/api.js?render=6LeK6cssAAAAALxcJy-95R2nhVMmnuIyB78AQgvw"></script>
+    <script>if(navigator.onLine){var s=document.createElement('script');s.src='https://www.google.com/recaptcha/api.js?render=6LeK6cssAAAAALxcJy-95R2nhVMmnuIyB78AQgvw';document.head.appendChild(s);}</script>
+    <style>.grecaptcha-badge{display:none!important;}</style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script>const _t=localStorage.getItem('theme');if(_t)document.documentElement.setAttribute('data-theme',_t);else if(window.matchMedia('(prefers-color-scheme:dark)').matches)document.documentElement.setAttribute('data-theme','dark');</script>
@@ -339,31 +340,31 @@
             <div class="rates-grid">
                 <div class="rate-box arg">
                     <div class="rate-label" data-i18n="rate_official">Dólar Oficial</div>
-                    <div class="rate-row"><span><img src="https://flagcdn.com/20x15/us.png" alt="United States"></span><input type="text" id="oficial-usd" value="1" oninput="formatVisual(this);convert('oficial','usd')"></div>
+                    <div class="rate-row"><span><img src="https://flagcdn.com/20x15/us.png" alt="🇺🇸" onerror="this.outerHTML='🇺🇸'"></span><input type="text" id="oficial-usd" value="1" oninput="formatVisual(this);convert('oficial','usd')"></div>
                     <div class="rate-divider">⇅</div>
-                    <div class="rate-row"><span></span><img src="https://flagcdn.com/20x15/ar.png" alt="Argentina"><input type="text" id="oficial-local" oninput="formatVisual(this);convert('oficial','local')"></div>
+                    <div class="rate-row"><span></span><img src="https://flagcdn.com/20x15/ar.png" alt="🇦🇷" onerror="this.outerHTML='🇦🇷'"><input type="text" id="oficial-local" oninput="formatVisual(this);convert('oficial','local')"></div>
                 </div>
                 <div class="rate-box arg">
                     <div class="rate-label" data-i18n="rate_card">Dólar Tarjeta</div>
-                    <div class="rate-row"><span><img src="https://flagcdn.com/20x15/us.png" alt="United States"></span><input type="text" id="tarjeta-usd" value="1" oninput="formatVisual(this);convert('tarjeta','usd')"></div>
+                    <div class="rate-row"><span><img src="https://flagcdn.com/20x15/us.png" alt="🇺🇸" onerror="this.outerHTML='🇺🇸'"></span><input type="text" id="tarjeta-usd" value="1" oninput="formatVisual(this);convert('tarjeta','usd')"></div>
                     <div class="rate-divider">⇅</div>
-                    <div class="rate-row"><span><img src="https://flagcdn.com/20x15/ar.png" alt="Argentina"></span><input type="text" id="tarjeta-local" oninput="formatVisual(this);convert('tarjeta','local')"></div>
+                    <div class="rate-row"><span><img src="https://flagcdn.com/20x15/ar.png" alt="🇦🇷" onerror="this.outerHTML='🇦🇷'"></span><input type="text" id="tarjeta-local" oninput="formatVisual(this);convert('tarjeta','local')"></div>
                 </div>
                 <div class="rate-box multi">
                     <select id="select-eur" class="currency-select" onchange="updateMulti('eur')">
                         <option value="EUR">Euro</option><option value="GBP" data-i18n="opt_pound">Libra</option>
                     </select>
-                    <div class="rate-row"><span><img src="https://flagcdn.com/20x15/us.png" alt="United States"></span><input type="text" id="eur-usd" value="1" oninput="formatVisual(this);convert('eur','usd')"></div>
+                    <div class="rate-row"><span><img src="https://flagcdn.com/20x15/us.png" alt="🇺🇸" onerror="this.outerHTML='🇺🇸'"></span><input type="text" id="eur-usd" value="1" oninput="formatVisual(this);convert('eur','usd')"></div>
                     <div class="rate-divider">⇅</div>
-                    <div class="rate-row"><span id="flag-eur"><img src="https://flagcdn.com/20x15/eu.png" alt="European Union"></span><input type="text" id="eur-local" oninput="formatVisual(this);convert('eur','local')"></div>
+                    <div class="rate-row"><span id="flag-eur"><img src="https://flagcdn.com/20x15/eu.png" alt="🇪🇺" onerror="this.outerHTML='🇪🇺'"></span><input type="text" id="eur-local" oninput="formatVisual(this);convert('eur','local')"></div>
                 </div>
                 <div class="rate-box multi">
                     <select id="select-brl" class="currency-select" onchange="updateMulti('brl')">
                         <option value="BRL" data-i18n="opt_real">Real</option><option value="CLP" data-i18n="opt_clp">P. Chileno</option><option value="UYU" data-i18n="opt_uyu">P. Uruguayo</option><option value="MXN" data-i18n="opt_mxn">P. Mexicano</option><option value="PEN" data-i18n="opt_pen">Sol Peruano</option><option value="COP" data-i18n="opt_cop">P. Colombiano</option>
                     </select>
-                    <div class="rate-row"><span><img src="https://flagcdn.com/20x15/us.png" alt="United States"></span><input type="text" id="brl-usd" value="1" oninput="formatVisual(this);convert('brl','usd')"></div>
+                    <div class="rate-row"><span><img src="https://flagcdn.com/20x15/us.png" alt="🇺🇸" onerror="this.outerHTML='🇺🇸'"></span><input type="text" id="brl-usd" value="1" oninput="formatVisual(this);convert('brl','usd')"></div>
                     <div class="rate-divider">⇅</div>
-                    <div class="rate-row"><span id="flag-brl"><img src="https://flagcdn.com/20x15/br.png" alt="Brazil"></span><input type="text" id="brl-local" oninput="formatVisual(this);convert('brl','local')"></div>
+                    <div class="rate-row"><span id="flag-brl"><img src="https://flagcdn.com/20x15/br.png" alt="🇧🇷" onerror="this.outerHTML='🇧🇷'"></span><input type="text" id="brl-local" oninput="formatVisual(this);convert('brl','local')"></div>
                 </div>
             </div>
 
@@ -538,8 +539,8 @@
     </table>
 </div>
 
-    <div class="app-footer"><span data-i18n="footer_by">Creado por Juan Cruz Bria</span><img src="https://flagcdn.com/w40/ar.png" alt="AR"></div>
-    <div style="text-align:center;font-size:.55rem;color:var(--text-dim);font-weight:600;letter-spacing:.8px;padding-bottom:16px;opacity:.6;">FIREBASE · FLAGCDN · RECAPTCHA V3</div>
+    <div class="app-footer"><span data-i18n="footer_by">Creado por Juan Cruz Bria</span><svg width="16" height="11" viewBox="0 0 18 13" xmlns="http://www.w3.org/2000/svg" style="border-radius:2px;"><rect width="18" height="4.3" y="0" fill="#74acdf"/><rect width="18" height="4.4" y="4.3" fill="#fff"/><rect width="18" height="4.3" y="8.7" fill="#74acdf"/><circle cx="9" cy="6.5" r="1.5" fill="#f6b40e"/></svg></div>
+    <div style="text-align:center;font-size:.55rem;color:var(--text-dim);font-weight:600;letter-spacing:.8px;padding-bottom:16px;opacity:.6;">FIREBASE · RECAPTCHA V3</div>
 </div>
 
 <div id="menuOverlay" class="menu-overlay" onclick="toggleSettings()"></div>
@@ -548,9 +549,9 @@
     <p id="userEmail" class="drawer-email"></p>
     <span class="drawer-section-label" data-i18n="label_language">Idioma</span>
     <div class="lang-selector">
-        <button class="lang-opt" id="lang-es" onclick="window.changeLanguage('es')"><img src="https://flagcdn.com/w20/ar.png" alt=""> ES</button>
-        <button class="lang-opt" id="lang-en" onclick="window.changeLanguage('en')"><img src="https://flagcdn.com/w20/us.png" alt=""> EN</button>
-        <button class="lang-opt" id="lang-pt" onclick="window.changeLanguage('pt')"><img src="https://flagcdn.com/w20/br.png" alt=""> PT</button>
+        <button class="lang-opt" id="lang-es" onclick="window.changeLanguage('es')"><svg width="18" height="13" viewBox="0 0 18 13" xmlns="http://www.w3.org/2000/svg"><rect width="18" height="4.3" y="0" fill="#74acdf"/><rect width="18" height="4.4" y="4.3" fill="#fff"/><rect width="18" height="4.3" y="8.7" fill="#74acdf"/><circle cx="9" cy="6.5" r="1.5" fill="#f6b40e"/></svg> ES</button>
+        <button class="lang-opt" id="lang-en" onclick="window.changeLanguage('en')"><svg width="18" height="13" viewBox="0 0 18 13" xmlns="http://www.w3.org/2000/svg"><rect width="18" height="13" fill="#B22234"/><rect width="18" height="1" y="1" fill="#fff"/><rect width="18" height="1" y="3" fill="#fff"/><rect width="18" height="1" y="5" fill="#fff"/><rect width="18" height="1" y="7" fill="#fff"/><rect width="18" height="1" y="9" fill="#fff"/><rect width="18" height="1" y="11" fill="#fff"/><rect width="7" height="7" fill="#3C3B6E"/></svg> EN</button>
+        <button class="lang-opt" id="lang-pt" onclick="window.changeLanguage('pt')"><svg width="18" height="13" viewBox="0 0 18 13" xmlns="http://www.w3.org/2000/svg"><rect width="18" height="13" fill="#009c3b"/><polygon points="9,1 17,6.5 9,12 1,6.5" fill="#FEDF00"/><circle cx="9" cy="6.5" r="2.6" fill="#002776"/></svg> PT</button>
     </div>
     <button class="drawer-btn" onclick="changeProfile()">👤 <span data-i18n="btn_change_profile">Cambiar Perfil</span></button>
     <button class="drawer-btn" onclick="toggleDarkMode()">🌓 <span data-i18n="btn_theme">Cambiar Tema</span></button>
@@ -676,15 +677,15 @@ let presupuestoBase = 0;
 let allRates = {};
 let baseRates = { oficial:0, tarjeta:0, eur:0, brl:0 };
 const flags = {
-  EUR: '<img src="https://flagcdn.com/20x15/eu.png">',
-  GBP: '<img src="https://flagcdn.com/20x15/gb.png">',
-  CHF: '<img src="https://flagcdn.com/20x15/ch.png">',
-  BRL: '<img src="https://flagcdn.com/20x15/br.png">',
-  CLP: '<img src="https://flagcdn.com/20x15/cl.png">',
-  UYU: '<img src="https://flagcdn.com/20x15/uy.png">',
-  MXN: '<img src="https://flagcdn.com/20x15/mx.png">',
-  PEN: '<img src="https://flagcdn.com/20x15/pe.png">',
-  COP: '<img src="https://flagcdn.com/20x15/co.png">'
+  EUR: '<img src="https://flagcdn.com/20x15/eu.png" onerror="this.outerHTML=\'🇪🇺\'">',
+  GBP: '<img src="https://flagcdn.com/20x15/gb.png" onerror="this.outerHTML=\'🇬🇧\'">',
+  CHF: '<img src="https://flagcdn.com/20x15/ch.png" onerror="this.outerHTML=\'🇨🇭\'">',
+  BRL: '<img src="https://flagcdn.com/20x15/br.png" onerror="this.outerHTML=\'🇧🇷\'">',
+  CLP: '<img src="https://flagcdn.com/20x15/cl.png" onerror="this.outerHTML=\'🇨🇱\'">',
+  UYU: '<img src="https://flagcdn.com/20x15/uy.png" onerror="this.outerHTML=\'🇺🇾\'">',
+  MXN: '<img src="https://flagcdn.com/20x15/mx.png" onerror="this.outerHTML=\'🇲🇽\'">',
+  PEN: '<img src="https://flagcdn.com/20x15/pe.png" onerror="this.outerHTML=\'🇵🇪\'">',
+  COP: '<img src="https://flagcdn.com/20x15/co.png" onerror="this.outerHTML=\'🇨🇴\'">'
 };
     let tipIndex = 0;
 let video, stream;
@@ -2060,14 +2061,14 @@ document.getElementById('userEmail').innerText = perfilNombre || user.email;
     <div id="switchAppSub" style="font-size:.8rem;font-weight:600;color:var(--text-sub);margin-bottom:22px;">¿A qué destino querés ir?</div>
     <div style="display:flex;flex-direction:column;gap:10px;">
       <button onclick="doSwitchApp('usa')" style="width:100%;padding:14px;border-radius:14px;border:2px solid rgba(239,68,68,.4);background:linear-gradient(135deg,rgba(37,99,235,.1),rgba(239,68,68,.08));cursor:pointer;font-family:inherit;font-weight:800;font-size:.95rem;color:var(--text);display:flex;align-items:center;gap:12px;transition:all .2s;">
-        <img src="https://flagcdn.com/w40/us.png" style="width:32px;border-radius:4px;flex-shrink:0;" alt="US"><img src="https://flagcdn.com/w40/us.png" style="width:32px;border-radius:4px;flex-shrink:0;" alt="US">
+        <svg width="32" height="22" viewBox="0 0 18 13" xmlns="http://www.w3.org/2000/svg" style="border-radius:4px;flex-shrink:0;"><rect width="18" height="13" fill="#B22234"/><rect width="18" height="1" y="1" fill="#fff"/><rect width="18" height="1" y="3" fill="#fff"/><rect width="18" height="1" y="5" fill="#fff"/><rect width="18" height="1" y="7" fill="#fff"/><rect width="18" height="1" y="9" fill="#fff"/><rect width="18" height="1" y="11" fill="#fff"/><rect width="7" height="7" fill="#3C3B6E"/></svg>
         <div style="text-align:left;">
           <div style="color:#ef4444;font-weight:900;">TaxUSA</div>
           <div style="font-size:.72rem;font-weight:600;color:var(--text-sub);">Estados Unidos</div>
         </div>
       </button>
       <button onclick="doSwitchApp('europe')" style="width:100%;padding:14px;border-radius:14px;border:2px solid rgba(0,51,153,.4);background:linear-gradient(135deg,rgba(0,51,153,.1),rgba(255,204,0,.06));cursor:pointer;font-family:inherit;font-weight:800;font-size:.95rem;color:var(--text);display:flex;align-items:center;gap:12px;transition:all .2s;">
-        <img src="https://flagcdn.com/w40/eu.png" style="width:32px;border-radius:4px;flex-shrink:0;" alt="EU">
+        <svg width="32" height="22" viewBox="0 0 36 24" xmlns="http://www.w3.org/2000/svg" style="border-radius:4px;flex-shrink:0;"><rect width="36" height="24" fill="#003399"/><g fill="#FFCC00"><polygon points="18,3 18.9,5.8 21.9,5.8 19.5,7.5 20.4,10.3 18,8.6 15.6,10.3 16.5,7.5 14.1,5.8 17.1,5.8"/><polygon points="18,14 18.9,16.8 21.9,16.8 19.5,18.5 20.4,21.3 18,19.6 15.6,21.3 16.5,18.5 14.1,16.8 17.1,16.8"/><polygon points="9,8.5 9.9,11.3 12.9,11.3 10.5,13 11.4,15.8 9,14.1 6.6,15.8 7.5,13 5.1,11.3 8.1,11.3"/><polygon points="27,8.5 27.9,11.3 30.9,11.3 28.5,13 29.4,15.8 27,14.1 24.6,15.8 25.5,13 23.1,11.3 26.1,11.3"/></g></svg>
         <div style="text-align:left;">
           <div style="color:#003399;font-weight:900;">TaxEurope</div>
           <div style="font-size:.72rem;font-weight:600;color:var(--text-sub);">Europa</div>
