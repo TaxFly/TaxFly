@@ -1034,14 +1034,18 @@ function listenGastos(){
             renderGastosList([]);
             return;
         }
-        // Reconstruir allGastos desde Firestore
+        // Reconstruir desde Firestore (fuente de verdad)
         const gastosFirestore = snap.docs.map(d=>{
             const data=d.data(), val=parseFloat(data.valor)||0;
             return {...data, id:d.id, valor:val};
         });
-        // Usar solo los datos de Firestore — ya confirmó todos los writes
-        allGastos = gastosFirestore;
-        guardarGastosEnCache(allGastos);
+        // Conservar solo los locales que aún no tienen confirmación en Firestore
+        const localesPendientes = allGastos.filter(g=>
+            String(g.id).startsWith('local_') &&
+            !gastosFirestore.some(f=>f.nombre===g.nombre&&f.valor===g.valor&&Math.abs(f.fecha-g.fecha)<5000)
+        );
+        allGastos = [...localesPendientes, ...gastosFirestore];
+        guardarGastosEnCache(gastosFirestore);
         renderGastosList(allGastos);
     });
 }
@@ -1420,10 +1424,8 @@ window.addGastoWithThumb=async(thumb)=>{
     }
     try{
         await addDoc(collection(db,'usuarios',currentUser.uid,'perfiles',perfilId,'gastos'),gastoData);
-        // Cuando onSnapshot llega con el ID real de Firestore, eliminar el local_XXX de allGastos
-        // para que no quede duplicado (el snapshot trae el item con ID real)
-        allGastos = allGastos.filter(g=>g.id!==localId);
-        guardarGastosEnCache(allGastos);
+        // onSnapshot llegará con el ID real y reemplazará la lista completa —
+        // NO tocar allGastos acá para evitar duplicados
     }catch(e){ queueGastoOp({type:'add', data:gastoData}); }
 };
 
