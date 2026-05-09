@@ -49,12 +49,29 @@
         .logo svg{width:28px;height:28px;flex-shrink:0;}
 
         /* NAV */
-        .nav-bar{display:flex;align-items:center;background:var(--surface);border-radius:16px;padding:6px;margin-bottom:16px;border:1px solid var(--border);box-shadow:var(--shadow);gap:2px;}
+        .nav-bar{display:flex;align-items:center;background:var(--surface);border-radius:16px;padding:6px;margin-bottom:16px;border:1px solid var(--border);box-shadow:var(--shadow);gap:2px;position:relative;}
         .btn-nav{flex:1;display:flex;flex-direction:column;align-items:center;text-decoration:none;color:var(--text-sub);font-size:8px;font-weight:700;gap:2px;padding:6px 2px;border-radius:10px;background:none;border:none;cursor:pointer;transition:var(--tr);text-transform:uppercase;letter-spacing:.3px;}
         .btn-nav .ni{font-size:17px;line-height:1;}
         .btn-nav:hover,.btn-nav.active{color:var(--primary);background:var(--primary-dim);}
         .btn-nav-set{width:34px;height:34px;border-radius:50%;background:var(--surface-2);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;overflow:hidden;transition:var(--tr);background-size:cover;background-position:center;}
         .btn-nav-set:hover{border-color:var(--primary);}
+        .btn-nav-more{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 2px;border-radius:10px;background:none;border:none;cursor:pointer;transition:var(--tr);position:relative;}
+        .btn-nav-more:hover,.btn-nav-more.open{background:var(--primary-dim);}
+        .more-dots{display:flex;gap:3px;align-items:center;height:17px;}
+        .more-dot{width:3.5px;height:3.5px;border-radius:50%;background:var(--text-dim);transition:var(--tr);}
+        .btn-nav-more:hover .more-dot,.btn-nav-more.open .more-dot{background:var(--primary);}
+        .more-lbl{font-size:8px;font-weight:700;color:var(--text-sub);text-transform:uppercase;letter-spacing:.3px;transition:var(--tr);}
+        .btn-nav-more:hover .more-lbl,.btn-nav-more.open .more-lbl{color:var(--primary);}
+        .nav-dropdown{position:absolute;top:calc(100% + 10px);right:-6px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:5px;width:210px;z-index:500;box-shadow:var(--shadow-lg);display:none;animation:ddIn .15s ease;}
+        .nav-dropdown.show{display:block;}
+        @keyframes ddIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+        .dd-arrow{position:absolute;top:-6px;right:22px;width:10px;height:10px;background:var(--surface);border-left:1.5px solid var(--border);border-top:1.5px solid var(--border);transform:rotate(45deg);}
+        .dd-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;text-decoration:none;color:inherit;transition:var(--tr);}
+        .dd-item:hover{background:var(--primary-dim);}
+        .dd-item:hover .dd-name{color:var(--primary);}
+        .dd-icon{font-size:16px;width:22px;text-align:center;flex-shrink:0;}
+        .dd-name{font-size:11px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.3px;}
+        .dd-desc{font-size:9px;color:var(--text-sub);margin-top:1px;font-weight:500;}
 
         /* CARD BASE */
         .card{background:var(--surface);border-radius:var(--radius);padding:20px;width:100%;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:14px;position:relative;}
@@ -169,13 +186,20 @@
     </div>
 
     <nav class="nav-bar">
-        <a href="index.html" class="btn-nav"><span class="ni">🏠</span><span data-i18n="nav_home">INICIO</span></a>
-        <a href="tax.html" class="btn-nav"><span class="ni">📊</span><span data-i18n="nav_tax">TAXES</span></a>
-        <a href="compras.html" class="btn-nav"><span class="ni">🛍️</span><span data-i18n="nav_expenses">GASTOS</span></a>
+        <a href="index.html"      class="btn-nav"><span class="ni">🏠</span><span data-i18n="nav_home">INICIO</span></a>
+        <a href="tax.html"        class="btn-nav"><span class="ni">📊</span><span data-i18n="nav_tax">TAXES</span></a>
+        <a href="compras.html"    class="btn-nav"><span class="ni">🛍️</span><span data-i18n="nav_expenses">GASTOS</span></a>
         <a href="itinerario.html" class="btn-nav"><span class="ni">📍</span><span data-i18n="nav_itinerary">ITINERARIO</span></a>
-        <a href="tickets.html" class="btn-nav"><span class="ni">📄</span><span data-i18n="nav_tickets">DOCUMENTOS</span></a>
-        <a href="grupo.html" class="btn-nav"><span class="ni">👥</span><span data-i18n="nav_group">GRUPO</span></a>
-        <a href="rutas.html" class="btn-nav"><span class="ni">🗺️</span><span data-i18n="nav_routes">RUTAS</span></a>
+        <button class="btn-nav-more" id="btnMore" onclick="toggleMoreMenu(event)">
+            <div class="more-dots"><div class="more-dot"></div><div class="more-dot"></div><div class="more-dot"></div></div>
+            <span class="more-lbl" data-i18n="nav_more">MÁS</span>
+            <div class="nav-dropdown" id="navDropdown">
+                <div class="dd-arrow"></div>
+                <a href="rutas.html"   class="dd-item"><span class="dd-icon">🗺️</span><div><div class="dd-name" data-i18n="nav_routes">RUTAS</div><div class="dd-desc" data-i18n="nav_routes_desc">Mapas y direcciones</div></div></a>
+                <a href="tickets.html" class="dd-item"><span class="dd-icon">📄</span><div><div class="dd-name" data-i18n="nav_tickets">DOCUMENTOS</div><div class="dd-desc" data-i18n="nav_tickets_desc">ESTA, seguros, check-in</div></div></a>
+                <a href="grupo.html"   class="dd-item"><span class="dd-icon">👥</span><div><div class="dd-name" data-i18n="nav_group">GRUPO</div><div class="dd-desc" data-i18n="nav_group_desc">Gastos compartidos</div></div></a>
+            </div>
+        </button>
         <button class="btn-nav-set" id="btnSettings" onclick="toggleSettings()"></button>
     </nav>
 
@@ -446,7 +470,7 @@ let tipIndex = 0;
 /* ── i18n ── */
 const i18n = {
     es:{
-        nav_home:"INICIO", nav_tax: "TAXES", nav_expenses:"GASTOS", nav_itinerary:"ITINERARIO", nav_compare:"COMPARAR", nav_tickets: "DOCUMENTOS", nav_group: "GRUPO", nav_routes: "RUTAS",
+        nav_home:"INICIO", nav_tax:"TAXES", nav_expenses:"GASTOS", nav_itinerary:"ITINERARIO", nav_tickets:"DOCUMENTOS", nav_group:"GRUPO", nav_routes:"RUTAS", nav_more:"MÁS", nav_routes_desc:"Mapas y direcciones", nav_tickets_desc:"ESTA, seguros, check-in", nav_group_desc:"Gastos compartidos",
         tip_label:"DATO ÚTIL",
         label_converters:"Conversores",
         grp_temp:"Clima / Temperatura", grp_speed:"Velocidad y Distancia",
@@ -470,7 +494,7 @@ const i18n = {
         alert_upcoming: "🚀 El Comparador de Precios estará disponible próximamente."
     },
     en:{
-        nav_home:"HOME", nav_tax: "TAXES", nav_expenses:"EXPENSES", nav_itinerary:"ITINERARY", nav_compare:"COMPARE", nav_tickets: "DOCUMENTS", nav_group: "GROUP", nav_routes: "ROUTES",
+        nav_home:"HOME", nav_tax:"TAXES", nav_expenses:"EXPENSES", nav_itinerary:"ITINERARY", nav_tickets:"DOCUMENTS", nav_group:"GROUP", nav_routes:"ROUTES", nav_more:"MORE", nav_routes_desc:"Maps & directions", nav_tickets_desc:"ESTA, insurance, check-in", nav_group_desc:"Shared expenses",
         tip_label:"USEFUL TIP",
         label_converters:"Converters",
         grp_temp:"Weather / Temperature", grp_speed:"Speed & Distance",
@@ -494,7 +518,7 @@ const i18n = {
         alert_upcoming: "🚀 The Price Comparator will be available soon."
     },
     pt:{
-        nav_home:"INÍCIO", nav_tax: "TAXES", nav_expenses:"GASTOS", nav_itinerary:"ITINERÁRIO", nav_compare:"COMPARAR", nav_tickets: "DOCUMENTOS", nav_group: "GRUPO", nav_routes: "ROTAS",
+        nav_home:"INÍCIO", nav_tax:"TAXES", nav_expenses:"GASTOS", nav_itinerary:"ITINERÁRIO", nav_tickets:"DOCUMENTOS", nav_group:"GRUPO", nav_routes:"ROTAS", nav_more:"MAIS", nav_routes_desc:"Mapas e direções", nav_tickets_desc:"ESTA, seguros, check-in", nav_group_desc:"Gastos compartilhados",
         tip_label:"DICA ÚTIL",
         label_converters:"Conversores",
         grp_temp:"Clima / Temperatura", grp_speed:"Velocidade e Distância",
@@ -644,6 +668,23 @@ function clearGroup(id) {
 }
 
 /* ── Settings & Auth ── */
+window.toggleMoreMenu = (e) => {
+    e.stopPropagation();
+    const btn = document.getElementById('btnMore');
+    const dd  = document.getElementById('navDropdown');
+    const isOpen = dd.classList.contains('show');
+    dd.classList.toggle('show', !isOpen);
+    btn.classList.toggle('open', !isOpen);
+};
+document.addEventListener('click', (e) => {
+    const dd  = document.getElementById('navDropdown');
+    const btn = document.getElementById('btnMore');
+    if (dd && btn && !btn.contains(e.target)) {
+        dd.classList.remove('show');
+        btn.classList.remove('open');
+    }
+});
+
 window.toggleSettings = () => {
     const d = document.getElementById('settingsDrawer'), open = d.classList.toggle('open');
     document.getElementById('menuOverlay').style.display = open ? 'block' : 'none';
