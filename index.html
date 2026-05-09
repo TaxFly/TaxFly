@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TaxUSA — Inicio</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" href="assets/icon-512.png">
+    <link rel="apple-touch-icon" href="assets/icon-512.png">
+    <script>if(navigator.onLine){var s=document.createElement('script');s.src='https://www.google.com/recaptcha/api.js?render=6LeK6cssAAAAALxcJy-95R2nhVMmnuIyB78AQgvw';s.async=true;s.defer=true;document.head.appendChild(s);}</script>
+    <style>.grecaptcha-badge{visibility:hidden!important;opacity:0!important;pointer-events:none!important;}</style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800;900&display=swap" rel="stylesheet"></noscript>
+    <script>
+        const _t = localStorage.getItem('theme');
+        if (_t) document.documentElement.setAttribute('data-theme', _t);
+        else if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.setAttribute('data-theme','dark');
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const foto = localStorage.getItem('perfilActivoFoto');
+            if (foto) {
+                ['btnSettings','btnSettings2'].forEach(id => {
+                    const b = document.getElementById(id);
+                    if (b) { b.style.backgroundImage=`url('${foto}')`; b.innerText=''; }
+                });
+            }
+        });
+    </script>
+    <style>
+        :root {
+            --primary:#2563eb; --primary-dim:rgba(37,99,235,0.1);
+            --accent:#7c3aed;  --accent-dim:rgba(124,58,237,0.1);
+            --danger:#ef4444;  --success:#10b981; --warn:#f59e0b; --cyan:#0ea5e9;
+            --bg:#f1f5f9; --surface:#ffffff; --surface-2:#f8fafc;
+            --border:#e2e8f0; --input-bg:#f8fafc;
+            --text:#0f172a; --text-sub:#64748b; --text-dim:#94a3b8;
+            --header-color:#1e3a8a;
+            --radius:20px; --radius-sm:12px;
+            --shadow:0 4px 20px rgba(0,0,0,0.06); --shadow-lg:0 12px 40px rgba(0,0,0,0.1);
+            --tr:all 0.25s cubic-bezier(0.4,0,0.2,1);
+            color-scheme: light;
+        }
+        [data-theme="dark"] {
+            --bg:#0f172a; --surface:#1e293b; --surface-2:#273549;
+            --border:#334155; --input-bg:#273549;
+            --text:#f1f5f9; --text-sub:#94a3b8; --text-dim:#64748b;
+            --header-color:#2563eb;
+            --shadow:0 4px 20px rgba(0,0,0,0.3); --shadow-lg:0 12px 40px rgba(0,0,0,0.4);
+            color-scheme: dark;
+        }
+        *,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0;}
+        html{scroll-behavior:smooth;}
+        body{font-family:'DM Sans',-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px 16px 40px;transition:background .3s,color .3s;-webkit-font-smoothing:antialiased;}
+        .wrap{width:100%;max-width:460px;}
+
+        .app-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+        .logo{display:flex;align-items:center;gap:10px;font-size:1.4rem;font-weight:900;color:var(--header-color);letter-spacing:-.5px;}
+        .logo svg{width:28px;height:28px;flex-shrink:0;}
+
+        .nav-bar{display:flex;align-items:center;background:var(--surface);border-radius:16px;padding:6px;margin-bottom:16px;border:1px solid var(--border);box-shadow:var(--shadow);gap:2px;}
+        .btn-nav{flex:1;display:flex;flex-direction:column;align-items:center;text-decoration:none;color:var(--text-sub);font-size:8px;font-weight:700;gap:2px;padding:6px 2px;border-radius:10px;background:none;border:none;cursor:pointer;transition:var(--tr);text-transform:uppercase;letter-spacing:.3px;}
+        .btn-nav .ni{font-size:17px;line-height:1;}
+        .btn-nav:hover,.btn-nav.active{color:var(--primary);background:var(--primary-dim);}
+        .btn-nav-set{width:34px;height:34px;border-radius:50%;background:var(--surface-2);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;overflow:hidden;transition:var(--tr);background-size:cover;background-position:center;}
+        .btn-nav-set:hover{border-color:var(--primary);}
+
+        /* Greeting */
+        .greeting-banner{background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 55%,#7c3aed 100%);color:white;border-radius:var(--radius);padding:18px 20px 16px;margin-bottom:14px;box-shadow:0 8px 28px rgba(37,99,235,.28);position:relative;overflow:hidden;}
+        .greeting-banner::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.06);pointer-events:none;}
+        .greeting-banner::after{content:'✈️';position:absolute;right:14px;bottom:-8px;font-size:4.2rem;opacity:.18;transform:rotate(-15deg);pointer-events:none;}
+        .greeting-sub{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;opacity:.75;margin-bottom:3px;}
+        .greeting-name{font-size:1.3rem;font-weight:900;letter-spacing:-.3px;line-height:1.2;}
+        .greeting-date{font-size:.72rem;font-weight:600;opacity:.7;margin-top:4px;}
+
+        /* Quick access squares */
+        .quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:14px;}
+        .quick-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 6px 10px;display:flex;flex-direction:column;align-items:center;gap:5px;text-decoration:none;color:inherit;cursor:pointer;transition:var(--tr);}
+        .quick-item:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow:0 6px 20px rgba(37,99,235,.13);}
+        .quick-item:active{transform:scale(.95);}
+        .qi-emoji{font-size:1.55rem;line-height:1;}
+        .qi-label{font-size:.58rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--text-sub);text-align:center;line-height:1.2;}
+
+        /* Budget */
+        .widget-budget{background:linear-gradient(135deg,var(--primary),var(--accent));color:white;border-radius:var(--radius-sm);padding:16px 18px;box-shadow:0 6px 20px rgba(37,99,235,.25);margin-bottom:14px;cursor:pointer;transition:var(--tr);}
+        .widget-budget:hover{transform:translateY(-1px);box-shadow:0 10px 30px rgba(37,99,235,.3);}
+        .widget-budget:active{transform:scale(.98);}
+        .wb-label{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;opacity:.8;margin-bottom:4px;}
+        .wb-row{display:flex;align-items:baseline;justify-content:space-between;}
+        .wb-value{font-size:1.9rem;font-weight:900;letter-spacing:-.5px;}
+        .wb-pct{font-size:.8rem;font-weight:800;opacity:.8;background:rgba(255,255,255,.2);border-radius:20px;padding:3px 10px;align-self:center;}
+        .wb-bar-track{height:5px;background:rgba(255,255,255,.25);border-radius:4px;margin-top:10px;overflow:hidden;}
+        .wb-bar-fill{height:100%;background:white;border-radius:4px;transition:width .6s ease;}
+        .wb-hint{font-size:.65rem;font-weight:600;opacity:.75;margin-top:8px;}
+
+        /* Widgets 2-col */
+        .widgets-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+        .widget{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+        .widget.clickable{cursor:pointer;transition:var(--tr);}
+        .widget.clickable:hover{border-color:var(--primary);transform:translateY(-1px);box-shadow:0 6px 24px rgba(37,99,235,.12);}
+        .widget.clickable:active{transform:scale(.98);}
+        .w-label{font-size:.55rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--text-dim);margin-bottom:6px;display:flex;align-items:center;gap:5px;}
+        .w-icon{font-size:.9rem;}
+        .w-value{font-size:1.2rem;font-weight:900;color:var(--text);line-height:1.1;}
+        .w-sub{font-size:.68rem;font-weight:600;color:var(--text-sub);margin-top:3px;}
+        .w-badge{display:inline-flex;align-items:center;gap:4px;border-radius:6px;padding:2px 7px;font-size:.58rem;font-weight:800;margin-top:5px;}
+        .w-badge.warn{background:rgba(245,158,11,.1);color:var(--warn);}
+        .w-divider{height:1px;background:var(--border);margin:10px 0;}
+        .fx-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);}
+        .fx-row:last-child{border-bottom:none;padding-bottom:0;}
+        .fx-row:first-child{padding-top:0;}
+        .fx-name{font-size:.62rem;font-weight:700;color:var(--text-sub);}
+        .fx-val{font-size:.85rem;font-weight:900;color:var(--text);}
+
+        /* Weather */
+        .weather-widget{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;box-shadow:var(--shadow);margin-bottom:14px;position:relative;overflow:hidden;}
+        .weather-widget::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(14,165,233,.05),rgba(37,99,235,.04));pointer-events:none;}
+        .ww-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+        .ww-label{font-size:.55rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--text-dim);display:flex;align-items:center;gap:5px;}
+        .ww-refresh{background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:.85rem;padding:4px 6px;border-radius:8px;transition:var(--tr);}
+        .ww-refresh:hover{color:var(--primary);background:var(--primary-dim);}
+        .ww-main{display:flex;align-items:center;gap:12px;}
+        .ww-icon{font-size:2.4rem;line-height:1;flex-shrink:0;}
+        .ww-temp{font-size:2rem;font-weight:900;color:var(--text);line-height:1;}
+        .ww-city{font-size:.75rem;font-weight:700;color:var(--text-sub);margin-top:1px;}
+        .ww-desc{font-size:.68rem;font-weight:600;color:var(--primary);margin-top:2px;text-transform:capitalize;}
+        .ww-extras{display:flex;gap:12px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+        .ww-extra{display:flex;align-items:center;gap:4px;font-size:.68rem;font-weight:700;color:var(--text-sub);}
+        .ww-loading{font-size:.78rem;color:var(--text-dim);font-weight:600;padding:6px 0;display:flex;align-items:center;gap:8px;}
+        .ww-spinner{width:14px;height:14px;border-radius:50%;border:2px solid var(--border);border-top-color:var(--primary);animation:spin .75s linear infinite;flex-shrink:0;}
+        @keyframes spin{to{transform:rotate(360deg);}}
+
+        /* Next event */
+        .next-event-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;box-shadow:var(--shadow);margin-bottom:14px;cursor:pointer;transition:var(--tr);display:flex;align-items:center;gap:14px;}
+        .next-event-card:hover{border-color:var(--accent);transform:translateY(-1px);}
+        .ne-dot{width:42px;height:42px;border-radius:12px;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+        .ne-info{flex:1;min-width:0;}
+        .ne-label{font-size:.55rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--text-dim);margin-bottom:3px;}
+        .ne-title{font-size:.9rem;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+        .ne-time{font-size:.7rem;font-weight:600;color:var(--text-sub);margin-top:2px;}
+        .ne-arrow{color:var(--text-dim);font-size:.9rem;flex-shrink:0;}
+
+        /* Tip card */
+        .tip-card{background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(37,99,235,.06));border:1.5px solid var(--accent-dim);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:14px;cursor:pointer;transition:var(--tr);display:flex;align-items:flex-start;gap:12px;}
+        .tip-card:hover{border-color:var(--accent);opacity:.9;}
+        .tip-icon{font-size:1.4rem;flex-shrink:0;margin-top:1px;}
+        .tip-label{font-size:.52rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:4px;}
+        .tip-text{font-size:.78rem;font-weight:600;color:var(--text);line-height:1.45;transition:opacity .18s ease;}
+        .tip-hint{font-size:.6rem;font-weight:700;color:var(--text-dim);margin-top:6px;}
+
+        /* Sections */
+        .section-list-title{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:10px;}
+        .section-list{display:flex;flex-direction:column;gap:8px;}
+        .section-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;transition:var(--tr);cursor:pointer;}
+        .section-item:hover{border-color:var(--primary);transform:translateX(3px);box-shadow:var(--shadow);}
+        .section-item:active{transform:scale(.98);}
+        .si-icon-wrap{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+        .si-text{flex:1;min-width:0;}
+        .si-name{font-size:.9rem;font-weight:800;color:var(--text);}
+        .si-desc{font-size:.7rem;font-weight:600;color:var(--text-sub);margin-top:1px;}
+        .si-arrow{color:var(--text-dim);font-size:.85rem;flex-shrink:0;transition:var(--tr);}
+        .section-item:hover .si-arrow{color:var(--primary);transform:translateX(2px);}
+        .ic-blue{background:rgba(37,99,235,.1);} .ic-violet{background:rgba(124,58,237,.1);}
+        .ic-green{background:rgba(16,185,129,.1);} .ic-amber{background:rgba(245,158,11,.1);}
+        .ic-cyan{background:rgba(14,165,233,.1);} .ic-red{background:rgba(239,68,68,.1);}
+        .ic-indigo{background:rgba(99,102,241,.1);}
+
+        /* Drawer */
+        .menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:1000;backdrop-filter:blur(4px);}
+        .settings-drawer{position:fixed;top:0;right:-300px;width:290px;height:100%;background:var(--surface);z-index:1001;transition:.3s ease;padding:28px 20px;display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(0,0,0,.15);border-left:1px solid var(--border);overflow-y:auto;}
+        .settings-drawer.open{right:0;}
+        .drawer-header{font-size:1.1rem;font-weight:900;color:var(--primary);margin-bottom:4px;}
+        .drawer-email{font-size:.75rem;color:var(--text-dim);font-weight:600;margin-bottom:20px;}
+        .drawer-section-label{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:8px;display:block;}
+        .lang-selector{display:flex;background:var(--input-bg);border-radius:var(--radius-sm);padding:4px;gap:4px;margin-bottom:14px;border:1.5px solid var(--border);}
+        .lang-opt{flex:1;padding:8px 4px;border-radius:8px;border:none;background:transparent;cursor:pointer;font-size:.75rem;font-weight:800;color:var(--text-sub);font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;transition:var(--tr);}
+        .lang-opt.active{background:var(--primary);color:white;}
+        .drawer-btn{width:100%;padding:12px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--input-bg);color:var(--text);cursor:pointer;font-weight:700;margin-bottom:8px;font-size:.85rem;text-align:left;font-family:inherit;transition:var(--tr);display:flex;align-items:center;gap:10px;}
+        .drawer-btn:hover{background:var(--surface-2);border-color:var(--primary);}
+        .btn-danger{color:var(--danger)!important;border-color:rgba(239,68,68,.3)!important;}
+
+        #offline-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:10px;padding:11px 16px;background:var(--surface);border:.5px solid #EF9F27;border-left:3px solid #BA7517;border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.18);font-size:.8rem;font-weight:700;color:var(--text);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .35s ease;}
+        #offline-toast.show{opacity:1;}
+
+        @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+        .greeting-banner{animation:fadeIn .3s ease both;}
+        .quick-grid{animation:fadeIn .35s .05s ease both;}
+        .widget-budget{animation:fadeIn .35s .1s ease both;}
+        .widgets-grid{animation:fadeIn .35s .15s ease both;}
+        .weather-widget{animation:fadeIn .35s .18s ease both;}
+        .next-event-card{animation:fadeIn .35s .2s ease both;}
+        .tip-card{animation:fadeIn .35s .22s ease both;}
+        .section-item:nth-child(1){animation:fadeIn .35s .25s ease both;}
+        .section-item:nth-child(2){animation:fadeIn .35s .30s ease both;}
+        .section-item:nth-child(3){animation:fadeIn .35s .35s ease both;}
+        .section-item:nth-child(4){animation:fadeIn .35s .40s ease both;}
+        .section-item:nth-child(5){animation:fadeIn .35s .45s ease both;}
+        .section-item:nth-child(6){animation:fadeIn .35s .50s ease both;}
+        .section-item:nth-child(7){animation:fadeIn .35s .55s ease both;}
+    </style>
+</head>
+<body>
+<div class="wrap">
+
+    <header class="app-header">
+        <div class="logo">
+            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="32" height="32" rx="8" fill="#2563eb"/>
+                <text x="5" y="23" font-family="Arial Black" font-weight="900" font-size="18" fill="white">T</text>
+                <circle cx="24" cy="10" r="5" fill="#ef4444"/>
+                <text x="21.5" y="13.5" font-family="Arial" font-weight="900" font-size="7" fill="white">$</text>
+            </svg>
+            <span>Tax<span style="color:var(--primary)">USA</span></span>
+        </div>
+        <button class="btn-nav-set" id="btnSettings" onclick="toggleSettings()" title="Ajustes">⚙️</button>
+    </header>
+
+    <nav class="nav-bar">
+        <a href="index.html"       class="btn-nav active"><span class="ni">🏠</span><span data-i18n="nav_home">INICIO</span></a>
+        <a href="compras.html"     class="btn-nav"><span class="ni">💳</span><span data-i18n="nav_expenses">GASTOS</span></a>
+        <a href="itinerario.html"  class="btn-nav"><span class="ni">📍</span><span data-i18n="nav_itinerary">ITIN.</span></a>
+        <a href="unidades.html"    class="btn-nav"><span class="ni">⚖️</span><span data-i18n="nav_units">UNID.</span></a>
+        <a href="tickets.html"     class="btn-nav"><span class="ni">📄</span><span data-i18n="nav_tickets">DOCS</span></a>
+        <a href="grupo.html"       class="btn-nav"><span class="ni">👥</span><span data-i18n="nav_group">GRUPO</span></a>
+        <button class="btn-nav-set" id="btnSettings2" onclick="toggleSettings()" style="font-size:12px;"></button>
+    </nav>
+
+    <!-- Greeting -->
+    <div class="greeting-banner">
+        <div class="greeting-sub" data-i18n="greeting_sub">Bienvenido de vuelta</div>
+        <div class="greeting-name" id="greetingName">—</div>
+        <div class="greeting-date" id="greetingDate"></div>
+    </div>
+
+    <!-- Quick access -->
+    <div class="quick-grid">
+        <a href="tax.html"        class="quick-item"><span class="qi-emoji">💵</span><span class="qi-label" data-i18n="q_tax">Calculadora</span></a>
+        <a href="compras.html"    class="quick-item"><span class="qi-emoji">💳</span><span class="qi-label" data-i18n="q_gastos">Gastos</span></a>
+        <a href="itinerario.html" class="quick-item"><span class="qi-emoji">📍</span><span class="qi-label" data-i18n="q_itin">Itinerario</span></a>
+        <a href="unidades.html"   class="quick-item"><span class="qi-emoji">⚖️</span><span class="qi-label" data-i18n="q_units">Unidades</span></a>
+        <a href="tickets.html"    class="quick-item"><span class="qi-emoji">📄</span><span class="qi-label" data-i18n="q_docs">Docs</span></a>
+        <a href="grupo.html"      class="quick-item"><span class="qi-emoji">👥</span><span class="qi-label" data-i18n="q_grupo">Grupo</span></a>
+        <a href="rutas.html"      class="quick-item"><span class="qi-emoji">🗺️</span><span class="qi-label" data-i18n="q_rutas">Rutas</span></a>
+        <a href="profiles.html"   class="quick-item"><span class="qi-emoji">👤</span><span class="qi-label" data-i18n="q_perfil">Perfil</span></a>
+    </div>
+
+    <!-- Budget -->
+    <div class="widget-budget" onclick="location.href='compras.html'">
+        <div class="wb-label" data-i18n="label_budget">Presupuesto Restante</div>
+        <div class="wb-row">
+            <div class="wb-value" id="wb-value">— USD</div>
+            <div class="wb-pct" id="wb-pct">—%</div>
+        </div>
+        <div class="wb-bar-track"><div class="wb-bar-fill" id="wb-bar" style="width:0%"></div></div>
+        <div class="wb-hint" data-i18n="budget_hint">Tocá para ver tus gastos →</div>
+    </div>
+
+    <!-- Widgets 2-col -->
+    <div class="widgets-grid">
+        <!-- Dólar -->
+        <div class="widget clickable" onclick="location.href='compras.html'">
+            <div class="w-label"><span class="w-icon">💵</span><span data-i18n="widget_fx">Dólar hoy</span></div>
+            <div id="fx-loading" style="font-size:.7rem;color:var(--text-dim);font-weight:600;">Cargando...</div>
+            <div id="fx-content" style="display:none;">
+                <div class="fx-row"><span class="fx-name" data-i18n="fx_oficial">Oficial</span><span class="fx-val" id="fx-oficial">—</span></div>
+                <div class="fx-row"><span class="fx-name" data-i18n="fx_blue">Blue</span><span class="fx-val" id="fx-blue">—</span></div>
+                <div class="fx-row"><span class="fx-name" data-i18n="fx_card">Tarjeta</span><span class="fx-val" id="fx-tarjeta">—</span></div>
+            </div>
+        </div>
+        <!-- Último gasto + total -->
+        <div class="widget clickable" onclick="location.href='compras.html'">
+            <div class="w-label"><span class="w-icon">🧾</span><span data-i18n="widget_last_expense">Último gasto</span></div>
+            <div class="w-value" id="last-gasto-val">—</div>
+            <div class="w-sub" id="last-gasto-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
+            <div class="w-badge warn" id="last-gasto-cat" style="display:none;"></div>
+            <div class="w-divider"></div>
+            <div class="w-label" style="margin-bottom:4px;"><span class="w-icon">📊</span><span data-i18n="widget_total">Total gastado</span></div>
+            <div class="w-value" id="total-gasto-val" style="font-size:.95rem;">—</div>
+        </div>
+    </div>
+
+    <!-- Weather -->
+    <div class="weather-widget">
+        <div class="ww-top">
+            <div class="ww-label">🌤️ &nbsp;<span data-i18n="widget_weather">Clima en destino</span></div>
+            <button class="ww-refresh" onclick="loadWeather(true)">🔄</button>
+        </div>
+        <div id="ww-loading" class="ww-loading"><div class="ww-spinner"></div><span data-i18n="loading">Cargando...</span></div>
+        <div id="ww-body" style="display:none;">
+            <div class="ww-main">
+                <div class="ww-icon" id="ww-icon">🌤️</div>
+                <div>
+                    <div class="ww-temp"><span id="ww-temp">—</span><span style="font-size:1rem;font-weight:600;color:var(--text-sub);">°F</span> <span style="font-size:.75rem;font-weight:600;color:var(--text-dim);" id="ww-temp-c"></span></div>
+                    <div class="ww-city" id="ww-city">—</div>
+                    <div class="ww-desc" id="ww-desc">—</div>
+                </div>
+            </div>
+            <div class="ww-extras">
+                <div class="ww-extra">💧 <span id="ww-hum">—</span>%</div>
+                <div class="ww-extra">💨 <span id="ww-wind">—</span> mph</div>
+                <div class="ww-extra">🌡️ <span id="ww-feels">—</span>°F</div>
+            </div>
+        </div>
+        <div id="ww-error" style="display:none;font-size:.72rem;color:var(--text-dim);font-weight:600;padding:4px 0;" data-i18n="weather_error">No se pudo obtener el clima.</div>
+    </div>
+
+    <!-- Next event -->
+    <div class="next-event-card" onclick="location.href='itinerario.html'">
+        <div class="ne-dot" id="ne-dot">📅</div>
+        <div class="ne-info">
+            <div class="ne-label" data-i18n="next_event_label">Próximo evento</div>
+            <div class="ne-title" id="ne-title">Sin eventos próximos</div>
+            <div class="ne-time" id="ne-time"></div>
+        </div>
+        <div class="ne-arrow">›</div>
+    </div>
+
+    <!-- Travel tip (rotating) -->
+    <div class="tip-card" onclick="nextTip()">
+        <div class="tip-icon" id="tip-icon">💡</div>
+        <div style="flex:1;">
+            <div class="tip-label" data-i18n="tip_label">Tip de viaje</div>
+            <div class="tip-text" id="tip-text">—</div>
+            <div class="tip-hint" data-i18n="tip_hint">Tocá para ver otro tip →</div>
+        </div>
+    </div>
+
+    <!-- Sections -->
+    <div class="section-list-title" data-i18n="sections_title">Secciones</div>
+    <div class="section-list" id="sectionList"></div>
+
+</div>
+
+<div id="offline-toast">📵 <span data-i18n="offline_msg">Sin conexión</span></div>
+
+<div id="menuOverlay" class="menu-overlay" onclick="toggleSettings()"></div>
+<div id="settingsDrawer" class="settings-drawer">
+    <div class="drawer-header" data-i18n="settings_title">Ajustes</div>
+    <p id="userEmail" class="drawer-email"></p>
+    <span class="drawer-section-label" data-i18n="label_language">Idioma</span>
+    <div class="lang-selector">
+        <button class="lang-opt" id="lang-es" onclick="window.changeLanguage('es')">
+            <svg width="18" height="13" viewBox="0 0 18 13"><rect width="18" height="4.3" fill="#74acdf"/><rect width="18" height="4.4" y="4.3" fill="#fff"/><rect width="18" height="4.3" y="8.7" fill="#74acdf"/><circle cx="9" cy="6.5" r="1.5" fill="#f6b40e"/></svg> ES
+        </button>
+        <button class="lang-opt" id="lang-en" onclick="window.changeLanguage('en')">
+            <svg width="18" height="13" viewBox="0 0 18 13"><rect width="18" height="13" fill="#B22234"/><rect width="18" height="1" y="1" fill="#fff"/><rect width="18" height="1" y="3" fill="#fff"/><rect width="18" height="1" y="5" fill="#fff"/><rect width="18" height="1" y="7" fill="#fff"/><rect width="18" height="1" y="9" fill="#fff"/><rect width="18" height="1" y="11" fill="#fff"/><rect width="7" height="7" fill="#3C3B6E"/></svg> EN
+        </button>
+        <button class="lang-opt" id="lang-pt" onclick="window.changeLanguage('pt')">
+            <svg width="18" height="13" viewBox="0 0 18 13"><rect width="18" height="13" fill="#009c3b"/><polygon points="9,1 17,6.5 9,12 1,6.5" fill="#FEDF00"/><circle cx="9" cy="6.5" r="2.6" fill="#002776"/></svg> PT
+        </button>
+    </div>
+    <button class="drawer-btn" onclick="changeProfile()">👤 <span data-i18n="btn_change_profile">Cambiar Perfil</span></button>
+    <button class="drawer-btn" onclick="toggleDarkMode()">🌓 <span data-i18n="btn_theme">Cambiar Tema</span></button>
+    <button class="drawer-btn" onclick="location.reload()">🔄 <span data-i18n="btn_update">Actualizar App</span></button>
+    <button class="drawer-btn" onclick="openSwitchApp()">🌍 <span data-i18n="btn_switch_app">Cambiar Aplicación</span></button>
+    <button class="drawer-btn btn-danger" onclick="doLogout()">🚪 <span data-i18n="btn_logout">Cerrar Sesión</span></button>
+    <div style="margin-top:auto;padding-top:16px;"></div>
+</div>
+
+<div id="switchAppModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(12px);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+    <div style="background:var(--surface);border-radius:28px;padding:28px 24px;width:100%;max-width:340px;box-shadow:var(--shadow-lg);border:1px solid var(--border);text-align:center;">
+        <div style="font-size:1.1rem;font-weight:900;color:var(--text);margin-bottom:6px;">Cambiar Aplicación</div>
+        <div style="font-size:.8rem;font-weight:600;color:var(--text-sub);margin-bottom:22px;">¿A qué destino querés ir?</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+            <button onclick="doSwitchApp('usa')" style="width:100%;padding:14px;border-radius:14px;border:2px solid rgba(239,68,68,.4);background:linear-gradient(135deg,rgba(37,99,235,.1),rgba(239,68,68,.08));cursor:pointer;font-family:inherit;font-weight:800;font-size:.95rem;color:var(--text);display:flex;align-items:center;gap:12px;">
+                <svg width="32" height="22" viewBox="0 0 18 13" style="border-radius:4px;flex-shrink:0;"><rect width="18" height="13" fill="#B22234"/><rect width="18" height="1" y="1" fill="#fff"/><rect width="18" height="1" y="3" fill="#fff"/><rect width="18" height="1" y="5" fill="#fff"/><rect width="18" height="1" y="7" fill="#fff"/><rect width="18" height="1" y="9" fill="#fff"/><rect width="18" height="1" y="11" fill="#fff"/><rect width="7" height="7" fill="#3C3B6E"/></svg>
+                <div style="text-align:left;"><div style="color:#ef4444;font-weight:900;">TaxUSA</div><div style="font-size:.72rem;font-weight:600;color:var(--text-sub);">Estados Unidos</div></div>
+            </button>
+            <button onclick="doSwitchApp('europe')" style="width:100%;padding:14px;border-radius:14px;border:2px solid rgba(0,51,153,.4);background:linear-gradient(135deg,rgba(0,51,153,.1),rgba(255,204,0,.06));cursor:pointer;font-family:inherit;font-weight:800;font-size:.95rem;color:var(--text);display:flex;align-items:center;gap:12px;">
+                <svg width="32" height="22" viewBox="0 0 36 24" style="border-radius:4px;flex-shrink:0;"><rect width="36" height="24" fill="#003399"/><g fill="#FFCC00"><polygon points="18,3 18.9,5.8 21.9,5.8 19.5,7.5 20.4,10.3 18,8.6 15.6,10.3 16.5,7.5 14.1,5.8 17.1,5.8"/><polygon points="18,14 18.9,16.8 21.9,16.8 19.5,18.5 20.4,21.3 18,19.6 15.6,21.3 16.5,18.5 14.1,16.8 17.1,16.8"/><polygon points="9,8.5 9.9,11.3 12.9,11.3 10.5,13 11.4,15.8 9,14.1 6.6,15.8 7.5,13 5.1,11.3 8.1,11.3"/><polygon points="27,8.5 27.9,11.3 30.9,11.3 28.5,13 29.4,15.8 27,14.1 24.6,15.8 25.5,13 23.1,11.3 26.1,11.3"/></g></svg>
+                <div style="text-align:left;"><div style="color:#003399;font-weight:900;">TaxEurope</div><div style="font-size:.72rem;font-weight:600;color:var(--text-sub);">Europa</div></div>
+            </button>
+            <button onclick="document.getElementById('switchAppModal').style.display='none'" style="width:100%;padding:11px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface-2);cursor:pointer;font-family:inherit;font-weight:700;font-size:.85rem;color:var(--text-sub);margin-top:4px;">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+import { initializeApp }    from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app-check.js";
+
+const FB = { apiKey:"AIzaSyA-eeKl8guVDmTa_NpYvkB0O7-RMbPrkP0", authDomain:"viajes-db538.firebaseapp.com", projectId:"viajes-db538", storageBucket:"viajes-db538.firebasestorage.app", messagingSenderId:"237311739178", appId:"1:237311739178:web:333e468b184c0402a98a53" };
+const app  = initializeApp(FB);
+const auth = getAuth(app);
+if (navigator.onLine) { try { initializeAppCheck(app, { provider: new ReCaptchaV3Provider('6LeK6cssAAAAALxcJy-95R2nhVMmnuIyB78AQgvw'), isTokenAutoRefreshEnabled: true }); } catch(e) {} }
+
+const I18N = {
+    es: {
+        nav_home:'INICIO', nav_expenses:'GASTOS', nav_itinerary:'ITIN.', nav_units:'UNID.', nav_tickets:'DOCS', nav_group:'GRUPO',
+        greeting_sub:'Bienvenido de vuelta',
+        q_tax:'Calculadora', q_gastos:'Gastos', q_itin:'Itinerario', q_units:'Unidades', q_docs:'Docs', q_grupo:'Grupo', q_rutas:'Rutas', q_perfil:'Perfil',
+        label_budget:'Presupuesto Restante', budget_hint:'Tocá para ver tus gastos →', budget_no_data:'Sin presupuesto configurado',
+        widget_fx:'Dólar hoy', fx_oficial:'Oficial', fx_blue:'Blue', fx_card:'Tarjeta',
+        widget_last_expense:'Último gasto', widget_total:'Total gastado', no_gastos:'Sin gastos aún',
+        widget_weather:'Clima en destino', next_event_label:'Próximo evento', next_event_empty:'Sin eventos próximos',
+        tip_label:'Tip de viaje', tip_hint:'Tocá para ver otro tip →',
+        sections_title:'Secciones', offline_msg:'Sin conexión', loading:'Cargando...', weather_error:'No se pudo obtener el clima.',
+        settings_title:'Ajustes', label_language:'Idioma', btn_change_profile:'Cambiar Perfil', btn_theme:'Cambiar Tema', btn_update:'Actualizar App', btn_switch_app:'Cambiar Aplicación', btn_logout:'Cerrar Sesión',
+        sections: [
+            { icon:'💵', color:'ic-blue',   href:'tax.html',        name:'Calculadora Tax',   desc:'Calculá tax y propinas de tus compras' },
+            { icon:'💳', color:'ic-violet', href:'compras.html',    name:'Gastos',            desc:'Registrá y controlá tu presupuesto' },
+            { icon:'📍', color:'ic-green',  href:'itinerario.html', name:'Itinerario',        desc:'Tu agenda de actividades día a día' },
+            { icon:'⚖️', color:'ic-amber',  href:'unidades.html',   name:'Unidades',          desc:'Convertí medidas, tallas y monedas' },
+            { icon:'📄', color:'ic-cyan',   href:'tickets.html',    name:'Documentos',        desc:'ESTA, seguros, check-in y más' },
+            { icon:'👥', color:'ic-indigo', href:'grupo.html',      name:'Grupo',             desc:'Gastos compartidos entre viajeros' },
+            { icon:'🗺️', color:'ic-red',    href:'rutas.html',      name:'Rutas',             desc:'Planificá tus recorridos y destinos' },
+        ],
+        tips: [
+            { icon:'💡', text:'En EE.UU. el tax no se muestra en el precio. Sumale entre 7% y 11% según el estado donde comprés.' },
+            { icon:'💳', text:'Usá tarjeta sin cargo por compras en el exterior para evitar el recargo del tipo de cambio tarjeta.' },
+            { icon:'🧾', text:'Guardá todos tus recibos en Documentos. Te pueden pedir comprobante para devoluciones.' },
+            { icon:'✈️', text:'Llegá al aeropuerto 3 horas antes de un vuelo internacional para evitar cualquier contratiempo.' },
+            { icon:'💰', text:'Tené siempre algo de cash encima. Muchos tips y mercados solo aceptan efectivo.' },
+            { icon:'🛍️', text:'En outlets podés pedir tax refund si comprás más de cierto monto. Consultá en caja antes de pagar.' },
+            { icon:'📱', text:'Activá el modo avión y usá WiFi para ahorrar roaming. Comprá una SIM local en el aeropuerto.' },
+            { icon:'🏨', text:'Chequeá si tu hotel cobra "resort fee" aparte. Puede sumar $30–50 por noche sin avisarte.' },
+        ]
+    },
+    en: {
+        nav_home:'HOME', nav_expenses:'EXPENSES', nav_itinerary:'ITIN.', nav_units:'UNITS', nav_tickets:'DOCS', nav_group:'GROUP',
+        greeting_sub:'Welcome back',
+        q_tax:'Calculator', q_gastos:'Expenses', q_itin:'Itinerary', q_units:'Units', q_docs:'Docs', q_grupo:'Group', q_rutas:'Routes', q_perfil:'Profile',
+        label_budget:'Remaining Budget', budget_hint:'Tap to view your expenses →', budget_no_data:'No budget configured',
+        widget_fx:'Dollar today', fx_oficial:'Official', fx_blue:'Blue', fx_card:'Card rate',
+        widget_last_expense:'Last expense', widget_total:'Total spent', no_gastos:'No expenses yet',
+        widget_weather:'Weather at destination', next_event_label:'Next event', next_event_empty:'No upcoming events',
+        tip_label:'Travel tip', tip_hint:'Tap to see another tip →',
+        sections_title:'Sections', offline_msg:'No connection', loading:'Loading...', weather_error:'Could not load weather.',
+        settings_title:'Settings', label_language:'Language', btn_change_profile:'Change Profile', btn_theme:'Change Theme', btn_update:'Update App', btn_switch_app:'Switch App', btn_logout:'Log Out',
+        sections: [
+            { icon:'💵', color:'ic-blue',   href:'tax.html',        name:'Tax Calculator',    desc:'Calculate tax and tips on your purchases' },
+            { icon:'💳', color:'ic-violet', href:'compras.html',    name:'Expenses',          desc:'Track and manage your travel budget' },
+            { icon:'📍', color:'ic-green',  href:'itinerario.html', name:'Itinerary',         desc:'Your day-by-day activity schedule' },
+            { icon:'⚖️', color:'ic-amber',  href:'unidades.html',   name:'Units',             desc:'Convert measurements, sizes & currencies' },
+            { icon:'📄', color:'ic-cyan',   href:'tickets.html',    name:'Documents',         desc:'ESTA, insurance, check-in and more' },
+            { icon:'👥', color:'ic-indigo', href:'grupo.html',      name:'Group',             desc:'Split expenses among travelers' },
+            { icon:'🗺️', color:'ic-red',    href:'rutas.html',      name:'Routes',            desc:'Plan your trips and destinations' },
+        ],
+        tips: [
+            { icon:'💡', text:'In the US, tax is not shown on the price tag. Add 7–11% depending on the state you are shopping in.' },
+            { icon:'💳', text:'Use a no-foreign-fee card to avoid the card exchange rate surcharge on every purchase.' },
+            { icon:'🧾', text:'Save all your receipts in Documents. You may need them for returns or reimbursements.' },
+            { icon:'✈️', text:'Arrive at the airport 3 hours before an international flight to avoid any issues.' },
+            { icon:'💰', text:'Always carry some cash. Many tips and markets only accept it.' },
+            { icon:'🛍️', text:'At outlets, ask about tax refunds if you spend over a certain amount. Check at the register.' },
+            { icon:'📱', text:'Turn on airplane mode and use WiFi to save on roaming. Buy a local SIM at the airport.' },
+            { icon:'🏨', text:'Check if your hotel charges a "resort fee" separately — it can add $30–50 per night.' },
+        ]
+    },
+    pt: {
+        nav_home:'INÍCIO', nav_expenses:'GASTOS', nav_itinerary:'ITIN.', nav_units:'UNID.', nav_tickets:'DOCS', nav_group:'GRUPO',
+        greeting_sub:'Bem-vindo de volta',
+        q_tax:'Calculadora', q_gastos:'Gastos', q_itin:'Itinerário', q_units:'Unidades', q_docs:'Docs', q_grupo:'Grupo', q_rutas:'Rotas', q_perfil:'Perfil',
+        label_budget:'Orçamento Restante', budget_hint:'Toque para ver seus gastos →', budget_no_data:'Sem orçamento configurado',
+        widget_fx:'Dólar hoje', fx_oficial:'Oficial', fx_blue:'Blue', fx_card:'Cartão',
+        widget_last_expense:'Último gasto', widget_total:'Total gasto', no_gastos:'Sem gastos ainda',
+        widget_weather:'Clima no destino', next_event_label:'Próximo evento', next_event_empty:'Sem eventos próximos',
+        tip_label:'Dica de viagem', tip_hint:'Toque para ver outra dica →',
+        sections_title:'Seções', offline_msg:'Sem conexão', loading:'Carregando...', weather_error:'Não foi possível obter o clima.',
+        settings_title:'Configurações', label_language:'Idioma', btn_change_profile:'Trocar Perfil', btn_theme:'Mudar Tema', btn_update:'Atualizar App', btn_switch_app:'Trocar Aplicativo', btn_logout:'Sair',
+        sections: [
+            { icon:'💵', color:'ic-blue',   href:'tax.html',        name:'Calculadora Tax',   desc:'Calcule impostos e gorjetas das compras' },
+            { icon:'💳', color:'ic-violet', href:'compras.html',    name:'Gastos',            desc:'Registre e controle seu orçamento' },
+            { icon:'📍', color:'ic-green',  href:'itinerario.html', name:'Itinerário',        desc:'Sua agenda de atividades dia a dia' },
+            { icon:'⚖️', color:'ic-amber',  href:'unidades.html',   name:'Unidades',          desc:'Converta medidas, tamanhos e moedas' },
+            { icon:'📄', color:'ic-cyan',   href:'tickets.html',    name:'Documentos',        desc:'ESTA, seguros, check-in e mais' },
+            { icon:'👥', color:'ic-indigo', href:'grupo.html',      name:'Grupo',             desc:'Gastos compartilhados entre viajantes' },
+            { icon:'🗺️', color:'ic-red',    href:'rutas.html',      name:'Rotas',             desc:'Planeje seus roteiros e destinos' },
+        ],
+        tips: [
+            { icon:'💡', text:'Nos EUA o imposto não está no preço. Some de 7% a 11% dependendo do estado onde comprar.' },
+            { icon:'💳', text:'Use cartão sem taxa estrangeira para evitar o câmbio do cartão em cada compra.' },
+            { icon:'🧾', text:'Guarde todos os recibos em Documentos. Você pode precisar deles para devoluções.' },
+            { icon:'✈️', text:'Chegue ao aeroporto 3 horas antes de um voo internacional para evitar imprevistos.' },
+            { icon:'💰', text:'Sempre tenha dinheiro. Muitas gorjetas e mercados só aceitam dinheiro.' },
+            { icon:'🛍️', text:'Em outlets, pergunte sobre reembolso de imposto se gastar acima de certo valor.' },
+            { icon:'📱', text:'Ative o modo avião e use WiFi para economizar no roaming. Compre SIM local no aeroporto.' },
+            { icon:'🏨', text:'Verifique se o hotel cobra "resort fee" separado — pode somar $30–50 por noite.' },
+        ]
+    }
+};
+
+let lang = localStorage.getItem('appLang') || 'es';
+let t = I18N[lang] || I18N.es;
+const perfilId = localStorage.getItem('perfilActivoId') || 'default';
+let tipIndex = Math.floor(Math.random() * 8);
+
+function applyI18n() {
+    t = I18N[lang] || I18N.es;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.getAttribute('data-i18n');
+        if (t[k]) el.textContent = t[k];
+    });
+    ['es','en','pt'].forEach(l => document.getElementById('lang-'+l)?.classList.toggle('active', l===lang));
+    renderSections();
+    renderTip();
+}
+
+window.changeLanguage = function(nl) { lang=nl; localStorage.setItem('appLang',lang); applyI18n(); updateGreeting(); };
+
+function updateGreeting() {
+    const nombre = localStorage.getItem('perfilActivoNombre') || localStorage.getItem('taxusa_offline_email') || '—';
+    document.getElementById('greetingName').textContent = nombre.split('@')[0];
+    const locales = {es:'es-AR',en:'en-US',pt:'pt-BR'};
+    document.getElementById('greetingDate').textContent = new Date().toLocaleDateString(locales[lang]||'es-AR',{weekday:'long',day:'numeric',month:'long'});
+    const foto = localStorage.getItem('perfilActivoFoto');
+    ['btnSettings','btnSettings2'].forEach(id => { const b=document.getElementById(id); if(foto&&b){b.style.backgroundImage=`url('${foto}')`;b.textContent='';} });
+}
+
+function loadBudget() {
+    const base = parseFloat(localStorage.getItem('taxusa_budget_cache_'+perfilId))||0;
+    let gastado=0, gastos=[];
+    try { gastos=JSON.parse(localStorage.getItem('taxusa_gastos_cache_'+perfilId)||'[]'); gastado=gastos.reduce((s,g)=>s+(parseFloat(g.monto)||0),0); } catch(e){}
+    loadLastGasto(gastos, gastado);
+    if (base<=0) { document.getElementById('wb-value').textContent=t.budget_no_data||'—'; document.getElementById('wb-pct').textContent='—'; return; }
+    const restante=base-gastado, pct=Math.max(0,Math.min(100,Math.round((restante/base)*100)));
+    document.getElementById('wb-value').textContent=`USD ${restante.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+    document.getElementById('wb-pct').textContent=pct+'%';
+    document.getElementById('wb-bar').style.width=pct+'%';
+    if(pct<20) document.getElementById('wb-pct').style.background='rgba(239,68,68,.35)';
+    else if(pct<40) document.getElementById('wb-pct').style.background='rgba(245,158,11,.35)';
+}
+
+function loadLastGasto(gastos, total) {
+    const totalEl=document.getElementById('total-gasto-val');
+    if(!gastos||gastos.length===0){ document.getElementById('last-gasto-val').textContent='—'; document.getElementById('last-gasto-name').textContent=t.no_gastos; if(totalEl) totalEl.textContent='$0.00'; return; }
+    const last=gastos[gastos.length-1];
+    document.getElementById('last-gasto-val').textContent=`$${parseFloat(last.monto||0).toFixed(2)}`;
+    document.getElementById('last-gasto-name').textContent=last.nombre||last.tienda||'—';
+    const catEl=document.getElementById('last-gasto-cat');
+    if(last.categoria){catEl.textContent=last.categoria;catEl.style.display='inline-flex';}
+    if(totalEl) totalEl.textContent=`$${(total||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+}
+
+async function loadExchangeRate() {
+    if(!navigator.onLine) return;
+    try {
+        const r=await fetch('https://dolarapi.com/v1/dolares',{signal:AbortSignal.timeout(5000)});
+        const data=await r.json();
+        const get=(casa)=>data.find(d=>d.casa===casa)?.venta||0;
+        const [of,bl,tar]=[get('oficial'),get('blue'),get('tarjeta')];
+        if(of) document.getElementById('fx-oficial').textContent=`$${of.toLocaleString('es-AR')}`;
+        if(bl) document.getElementById('fx-blue').textContent=`$${bl.toLocaleString('es-AR')}`;
+        if(tar) document.getElementById('fx-tarjeta').textContent=`$${tar.toLocaleString('es-AR')}`;
+        document.getElementById('fx-loading').style.display='none';
+        document.getElementById('fx-content').style.display='block';
+    } catch(e){ document.getElementById('fx-loading').textContent='—'; }
+}
+
+const W_ICONS={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',80:'🌦️',81:'🌧️',82:'⛈️',95:'⛈️',96:'⛈️',99:'⛈️'};
+const W_DESC={0:{es:'Despejado',en:'Clear sky',pt:'Céu limpo'},1:{es:'Mayormente despejado',en:'Mainly clear',pt:'Principalmente limpo'},2:{es:'Parcialmente nublado',en:'Partly cloudy',pt:'Parcialmente nublado'},3:{es:'Nublado',en:'Overcast',pt:'Nublado'},45:{es:'Niebla',en:'Foggy',pt:'Neblina'},48:{es:'Niebla',en:'Foggy',pt:'Neblina'},51:{es:'Llovizna leve',en:'Light drizzle',pt:'Garoa leve'},53:{es:'Llovizna',en:'Drizzle',pt:'Garoa'},55:{es:'Llovizna intensa',en:'Heavy drizzle',pt:'Garoa forte'},61:{es:'Lluvia leve',en:'Light rain',pt:'Chuva leve'},63:{es:'Lluvia',en:'Rain',pt:'Chuva'},65:{es:'Lluvia fuerte',en:'Heavy rain',pt:'Chuva forte'},71:{es:'Nieve leve',en:'Light snow',pt:'Neve leve'},73:{es:'Nieve',en:'Snow',pt:'Neve'},75:{es:'Nieve fuerte',en:'Heavy snow',pt:'Neve forte'},80:{es:'Chubascos',en:'Showers',pt:'Pancadas'},81:{es:'Chubascos',en:'Showers',pt:'Pancadas'},82:{es:'Chubascos fuertes',en:'Heavy showers',pt:'Pancadas fortes'},95:{es:'Tormenta',en:'Thunderstorm',pt:'Tempestade'}};
+
+window.loadWeather = async function(force=false) {
+    const ck='taxusa_weather_cache_v2';
+    if(!force){ const c=localStorage.getItem(ck); if(c){ try{ const d=JSON.parse(c); if(Date.now()-d._ts<1800000){renderWeather(d);return;} }catch(e){} } }
+    if(!navigator.onLine){showWeatherErr();return;}
+    document.getElementById('ww-loading').style.display='flex';
+    document.getElementById('ww-body').style.display='none';
+    document.getElementById('ww-error').style.display='none';
+    try {
+        const lat=40.7128,lon=-74.0060,city='New York, NY';
+        const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,weathercode,windspeed_10m,relativehumidity_2m&temperature_unit=fahrenheit&windspeed_unit=mph&timezone=America/New_York`,{signal:AbortSignal.timeout(7000)});
+        const data=await r.json();
+        const cur=data.current;
+        const d={temp:Math.round(cur.temperature_2m),feels:Math.round(cur.apparent_temperature),code:cur.weathercode,wind:Math.round(cur.windspeed_10m),hum:cur.relativehumidity_2m,city,_ts:Date.now()};
+        localStorage.setItem(ck,JSON.stringify(d));
+        renderWeather(d);
+    } catch(e){showWeatherErr();}
+};
+
+function renderWeather(d) {
+    document.getElementById('ww-loading').style.display='none';
+    document.getElementById('ww-error').style.display='none';
+    document.getElementById('ww-body').style.display='block';
+    const code=d.code||0;
+    document.getElementById('ww-icon').textContent=W_ICONS[code]||'🌤️';
+    document.getElementById('ww-temp').textContent=d.temp;
+    document.getElementById('ww-temp-c').textContent=`(${Math.round((d.temp-32)*5/9)}°C)`;
+    document.getElementById('ww-city').textContent=d.city||'—';
+    const desc=W_DESC[code];
+    document.getElementById('ww-desc').textContent=desc?(desc[lang]||desc.es):'—';
+    document.getElementById('ww-hum').textContent=d.hum??'—';
+    document.getElementById('ww-wind').textContent=d.wind??'—';
+    document.getElementById('ww-feels').textContent=d.feels??'—';
+}
+function showWeatherErr(){ document.getElementById('ww-loading').style.display='none'; document.getElementById('ww-body').style.display='none'; document.getElementById('ww-error').style.display='block'; }
+
+function loadNextEvent() {
+    const emojis=['🎡','🛍️','🍔','🏨','✈️','🚗','🎭','🌅','🏊','⚽','🎵','🏰'];
+    let found=false;
+    for(let i=0;i<localStorage.length;i++){
+        const key=localStorage.key(i);
+        if(key&&(key.includes('itin')||key.includes('actividad'))&&key!=='taxusa_itin_pending'){
+            try{
+                const val=JSON.parse(localStorage.getItem(key));
+                if(Array.isArray(val)&&val.length>0){
+                    const now=new Date();
+                    const up=val.filter(v=>new Date(v.fecha||v.date||v.ts||0)>now).sort((a,b)=>new Date(a.fecha||a.date||0)-new Date(b.fecha||b.date||0));
+                    if(up.length>0){
+                        const ev=up[0];
+                        document.getElementById('ne-title').textContent=ev.titulo||ev.title||ev.nombre||'—';
+                        const d=new Date(ev.fecha||ev.date||ev.ts);
+                        const loc={es:'es-AR',en:'en-US',pt:'pt-BR'};
+                        document.getElementById('ne-time').textContent=d.toLocaleDateString(loc[lang],{weekday:'short',day:'numeric',month:'short'});
+                        document.getElementById('ne-dot').textContent=ev.emoji||emojis[Math.floor(Math.random()*emojis.length)];
+                        found=true; break;
+                    }
+                }
+            }catch(e){}
+        }
+    }
+    if(!found){ document.getElementById('ne-title').textContent=t.next_event_empty; document.getElementById('ne-time').textContent=''; document.getElementById('ne-dot').textContent='📅'; }
+}
+
+function renderTip() {
+    const tips=t.tips||I18N.es.tips;
+    const tip=tips[tipIndex%tips.length];
+    const el=document.getElementById('tip-text');
+    const ic=document.getElementById('tip-icon');
+    if(el){ el.style.opacity='0'; setTimeout(()=>{el.textContent=tip.text;el.style.opacity='1';},180); }
+    if(ic) ic.textContent=tip.icon;
+}
+window.nextTip=function(){ tipIndex=(tipIndex+1)%((t.tips||I18N.es.tips).length); renderTip(); };
+setInterval(()=>{ tipIndex=(tipIndex+1)%((t.tips||I18N.es.tips).length); renderTip(); }, 12000);
+
+function renderSections() {
+    const list=document.getElementById('sectionList'); if(!list) return; list.innerHTML='';
+    (t.sections||I18N.es.sections).forEach(sec=>{ const a=document.createElement('a'); a.href=sec.href; a.className='section-item'; a.innerHTML=`<div class="si-icon-wrap ${sec.color}">${sec.icon}</div><div class="si-text"><div class="si-name">${sec.name}</div><div class="si-desc">${sec.desc}</div></div><div class="si-arrow">›</div>`; list.appendChild(a); });
+}
+
+window.toggleSettings=function(){ const d=document.getElementById('settingsDrawer'),o=document.getElementById('menuOverlay'),isO=d.classList.contains('open'); d.classList.toggle('open',!isO); o.style.display=isO?'none':'block'; };
+window.toggleDarkMode=function(){ const cur=document.documentElement.getAttribute('data-theme'),next=cur==='dark'?'light':'dark'; document.documentElement.setAttribute('data-theme',next); localStorage.setItem('theme',next); };
+window.changeProfile=()=>{ localStorage.removeItem('perfilActivoId'); window.location.href='profiles.html'; };
+window.doLogout=()=>signOut(auth).then(()=>window.location.replace('login.html'));
+window.openSwitchApp=()=>{ document.getElementById('switchAppModal').style.display='flex'; };
+window.doSwitchApp=function(d){ localStorage.setItem('taxfly_destino',d); document.getElementById('switchAppModal').style.display='none'; window.location.href=d==='usa'?'tax.html':'europe.html'; };
+
+onAuthStateChanged(auth, user=>{ if(!user){window.location.replace('login.html');return;} document.getElementById('userEmail').textContent=user.email||''; });
+
+(function(){const toast=document.getElementById('offline-toast');function upd(){toast.classList.toggle('show',!navigator.onLine);}window.addEventListener('online',upd);window.addEventListener('offline',upd);upd();})();
+
+applyI18n();
+updateGreeting();
+loadBudget();
+loadNextEvent();
+loadExchangeRate();
+loadWeather();
+</script>
+</body>
+</html>
