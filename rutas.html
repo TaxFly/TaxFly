@@ -120,7 +120,7 @@ textarea{resize:none;line-height:1.5;}
 
 /* ── RESULT ── */
 #ruta-result{display:none;}
-.result-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.result-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
 .result-title{font-size:1rem;font-weight:900;color:var(--text);}
 .result-actions{display:flex;gap:8px;}
 .action-btn{padding:8px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface-2);color:var(--text-sub);font-size:.75rem;font-weight:700;cursor:pointer;transition:var(--tr);font-family:inherit;display:flex;align-items:center;gap:5px;}
@@ -128,37 +128,8 @@ textarea{resize:none;line-height:1.5;}
 .action-btn.primary{background:var(--primary);color:white;border-color:var(--primary);}
 .action-btn.primary:hover{background:#1d4ed8;}
 
-/* ── DAY BLOCK ── */
-.day-block{margin-bottom:10px;}
-.day-header-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--primary);border-radius:var(--radius-sm) var(--radius-sm) 0 0;color:white;}
-.day-header-bar .d-title{font-size:.85rem;font-weight:900;flex:1;}
-.day-header-bar .d-count{font-size:.7rem;font-weight:700;opacity:.8;}
-.day-stops{background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);overflow:hidden;}
-.day-hotel{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface-2);border-bottom:1px solid var(--border);}
-.day-hotel .h-icon{font-size:.9rem;}
-.day-hotel .h-addr{font-size:.72rem;color:var(--text-sub);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;}
-.day-hotel a{font-size:.7rem;color:var(--primary);text-decoration:none;white-space:nowrap;flex-shrink:0;}
-.ruta-stop{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;}
-.ruta-stop:last-child{border-bottom:none;}
-.ruta-stop:hover{background:var(--surface-2);}
-.ruta-stop.visited{background:rgba(16,185,129,.04);}
-.ruta-stop.visited .rs-name{text-decoration:line-through;color:var(--text-dim);}
-.rs-num{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--text-sub);flex-shrink:0;margin-top:1px;transition:all .15s;}
-.ruta-stop.visited .rs-num{background:rgba(16,185,129,.12);border-color:var(--success);color:var(--success);}
-.rs-body{flex:1;min-width:0;}
-.rs-name{font-size:.85rem;font-weight:700;color:var(--text);margin-bottom:2px;}
-.rs-desc{font-size:.72rem;color:var(--text-sub);font-weight:500;line-height:1.4;margin-bottom:6px;}
-.rs-footer{display:flex;align-items:center;justify-content:space-between;}
-.rs-badges{display:flex;gap:5px;}
-.rs-maps{display:flex;align-items:center;gap:4px;font-size:.7rem;color:var(--primary);text-decoration:none;font-weight:600;}
-.rs-maps:hover{text-decoration:underline;}
-
-/* ── PROGRESS ── */
-.day-progress{height:3px;background:var(--border);}
-.day-progress-fill{height:100%;background:var(--success);transition:width .3s;}
-
 /* ── GLOBAL PROGRESS ── */
-.global-prog{background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border);padding:14px;margin-bottom:14px;display:flex;align-items:center;gap:14px;}
+.global-prog{background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border);padding:14px;margin-bottom:12px;display:flex;align-items:center;gap:14px;}
 .gp-stat{text-align:center;flex:1;}
 .gp-val{font-size:1.4rem;font-weight:900;color:var(--primary);}
 .gp-lbl{font-size:.6rem;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;}
@@ -166,6 +137,72 @@ textarea{resize:none;line-height:1.5;}
 .gp-bar-bg{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
 .gp-bar-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:3px;transition:width .4s;}
 .btn-reset{background:none;border:none;color:var(--text-dim);font-size:.72rem;font-weight:700;cursor:pointer;padding:0;text-decoration:underline;font-family:inherit;}
+
+/* ── DAY TABS (estilo Maps-main) ── */
+.day-tabs-wrap{overflow-x:auto;scrollbar-width:none;margin-bottom:12px;}
+.day-tabs-wrap::-webkit-scrollbar{display:none;}
+.day-tabs{display:flex;gap:6px;padding-bottom:2px;}
+.day-tab{flex-shrink:0;padding:8px 16px;border-radius:999px;border:1.5px solid var(--border);background:transparent;color:var(--text-sub);font-family:inherit;font-size:.72rem;font-weight:700;cursor:pointer;transition:var(--tr);letter-spacing:.3px;white-space:nowrap;}
+.day-tab.active{background:var(--primary);color:white;border-color:var(--primary);}
+
+/* ── DAY PANELS ── */
+.day-panel{display:none;}
+.day-panel.active{display:block;animation:slideIn .2s ease;}
+
+/* ── HOTEL BAR (estilo Maps-main) ── */
+.hotel-bar-result{display:flex;align-items:center;gap:10px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:10px;text-decoration:none;}
+.hotel-bar-icon{width:32px;height:32px;background:var(--primary-dim);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.hotel-bar-info{flex:1;min-width:0;}
+.hotel-bar-label{font-size:.55rem;color:var(--primary);font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:2px;}
+.hotel-bar-addr{font-size:.75rem;color:var(--text-sub);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hotel-bar-arrow{color:var(--text-dim);font-size:.85rem;}
+
+/* ── DAY LABEL ── */
+.day-zone-label{font-size:.65rem;color:var(--text-dim);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;}
+
+/* ── DAY PROGRESS ── */
+.day-prog-wrap{margin-bottom:12px;}
+.day-prog-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.day-prog-stats{display:flex;gap:14px;}
+.dp-stat{text-align:center;}
+.dp-val{font-size:1.1rem;font-weight:900;color:var(--text);}
+.dp-val.accent{color:var(--primary);}
+.dp-lbl{font-size:.55rem;color:var(--text-dim);font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.day-prog-bar-bg{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+.day-prog-bar-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--success));border-radius:2px;transition:width .4s cubic-bezier(.4,0,.2,1);}
+
+/* ── STOP CARDS (estilo Maps-main) ── */
+.ruta-stop{display:flex;align-items:flex-start;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-bottom:8px;cursor:pointer;transition:var(--tr);position:relative;overflow:hidden;}
+.ruta-stop::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:transparent;transition:background .2s;}
+.ruta-stop.visited{background:var(--surface-2);}
+.ruta-stop.visited::before{background:var(--success);}
+.ruta-stop:active{transform:scale(.98);}
+.rs-num{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;color:var(--text-sub);flex-shrink:0;transition:all .15s;}
+.ruta-stop.visited .rs-num{background:rgba(16,185,129,.12);border-color:var(--success);color:var(--success);}
+.rs-body{flex:1;min-width:0;}
+.rs-name{font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.3;transition:color .15s;}
+.ruta-stop.visited .rs-name{text-decoration:line-through;color:var(--text-dim);}
+.rs-desc{font-size:.72rem;color:var(--text-sub);font-weight:500;line-height:1.5;margin-bottom:8px;}
+.ruta-stop.visited .rs-desc{opacity:.5;}
+.rs-footer{display:flex;align-items:center;justify-content:space-between;}
+.rs-maps{display:flex;align-items:center;gap:5px;background:var(--surface-2);border:1px solid var(--border);border-radius:999px;padding:5px 10px;color:var(--text-sub);font-size:.68rem;font-weight:600;text-decoration:none;transition:var(--tr);}
+.rs-maps:hover{border-color:var(--primary);color:var(--primary);}
+.rs-maps svg{width:11px;height:11px;}
+
+/* ── ALL DONE STATE ── */
+.all-done-state{text-align:center;padding:28px 20px;display:none;}
+.all-done-state.show{display:block;}
+.all-done-emoji{font-size:2.5rem;margin-bottom:8px;}
+.all-done-title{font-size:1rem;font-weight:900;color:var(--primary);margin-bottom:6px;}
+.all-done-sub{font-size:.78rem;color:var(--text-sub);font-weight:500;}
+
+/* ── BOTTOM NAV (estilo Maps-main adaptado) ── */
+#day-bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--surface);border-top:1px solid var(--border);display:none;padding:8px 12px calc(8px + env(safe-area-inset-bottom));gap:6px;box-shadow:0 -4px 20px rgba(0,0,0,.08);}
+#day-bottom-nav.show{display:flex;}
+.day-nav-btn{flex:1;padding:10px 6px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:transparent;color:var(--text-sub);font-family:inherit;font-size:.65rem;font-weight:700;cursor:pointer;transition:var(--tr);text-align:center;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.day-nav-btn .dnb-date{font-size:.55rem;font-weight:500;font-family:inherit;display:block;margin-top:2px;opacity:.7;}
+.day-nav-btn .dnb-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--success);margin-left:3px;vertical-align:middle;}
+.day-nav-btn.active{background:var(--primary);color:white;border-color:var(--primary);}
 
 /* ── MENU OVERLAY + SETTINGS ── */
 .menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:1000;backdrop-filter:blur(4px);}
@@ -243,7 +280,7 @@ textarea{resize:none;line-height:1.5;}
     <!-- Punto de partida con autocomplete -->
     <span class="slabel" data-i18n="label_hotel">📍 Punto de partida (hotel / alojamiento)</span>
     <div class="autocomplete-wrap">
-      <input type="text" id="hotel-input" placeholder="Ej: 324 Newcastle Dr, Kissimmee FL" autocomplete="off" oninput="onHotelInput(this.value)" onkeydown="onHotelKey(event)">
+      <input type="text" id="hotel-input" name="hotel-address-taxusa" placeholder="Ej: 324 Newcastle Dr, Kissimmee FL" autocomplete="new-password" oninput="onHotelInput(this.value)" onkeydown="onHotelKey(event)" onfocus="startPlaceholderRotation()" onblur="stopPlaceholderRotation()">
       <div class="autocomplete-spinner" id="hotel-spinner"></div>
       <div class="autocomplete-list" id="hotel-ac" role="listbox"></div>
     </div>
@@ -332,8 +369,9 @@ textarea{resize:none;line-height:1.5;}
   </div>
 
   <!-- ══ RESULTADO ══ -->
-  <div id="ruta-result">
-    <div class="result-header">
+  <div id="ruta-result" style="padding-bottom:80px;">
+    <!-- Topbar: título + acciones -->
+    <div class="result-topbar">
       <div class="result-title" data-i18n="result_ready">Tu ruta está lista ✅</div>
       <div class="result-actions">
         <button class="action-btn" onclick="downloadHTML()" data-i18n="btn_download">⬇️ HTML</button>
@@ -360,8 +398,19 @@ textarea{resize:none;line-height:1.5;}
       </div>
     </div>
 
+    <!-- Day tabs (scroll horizontal si hay muchos días) -->
+    <div class="day-tabs-wrap">
+      <div class="day-tabs" id="day-tabs"></div>
+    </div>
+
+    <!-- Day panels (uno por día) -->
     <div id="days-output"></div>
   </div>
+
+  <!-- Bottom nav fija por días (aparece solo con resultado) -->
+  <nav id="day-bottom-nav">
+    <!-- Se llena dinámicamente -->
+  </nav>
 
 </div>
 
@@ -664,29 +713,119 @@ function setMethod(m) {
 
 // ══════════════════════════════════════════
 // ── AUTOCOMPLETE (Nominatim / OpenStreetMap) ──
-// Búsqueda de direcciones estilo Uber, sin API key, gratis
 // ══════════════════════════════════════════
 let hotelAcTimer = null;
 let manualAcTimer = null;
 let hotelFocusedIdx = -1;
 let manualFocusedIdx = -1;
 
+// ── Placeholders rotativos ──
+const HOTEL_PLACEHOLDERS = [
+  'Ej: 324 Newcastle Dr, Kissimmee FL',
+  'Ej: 7600 Dr Phillips Blvd, Orlando FL',
+  'Ej: 5905 International Dr, Orlando FL',
+  'Ej: 1 Disney Way, Lake Buena Vista FL',
+  'Ej: 8250 International Dr, Orlando FL',
+  'Ej: Marriott Orlando, Lake Buena Vista',
+];
+let _phIdx = Math.floor(Math.random() * HOTEL_PLACEHOLDERS.length);
+let _phTimer = null;
+function startPlaceholderRotation() {
+  const inp = document.getElementById('hotel-input');
+  if (!inp || inp.value) return;
+  _phTimer = setInterval(() => {
+    _phIdx = (_phIdx + 1) % HOTEL_PLACEHOLDERS.length;
+    inp.placeholder = HOTEL_PLACEHOLDERS[_phIdx];
+  }, 2200);
+}
+function stopPlaceholderRotation() {
+  clearInterval(_phTimer); _phTimer = null;
+}
+
+// ── Coordenadas y estado por ciudad destino ──
+const CITY_GEO = {
+  'orlando':         { viewbox: '-81.95,28.35,-81.00,28.75', state: 'FL' },
+  'kissimmee':       { viewbox: '-81.60,28.15,-81.20,28.45', state: 'FL' },
+  'miami':           { viewbox: '-80.50,25.60,-80.10,25.90', state: 'FL' },
+  'tampa':           { viewbox: '-82.65,27.85,-82.30,28.10', state: 'FL' },
+  'fort lauderdale': { viewbox: '-80.30,26.05,-80.05,26.25', state: 'FL' },
+  'new york':        { viewbox: '-74.26,40.48,-73.70,40.92', state: 'NY' },
+  'los angeles':     { viewbox: '-118.67,33.70,-117.90,34.34', state: 'CA' },
+  'las vegas':       { viewbox: '-115.38,36.05,-115.05,36.30', state: 'NV' },
+  'chicago':         { viewbox: '-87.94,41.64,-87.52,42.02', state: 'IL' },
+  'houston':         { viewbox: '-95.67,29.52,-95.05,30.11', state: 'TX' },
+  'san francisco':   { viewbox: '-122.52,37.70,-122.35,37.83', state: 'CA' },
+  'boston':          { viewbox: '-71.19,42.23,-70.92,42.40', state: 'MA' },
+  'washington':      { viewbox: '-77.12,38.79,-76.91,38.99', state: 'DC' },
+  'denver':          { viewbox: '-105.11,39.61,-104.87,39.81', state: 'CO' },
+  'atlanta':         { viewbox: '-84.55,33.65,-84.29,33.89', state: 'GA' },
+};
+
+function getTripCityGeo() {
+  try {
+    const cached = localStorage.getItem('taxusa_cached_trip');
+    if (!cached) return null;
+    const trip = JSON.parse(cached);
+    const dest = (trip.destination || '').toLowerCase().trim();
+    for (const key of Object.keys(CITY_GEO)) {
+      if (dest.includes(key) || key.includes(dest)) return { city: key, ...CITY_GEO[key] };
+    }
+    return { city: dest, viewbox: null, state: 'FL' };
+  } catch(e) { return null; }
+}
+
+function parseNominatimResult(item) {
+  const a = item.address || {};
+  let name = item.name || '';
+  if (!name && a.road) name = (a.house_number ? a.house_number + ' ' : '') + a.road;
+  if (!name) name = item.display_name.split(',')[0];
+  const parts = [];
+  if (a.road && item.name) parts.push((a.house_number ? a.house_number + ' ' : '') + a.road);
+  if (a.city || a.town || a.village) parts.push(a.city || a.town || a.village);
+  if (a.state) parts.push(a.state);
+  const sub = parts.join(', ');
+  const addrParts = [];
+  if (a.house_number) addrParts.push(a.house_number);
+  if (a.road) addrParts.push(a.road);
+  if (a.city || a.town || a.village) addrParts.push(a.city || a.town || a.village);
+  if (a.state) addrParts.push(a.state);
+  const address = addrParts.length >= 2 ? addrParts.join(', ') : item.display_name.split(',').slice(0,3).join(',').trim();
+  return { name, sub: sub || address, address, lat: item.lat, lon: item.lon, type: item.type,
+    mapsUrl: `https://www.google.com/maps/search/?api=1&query=${item.lat},${item.lon}` };
+}
+
 async function searchAddress(query) {
   if (!query || query.length < 3) return [];
   try {
-    // Buscamos priorizando EEUU (countrycodes=us) para resultados más relevantes al viaje
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=6&countrycodes=us&addressdetails=1&accept-language=${localStorage.getItem('appLang')||'es'}`;
-    const res = await fetch(url, { headers: { 'Accept-Language': localStorage.getItem('appLang')||'es' } });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.map(item => ({
-      name: item.display_name.split(',')[0],
-      address: item.display_name,
-      lat: item.lat,
-      lon: item.lon,
-      type: item.type,
-      mapsUrl: `https://www.google.com/maps/search/?api=1&query=${item.lat},${item.lon}`
-    }));
+    const lang = localStorage.getItem('appLang') || 'es';
+    const base = `https://nominatim.openstreetmap.org/search?format=json&limit=6&countrycodes=us&addressdetails=1&accept-language=${lang}`;
+    const hasState   = /\b([A-Z]{2}|florida|california|texas|new york|nevada|illinois|georgia|massachusetts|colorado)\b/i.test(query);
+    const hasCountry = /\b(usa|united states|estados unidos)\b/i.test(query);
+    const hasCity    = /\b(orlando|kissimmee|miami|tampa|chicago|houston|boston|denver|atlanta|las vegas)\b/i.test(query);
+    const alreadyComplete = hasState || hasCountry || hasCity;
+    const tripGeo = getTripCityGeo();
+    let q = query;
+    if (!alreadyComplete && tripGeo) {
+      q = tripGeo.state
+        ? `${query}, ${tripGeo.city ? tripGeo.city.charAt(0).toUpperCase() + tripGeo.city.slice(1) : ''}, ${tripGeo.state}, USA`
+        : `${query}, USA`;
+    } else if (!alreadyComplete) {
+      q = `${query}, FL, USA`;
+    }
+    let data = [];
+    if (tripGeo?.viewbox) {
+      const res1 = await fetch(`${base}&q=${encodeURIComponent(q)}&viewbox=${tripGeo.viewbox}&bounded=1`, { headers: { 'Accept-Language': lang } });
+      if (res1.ok) data = await res1.json();
+    }
+    if (!data.length) {
+      const res2 = await fetch(`${base}&q=${encodeURIComponent(q)}`, { headers: { 'Accept-Language': lang } });
+      if (res2.ok) data = await res2.json();
+    }
+    if (!data.length && q !== query) {
+      const res3 = await fetch(`${base}&q=${encodeURIComponent(query)}`, { headers: { 'Accept-Language': lang } });
+      if (res3.ok) data = await res3.json();
+    }
+    return data.map(parseNominatimResult);
   } catch(e) { return []; }
 }
 
@@ -698,7 +837,7 @@ function renderAcList(listEl, items, onSelect, focusedIdx) {
     div.className = 'autocomplete-item' + (i === focusedIdx ? ' focused' : '');
     div.setAttribute('role', 'option');
     const icon = getAddressIcon(item.type);
-    div.innerHTML = `<span class="ac-icon">${icon}</span><div class="ac-body"><div class="ac-main">${escHtml(item.name)}</div><div class="ac-sub">${escHtml(item.address)}</div></div>`;
+    div.innerHTML = `<span class="ac-icon">${icon}</span><div class="ac-body"><div class="ac-main">${escHtml(item.name)}</div><div class="ac-sub">${escHtml(item.sub)}</div></div>`;
     div.addEventListener('mousedown', e => { e.preventDefault(); onSelect(item); });
     listEl.appendChild(div);
   });
@@ -706,12 +845,12 @@ function renderAcList(listEl, items, onSelect, focusedIdx) {
 }
 
 function getAddressIcon(type) {
-  if (['hotel','motel','hostel','guest_house'].includes(type)) return '🏨';
-  if (['restaurant','fast_food','cafe','bar'].includes(type)) return '🍽️';
-  if (['shop','mall','supermarket','department_store'].includes(type)) return '🛍️';
-  if (['attraction','theme_park','museum','zoo'].includes(type)) return '🎡';
+  if (['hotel','motel','hostel','guest_house','chalet'].includes(type)) return '🏨';
+  if (['restaurant','fast_food','cafe','bar','food_court'].includes(type)) return '🍽️';
+  if (['shop','mall','supermarket','department_store','clothes'].includes(type)) return '🛍️';
+  if (['attraction','theme_park','museum','zoo','amusement_park'].includes(type)) return '🎡';
   if (['airport','aerodrome'].includes(type)) return '✈️';
-  if (['house','residential','apartments'].includes(type)) return '🏠';
+  if (['house','residential','apartments','detached'].includes(type)) return '🏠';
   return '📍';
 }
 
@@ -719,13 +858,14 @@ function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// HOTEL autocomplete
+// ── HOTEL autocomplete ──
 let hotelAcItems = [];
 function onHotelInput(val) {
   clearTimeout(hotelAcTimer);
   hotelFocusedIdx = -1;
   const spinner = document.getElementById('hotel-spinner');
   const listEl  = document.getElementById('hotel-ac');
+  localStorage.setItem('taxusa_hotel_addr', val);
   if (!val || val.length < 3) { listEl.classList.remove('show'); hotelAcItems = []; return; }
   spinner.style.display = 'block';
   hotelAcTimer = setTimeout(async () => {
@@ -733,9 +873,10 @@ function onHotelInput(val) {
     spinner.style.display = 'none';
     renderAcList(listEl, hotelAcItems, (item) => {
       document.getElementById('hotel-input').value = item.address;
+      localStorage.setItem('taxusa_hotel_addr', item.address);
       listEl.classList.remove('show');
     }, hotelFocusedIdx);
-  }, 350);
+  }, 450);
 }
 
 function onHotelKey(e) {
@@ -937,22 +1078,69 @@ function generateRoute() {
     const chunk = stops.slice(d * perDay, (d+1) * perDay);
     if (!chunk.length) continue;
     let label = `${dayWord} ${d+1}`;
+    let shortLabel = `${dayWord} ${d+1}`;
+    let dateLabel = '';
     if (dateVal) {
       const date = new Date(dateVal + 'T12:00:00');
       date.setDate(date.getDate() + d);
-      const opts = { weekday:'short', day:'2-digit', month:'2-digit' };
       const locale = lang === 'pt' ? 'pt-BR' : lang === 'en' ? 'en-US' : 'es-AR';
-      label = `${dayWord} ${d+1} — ${date.toLocaleDateString(locale, opts)}`;
+      const shortDate = date.toLocaleDateString(locale, { day:'2-digit', month:'2-digit' });
+      const weekday  = date.toLocaleDateString(locale, { weekday:'short' });
+      label      = `${dayWord} ${d+1} — ${weekday} ${shortDate}`;
+      shortLabel = `${dayWord} ${d+1}`;
+      dateLabel  = `${weekday} ${shortDate}`;
     }
-    dayData.push({ label, stops: chunk });
+    dayData.push({ label, shortLabel, dateLabel, stops: chunk });
   }
 
   routeData = { hotel, dayData };
   visited   = {};
+  activeDay = 0;
   saveVisited();
   document.getElementById('builder-card').style.display = 'none';
   document.getElementById('ruta-result').style.display  = 'block';
   renderResult();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── ACTIVE DAY for tabs ──
+let activeDay = 0;
+
+function switchDay(d) {
+  activeDay = d;
+  document.querySelectorAll('.day-tab').forEach((t, i) => t.classList.toggle('active', i === d));
+  document.querySelectorAll('.day-panel').forEach((p, i) => p.classList.toggle('active', i === d));
+  document.querySelectorAll('.day-nav-btn').forEach((b, i) => b.classList.toggle('active', i === d));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function buildTabs() {
+  const tabsEl  = document.getElementById('day-tabs');
+  const navEl   = document.getElementById('day-bottom-nav');
+  if (!tabsEl || !navEl) return;
+  tabsEl.innerHTML = '';
+  navEl.innerHTML  = '';
+  routeData.dayData.forEach((day, i) => {
+    // Tab superior
+    const tab = document.createElement('button');
+    tab.className = 'day-tab' + (i === activeDay ? ' active' : '');
+    tab.textContent = day.shortLabel || day.label;
+    tab.onclick = () => switchDay(i);
+    tabsEl.appendChild(tab);
+    // Botón nav inferior
+    const btn = document.createElement('button');
+    btn.className = 'day-nav-btn' + (i === activeDay ? ' active' : '');
+    btn.id = 'day-nav-' + i;
+    const done = routeData.dayData[i].stops.filter((_, si) => visited[`${i}-${si}`]).length;
+    const total = routeData.dayData[i].stops.length;
+    const hasProgress = done > 0 && done < total;
+    const allDone = done === total && total > 0;
+    const dot = hasProgress ? '<span class="dnb-dot"></span>' : allDone ? ' ✓' : '';
+    btn.innerHTML = (day.shortLabel || ('Día ' + (i+1))) + dot + (day.dateLabel ? `<span class="dnb-date">${day.dateLabel}</span>` : '');
+    btn.onclick = () => switchDay(i);
+    navEl.appendChild(btn);
+  });
+  navEl.classList.add('show');
 }
 
 function renderResult() {
@@ -965,43 +1153,70 @@ function renderResult() {
     const dayDone = day.stops.filter((_, si) => visited[`${di}-${si}`]).length;
     done += dayDone;
     const pct = Math.round(dayDone / day.stops.length * 100);
+    const allDone = dayDone === day.stops.length && day.stops.length > 0;
 
-    const block = document.createElement('div');
-    block.className = 'day-block';
-    block.innerHTML = `
-      <div class="day-header-bar">
-        <div class="d-title">${day.label}</div>
-        <div class="d-count">${dayDone}/${day.stops.length}</div>
-      </div>
-      <div class="day-progress"><div class="day-progress-fill" style="width:${pct}%"></div></div>
-      <div class="day-stops">
-        <div class="day-hotel">
-          <span class="h-icon">🏠</span>
-          <span class="h-addr">${routeData.hotel}</span>
-          <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(routeData.hotel)}" target="_blank">Maps ↗</a>
+    const panel = document.createElement('div');
+    panel.className = 'day-panel' + (di === activeDay ? ' active' : '');
+    panel.id = 'day-panel-' + di;
+
+    let html = `
+      <a class="hotel-bar-result" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(routeData.hotel)}" target="_blank">
+        <div class="hotel-bar-icon">🏠</div>
+        <div class="hotel-bar-info">
+          <div class="hotel-bar-label">Punto de partida</div>
+          <div class="hotel-bar-addr">${escHtml(routeData.hotel)}</div>
         </div>
-        ${day.stops.map((s, si) => {
-          const isV = !!visited[`${di}-${si}`];
-          return `<div class="ruta-stop${isV?' visited':''}" onclick="toggleVisit(${di},${si})">
-            <div class="rs-num">${isV ? '✓' : si+1}</div>
-            <div class="rs-body">
-              <div class="rs-name">${s.name}</div>
-              ${s.desc ? `<div class="rs-desc">${s.desc}</div>` : ''}
-              <div class="rs-footer">
-                <div class="rs-badges"></div>
-                ${s.url ? `<a class="rs-maps" href="${s.url}" onclick="event.stopPropagation()" target="_blank">📍 Maps</a>` : ''}
-              </div>
-            </div>
-          </div>`;
-        }).join('')}
+        <div class="hotel-bar-arrow">↗</div>
+      </a>
+      <div class="day-prog-wrap">
+        <div class="day-prog-meta">
+          <div class="day-prog-stats">
+            <div class="dp-stat"><div class="dp-val ${dayDone>0?'accent':''}">${dayDone}</div><div class="dp-lbl">visit.</div></div>
+            <div class="dp-stat"><div class="dp-val">${day.stops.length}</div><div class="dp-lbl">paradas</div></div>
+            <div class="dp-stat"><div class="dp-val ${pct===100?'accent':''}">${pct}%</div><div class="dp-lbl">hecho</div></div>
+          </div>
+          <button class="btn-reset" onclick="resetDay(${di})">↺ reiniciar</button>
+        </div>
+        <div class="day-prog-bar-bg"><div class="day-prog-bar-fill" style="width:${pct}%"></div></div>
       </div>`;
-    out.appendChild(block);
+
+    if (allDone) {
+      html += `<div class="all-done-state show">
+        <div class="all-done-emoji">🎉</div>
+        <div class="all-done-title">¡Día completado!</div>
+        <div class="all-done-sub">Visitaste las ${day.stops.length} paradas del día.</div>
+      </div>`;
+    }
+
+    day.stops.forEach((s, si) => {
+      const isV = !!visited[`${di}-${si}`];
+      const mapsIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>`;
+      html += `
+        <div class="ruta-stop${isV?' visited':''}" onclick="toggleVisit(${di},${si})" style="animation-delay:${si*.03}s">
+          <div class="rs-num">${isV ? '✓' : si+1}</div>
+          <div class="rs-body">
+            <div class="rs-name">${escHtml(s.name)}</div>
+            ${s.desc ? `<div class="rs-desc">${escHtml(s.desc)}</div>` : ''}
+            <div class="rs-footer">
+              <span></span>
+              ${s.url ? `<a class="rs-maps" href="${s.url}" onclick="event.stopPropagation()" target="_blank">${mapsIcon} Maps</a>` : ''}
+            </div>
+          </div>
+        </div>`;
+    });
+
+    panel.innerHTML = html;
+    out.appendChild(panel);
   });
 
+  // Global progress
   const pct = total ? Math.round(done/total*100) : 0;
   document.getElementById('gp-done').textContent  = done;
   document.getElementById('gp-total').textContent = total;
   document.getElementById('gp-bar').style.width   = pct + '%';
+
+  // Rebuild tabs con dots actualizados
+  buildTabs();
 }
 
 function toggleVisit(di, si) {
@@ -1010,9 +1225,16 @@ function toggleVisit(di, si) {
   else visited[key] = 1;
   saveVisited();
   renderResult();
+  // Check si el día está completo
   const day = routeData.dayData[di];
   const allDone = day.stops.every((_, s) => visited[`${di}-${s}`]);
   if (allDone) launchConfetti();
+}
+
+function resetDay(di) {
+  routeData.dayData[di].stops.forEach((_, si) => { delete visited[`${di}-${si}`]; });
+  saveVisited();
+  renderResult();
 }
 
 function saveVisited()  { try { localStorage.setItem(VISITED_KEY, JSON.stringify(visited)); } catch(e) {} }
@@ -1020,20 +1242,144 @@ function resetVisited() { visited = {}; saveVisited(); renderResult(); }
 
 function resetAll() {
   stops = []; routeData = null; visited = {};
+  activeDay = 0;
   saveVisited(); renderStops();
   document.getElementById('builder-card').style.display = 'block';
   document.getElementById('ruta-result').style.display  = 'none';
-  document.getElementById('hotel-input').value = '';
+  document.getElementById('day-bottom-nav').classList.remove('show');
+  document.getElementById('hotel-input').value = ''; localStorage.removeItem('taxusa_hotel_addr');
+  localStorage.removeItem('taxusa_hotel_addr');
   document.getElementById('start-date').value  = '';
   days = 3; document.getElementById('days-count').textContent = '3';
 }
 
-// ── DOWNLOAD HTML ──
+// ── DOWNLOAD HTML (estilo Maps-main) ──
 function downloadHTML() {
   if (!routeData) return;
-  const HOTEL_VAR = JSON.stringify(routeData.hotel);
-  const DAYS_VAR  = JSON.stringify(routeData.dayData);
-  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>Mi Ruta TaxUSA</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}body{font-family:'DM Sans',system-ui,sans-serif;background:#0f172a;color:#f1f5f9;min-height:100vh;padding:20px 16px 80px}.wrap{max-width:460px;margin:0 auto}.header{margin-bottom:20px}.title{font-size:1.3rem;font-weight:900;color:#2563eb}.subtitle{font-size:.75rem;color:#64748b;margin-top:2px}.prog-card{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:14px;margin-bottom:14px;display:flex;align-items:center;gap:14px}.gp-stat{text-align:center;flex:1}.gp-val{font-size:1.4rem;font-weight:900;color:#2563eb}.gp-lbl{font-size:.6rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px}.gp-bar-wrap{flex:2}.gp-bar-bg{height:6px;background:#334155;border-radius:3px;overflow:hidden}.gp-bar-fill{height:100%;background:linear-gradient(90deg,#2563eb,#7c3aed);border-radius:3px;transition:width .4s}.day-block{margin-bottom:12px}.day-hdr{display:flex;align-items:center;padding:10px 14px;background:#2563eb;border-radius:10px 10px 0 0;color:white}.d-title{font-size:.85rem;font-weight:900;flex:1}.d-count{font-size:.7rem;opacity:.8}.day-prog{height:3px;background:#334155}.day-prog-fill{height:100%;background:#10b981;transition:width .3s}.day-stops{background:#1e293b;border:1px solid #334155;border-top:none;border-radius:0 0 10px 10px;overflow:hidden}.hotel-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#273549;border-bottom:1px solid #334155}.h-addr{font-size:.72rem;color:#94a3b8;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.h-link{font-size:.7rem;color:#2563eb;text-decoration:none;flex-shrink:0}.stop-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-bottom:1px solid #1e293b;cursor:pointer;transition:background .15s}.stop-item:last-child{border-bottom:none}.stop-item:hover{background:#273549}.stop-item.v{background:rgba(16,185,129,.05)}.stop-item.v .sn{text-decoration:line-through;color:#475569}.s-num{width:22px;height:22px;border-radius:50%;border:1.5px solid #334155;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#64748b;flex-shrink:0;margin-top:1px;transition:all .15s}.stop-item.v .s-num{background:rgba(16,185,129,.12);border-color:#10b981;color:#10b981}.s-body{flex:1;min-width:0}.sn{font-size:.85rem;font-weight:700;color:#f1f5f9;margin-bottom:2px}.sd{font-size:.72rem;color:#64748b;line-height:1.4;margin-bottom:5px}.sf{display:flex;align-items:center;justify-content:flex-end}.s-maps{font-size:.7rem;color:#60a5fa;text-decoration:none}.reset-btn{background:none;border:none;color:#475569;font-size:.72rem;cursor:pointer;text-decoration:underline;font-family:inherit;padding:0}.confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}.cp{position:absolute;top:-20px;animation:cf linear forwards}@keyframes cf{to{transform:translateY(110vh) rotate(720deg);opacity:0}}</style></head><body><div class="confetti-wrap" id="cw"></div><div class="wrap"><div class="header"><div class="title">🗺️ Mi Ruta TaxUSA</div><div class="subtitle">Tocá cada parada para marcarla como visitada</div></div><div class="prog-card"><div class="gp-stat"><div class="gp-val" id="gd">0</div><div class="gp-lbl">visitadas</div></div><div class="gp-bar-wrap"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:.6rem;font-weight:700;color:#475569">PROGRESO</span><button class="reset-btn" onclick="resetAll()">reiniciar</button></div><div class="gp-bar-bg"><div class="gp-bar-fill" id="gb" style="width:0%"></div></div></div><div class="gp-stat"><div class="gp-val" id="gt">0</div><div class="gp-lbl">paradas</div></div></div><div id="out"></div></div><script>var H=${HOTEL_VAR};var D=${DAYS_VAR};var V={};try{V=JSON.parse(localStorage.getItem('rt_v')||'{}')}catch(e){}function save(){try{localStorage.setItem('rt_v',JSON.stringify(V))}catch(e){}}function confetti(){var w=document.getElementById('cw');var c=['#2563eb','#f59e0b','#10b981','#f1f5f9','#ef4444'];for(var i=0;i<50;i++){var el=document.createElement('div');el.className='cp';el.style.cssText='left:'+Math.random()*100+'%;width:'+(5+Math.random()*8)+'px;height:'+(5+Math.random()*8)+'px;background:'+c[Math.floor(Math.random()*c.length)]+';border-radius:'+(Math.random()>.5?'50%':'2px')+';animation-duration:'+(1.5+Math.random()*2)+'s;animation-delay:'+(Math.random()*.5)+'s';w.appendChild(el);setTimeout(function(x){return function(){x.remove()}}(el),4000)}}function toggle(di,si){var k=di+'-'+si;if(V[k])delete V[k];else V[k]=1;save();render();var day=D[di];if(day.stops.every(function(_,s){return V[di+'-'+s]})){setTimeout(confetti,200)}}function resetAll(){V={};save();render()}function render(){var out=document.getElementById('out');out.innerHTML='';var total=0,done=0;D.forEach(function(day,di){total+=day.stops.length;var dd=day.stops.filter(function(_,si){return V[di+'-'+si]}).length;done+=dd;var pct=Math.round(dd/day.stops.length*100);var b=document.createElement('div');b.className='day-block';b.innerHTML='<div class="day-hdr"><div class="d-title">'+day.label+'</div><div class="d-count">'+dd+'/'+day.stops.length+'</div></div><div class="day-prog"><div class="day-prog-fill" style="width:'+pct+'%"></div></div><div class="day-stops"><div class="hotel-bar"><span>🏠</span><span class="h-addr">'+H+'</span><a class="h-link" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(H)+'" target="_blank">Maps ↗</a></div>'+day.stops.map(function(s,si){var v=!!V[di+'-'+si];return'<div class="stop-item'+(v?' v':'')+'\" onclick="toggle('+di+','+si+')"><div class="s-num">'+(v?'✓':si+1)+'</div><div class="s-body"><div class="sn">'+s.name+'</div>'+(s.desc?'<div class="sd">'+s.desc+'</div>':'')+'<div class="sf">'+(s.url?'<a class="s-maps" href="'+s.url+'" onclick="event.stopPropagation()" target="_blank">📍 Maps</a>':'')+'</div></div></div>'}).join('')+'</div>';out.appendChild(b)});var pct=total?Math.round(done/total*100):0;document.getElementById('gd').textContent=done;document.getElementById('gt').textContent=total;document.getElementById('gb').style.width=pct+'%'}render();<\/script></body></html>`;
+  const H = JSON.stringify(routeData.hotel);
+  const D = JSON.stringify(routeData.dayData);
+  const html = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Mi Ruta TaxUSA</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f1f5f9;--surface:#fff;--surface2:#f8fafc;--border:#e2e8f0;--text:#0f172a;--sub:#64748b;--dim:#94a3b8;--primary:#2563eb;--success:#10b981;--accent:#7c3aed;--radius:14px;}
+@media(prefers-color-scheme:dark){:root{--bg:#0f172a;--surface:#1e293b;--surface2:#273549;--border:#334155;--text:#f1f5f9;--sub:#94a3b8;--dim:#64748b;}}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:16px 16px 100px;}
+.wrap{max-width:460px;margin:0 auto;}
+.title{font-size:1.2rem;font-weight:900;color:var(--primary);margin-bottom:2px;}
+.subtitle{font-size:.72rem;color:var(--sub);margin-bottom:14px;}
+/* global prog */
+.prog-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:14px;display:flex;align-items:center;gap:14px;}
+.gp-stat{text-align:center;flex:1;}.gp-val{font-size:1.4rem;font-weight:900;color:var(--primary);}.gp-lbl{font-size:.55rem;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;}
+.gp-bw{flex:2;}.gp-row{display:flex;justify-content:space-between;margin-bottom:4px;}.gp-lbl2{font-size:.6rem;font-weight:700;color:var(--dim);}.reset-btn{background:none;border:none;color:var(--dim);font-size:.65rem;cursor:pointer;text-decoration:underline;font-family:inherit;padding:0;}
+.gp-bg{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}.gp-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:3px;transition:width .4s;}
+/* tabs */
+.tabs-wrap{overflow-x:auto;scrollbar-width:none;margin-bottom:12px;}.tabs-wrap::-webkit-scrollbar{display:none;}
+.tabs{display:flex;gap:6px;padding-bottom:2px;}
+.tab{flex-shrink:0;padding:8px 16px;border-radius:999px;border:1.5px solid var(--border);background:transparent;color:var(--sub);font-family:inherit;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.tab.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+/* panels */
+.panel{display:none;}.panel.active{display:block;}
+/* hotel */
+.hotel-bar{display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:10px;text-decoration:none;}
+.h-icon{width:30px;height:30px;background:rgba(37,99,235,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.h-info{flex:1;min-width:0;}.h-lbl{font-size:.55rem;color:var(--primary);font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:2px;}.h-addr{font-size:.72rem;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.h-arr{color:var(--dim);font-size:.8rem;}
+/* day progress */
+.dp-wrap{margin-bottom:12px;}.dp-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}.dp-stats{display:flex;gap:12px;}.dp-s{text-align:center;}.dp-v{font-size:1rem;font-weight:900;color:var(--text);}.dp-v.ac{color:var(--primary);}.dp-l{font-size:.55rem;color:var(--dim);font-weight:600;text-transform:uppercase;}
+.dp-bg{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}.dp-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--success));border-radius:2px;transition:width .4s;}
+/* stops */
+.stop{display:flex;align-items:flex-start;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.stop::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:transparent;transition:background .2s;}
+.stop.v{background:var(--surface2);}.stop.v::before{background:var(--success);}
+.stop:active{transform:scale(.98);}
+.s-num{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:var(--sub);flex-shrink:0;transition:all .15s;}
+.stop.v .s-num{background:rgba(16,185,129,.12);border-color:var(--success);color:var(--success);}
+.s-body{flex:1;min-width:0;}.s-name{font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.3;}.stop.v .s-name{text-decoration:line-through;color:var(--dim);}
+.s-desc{font-size:.72rem;color:var(--sub);line-height:1.5;margin-bottom:8px;}.stop.v .s-desc{opacity:.5;}
+.s-foot{display:flex;align-items:center;justify-content:flex-end;}
+.s-maps{display:flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:5px 10px;color:var(--sub);font-size:.68rem;font-weight:600;text-decoration:none;}
+/* bottom nav */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;padding:8px 12px calc(8px + env(safe-area-inset-bottom));gap:6px;}
+.bn{flex:1;padding:10px 6px;border-radius:12px;border:1.5px solid var(--border);background:transparent;color:var(--sub);font-family:inherit;font-size:.65rem;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bn.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+.bn-date{font-size:.55rem;font-weight:500;display:block;margin-top:2px;opacity:.7;}
+/* confetti */
+.cw{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden;}
+.cp{position:absolute;top:-20px;animation:cf linear forwards;}
+@keyframes cf{to{transform:translateY(110vh) rotate(720deg);opacity:0;}}
+/* all done */
+.all-done{text-align:center;padding:28px 0;display:none;}
+.all-done.show{display:block;}
+.ad-emoji{font-size:2.5rem;margin-bottom:8px;}.ad-title{font-size:1rem;font-weight:900;color:var(--primary);margin-bottom:4px;}.ad-sub{font-size:.78rem;color:var(--sub);}
+</style>
+</head>
+<body>
+<div class="cw" id="cw"></div>
+<div class="wrap">
+  <div class="title">🗺️ Mi Ruta TaxUSA</div>
+  <div class="subtitle">Tocá cada parada para marcarla como visitada</div>
+  <div class="prog-card">
+    <div class="gp-stat"><div class="gp-val" id="gd">0</div><div class="gp-lbl">visitadas</div></div>
+    <div class="gp-bw">
+      <div class="gp-row"><span class="gp-lbl2">PROGRESO TOTAL</span><button class="reset-btn" onclick="resetAll()">reiniciar</button></div>
+      <div class="gp-bg"><div class="gp-fill" id="gb" style="width:0%"></div></div>
+    </div>
+    <div class="gp-stat"><div class="gp-val" id="gt">0</div><div class="gp-lbl">paradas</div></div>
+  </div>
+  <div class="tabs-wrap"><div class="tabs" id="tabs"></div></div>
+  <div id="panels"></div>
+</div>
+<nav class="bnav" id="bnav"></nav>
+<script>
+var H=${H};
+var D=${D};
+var AD=0;
+var V={};try{V=JSON.parse(localStorage.getItem('rt_v')||'{}')}catch(e){}
+function save(){try{localStorage.setItem('rt_v',JSON.stringify(V))}catch(e){}}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function confetti(){var w=document.getElementById('cw');var c=['#2563eb','#f59e0b','#10b981','#f1f5f9','#ef4444','#7c3aed'];for(var i=0;i<60;i++){var el=document.createElement('div');el.className='cp';el.style.cssText='left:'+Math.random()*100+'%;width:'+(5+Math.random()*8)+'px;height:'+(5+Math.random()*8)+'px;background:'+c[Math.floor(Math.random()*c.length)]+';border-radius:'+(Math.random()>.5?'50%':'2px')+';animation-duration:'+(1.5+Math.random()*2)+'s;animation-delay:'+(Math.random()*.5)+'s';w.appendChild(el);setTimeout((function(x){return function(){x.remove()}})(el),4000)}}
+function toggle(di,si){var k=di+'-'+si;if(V[k])delete V[k];else V[k]=1;save();render();var day=D[di];if(day.stops.every(function(_,s){return V[di+'-'+s]})){setTimeout(confetti,200)}}
+function resetDay(di){D[di].stops.forEach(function(_,si){delete V[di+'-'+si]});save();render();}
+function resetAll(){V={};save();render();}
+function switchDay(d){AD=d;document.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('active',i===d)});document.querySelectorAll('.panel').forEach(function(p,i){p.classList.toggle('active',i===d)});document.querySelectorAll('.bn').forEach(function(b,i){b.classList.toggle('active',i===d)});window.scrollTo({top:0,behavior:'smooth'});}
+function render(){
+  var tabs=document.getElementById('tabs');var panels=document.getElementById('panels');var bnav=document.getElementById('bnav');
+  tabs.innerHTML='';panels.innerHTML='';bnav.innerHTML='';
+  var total=0,done=0;
+  D.forEach(function(day,di){
+    total+=day.stops.length;
+    var dd=day.stops.filter(function(_,si){return V[di+'-'+si]}).length;done+=dd;
+    var pct=day.stops.length?Math.round(dd/day.stops.length*100):0;
+    var allDone=dd===day.stops.length&&day.stops.length>0;
+    // Tab
+    var tab=document.createElement('button');tab.className='tab'+(di===AD?' active':'');tab.textContent=day.shortLabel||day.label;tab.onclick=(function(i){return function(){switchDay(i)}})(di);tabs.appendChild(tab);
+    // Nav
+    var bn=document.createElement('button');bn.className='bn'+(di===AD?' active':'');
+    var dot=dd>0&&dd<day.stops.length?'<span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:#10b981;margin-left:3px;vertical-align:middle;"></span>':allDone?' ✓':'';
+    bn.innerHTML=(day.shortLabel||('Día '+(di+1)))+dot+(day.dateLabel?'<span class="bn-date">'+day.dateLabel+'</span>':'');
+    bn.onclick=(function(i){return function(){switchDay(i)}})(di);bnav.appendChild(bn);
+    // Panel
+    var panel=document.createElement('div');panel.className='panel'+(di===AD?' active':'');
+    var html='<a class="hotel-bar" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(H)+'" target="_blank"><div class="h-icon">🏠</div><div class="h-info"><div class="h-lbl">Punto de partida</div><div class="h-addr">'+esc(H)+'</div></div><div class="h-arr">↗</div></a>';
+    html+='<div class="dp-wrap"><div class="dp-row"><div class="dp-stats"><div class="dp-s"><div class="dp-v'+(dd>0?' ac':'')+'">'+dd+'</div><div class="dp-l">visit.</div></div><div class="dp-s"><div class="dp-v">'+day.stops.length+'</div><div class="dp-l">paradas</div></div><div class="dp-s"><div class="dp-v'+(pct===100?' ac':'')+'">'+pct+'%</div><div class="dp-l">hecho</div></div></div><button class="reset-btn" onclick="resetDay('+di+')">↺ reiniciar</button></div><div class="dp-bg"><div class="dp-fill" id="dpf-'+di+'" style="width:'+pct+'%"></div></div></div>';
+    if(allDone){html+='<div class="all-done show"><div class="ad-emoji">🎉</div><div class="ad-title">¡Día completado!</div><div class="ad-sub">Visitaste las '+day.stops.length+' paradas del día.</div></div>';}
+    day.stops.forEach(function(s,si){var v=!!V[di+'-'+si];html+='<div class="stop'+(v?' v':'')+'" onclick="toggle('+di+','+si+')" style="animation-delay:'+(si*.03)+'s"><div class="s-num">'+(v?'✓':si+1)+'</div><div class="s-body"><div class="s-name">'+esc(s.name)+'</div>'+(s.desc?'<div class="s-desc">'+esc(s.desc)+'</div>':'')+'<div class="s-foot">'+(s.url?'<a class="s-maps" href="'+s.url+'" onclick="event.stopPropagation()" target="_blank">📍 Maps</a>':'')+'</div></div></div>';});
+    panel.innerHTML=html;panels.appendChild(panel);
+  });
+  var gPct=total?Math.round(done/total*100):0;
+  document.getElementById('gd').textContent=done;document.getElementById('gt').textContent=total;document.getElementById('gb').style.width=gPct+'%';
+}
+render();
+<\/script>
+</body>
+</html>`;
   const blob = new Blob([html], { type: 'text/html' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -1073,6 +1419,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   const lang = localStorage.getItem('appLang') || 'es';
   window.changeLanguage(lang);
+
+  // Restaurar dirección del hotel guardada
+  const inp = document.getElementById('hotel-input');
+  if (inp) {
+    const saved = localStorage.getItem('taxusa_hotel_addr');
+    if (saved) inp.value = saved;
+    inp.placeholder = HOTEL_PLACEHOLDERS[_phIdx];
+  }
 });
 </script>
 
