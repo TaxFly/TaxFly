@@ -597,7 +597,7 @@ function fxRenderER(code, symbol, flagCc, decimals=2) {
     const rows = [
         `<div class="fx-row"><span class="fx-name">${fxFlag(flagCc)}1 USD</span><span class="fx-val">${symbol}${fxFmt(rate, decimals)}</span></div>`,
     ];
-    if(arsOficial) rows.push(`<div class="fx-row"><span class="fx-name">${fxFlag('ar')}vs Oficial</span><span class="fx-val">$${fxFmt(arsOficial/rate,2)}</span></div>`);
+    if(arsOficial) rows.push(`<div class="fx-row"><span class="fx-name">${fxFlag(flagCc)}vs Oficial</span><span class="fx-val">$${fxFmt(arsOficial/rate,2)}</span></div>`);
     if(arsTarjeta) rows.push(`<div class="fx-row"><span class="fx-name">💳 vs Tarjeta</span><span class="fx-val">$${fxFmt(arsTarjeta/rate,2)}</span></div>`);
     return rows.join('');
 }
@@ -614,7 +614,7 @@ function fxRenderEUR() {
     const rows = [
         `<div class="fx-row"><span class="fx-name">${fxFlag('eu')}1 EUR</span><span class="fx-val">$${fxFmt(usdPerEur,2)} USD</span></div>`,
     ];
-    if(arsOficial) rows.push(`<div class="fx-row"><span class="fx-name">${fxFlag('ar')}vs Oficial</span><span class="fx-val">$${fxFmt(arsOficial*usdPerEur,0)}</span></div>`);
+    if(arsOficial) rows.push(`<div class="fx-row"><span class="fx-name">${fxFlag('eu')}vs Oficial</span><span class="fx-val">$${fxFmt(arsOficial*usdPerEur,0)}</span></div>`);
     if(arsTarjeta) rows.push(`<div class="fx-row"><span class="fx-name">💳 vs Tarjeta</span><span class="fx-val">$${fxFmt(arsTarjeta*usdPerEur,0)}</span></div>`);
     return rows.join('');
 }
