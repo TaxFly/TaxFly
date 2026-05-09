@@ -738,7 +738,8 @@ function renderWeather(r, lang) {
 
 window.loadWeather = async function(force=false) {
     const l = lang || localStorage.getItem('appLang') || 'es';
-    const city = 'New York';
+    let city = 'Orlando';
+    try { const t = localStorage.getItem('taxusa_cached_trip'); if(t) city = JSON.parse(t).destination || city; } catch(e) {}
     const body = document.getElementById('ww-body');
     const refreshBtn = document.querySelector('.ww-refresh');
     if(refreshBtn) refreshBtn.classList.add('spinning');
