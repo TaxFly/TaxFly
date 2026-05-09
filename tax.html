@@ -1,0 +1,2196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TaxUSA — Inicio</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" href="icon-512.png">
+    <link rel="apple-touch-icon" href="icon-512.png">
+    <!-- reCAPTCHA: solo cargar si hay conexión para evitar errores visuales offline -->
+    <script>
+        if (navigator.onLine) {
+            var s = document.createElement('script');
+            s.src = 'https://www.google.com/recaptcha/api.js?render=6LeK6cssAAAAALxcJy-95R2nhVMmnuIyB78AQgvw';
+            s.async = true; s.defer = true;
+            document.head.appendChild(s);
+        }
+    </script>
+    <!-- Ocultar cualquier badge/error de reCAPTCHA que pueda aparecer -->
+    <style>
+        .grecaptcha-badge { visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800&display=swap" rel="stylesheet"></noscript>
+    <script>
+        const _t = localStorage.getItem('theme');
+        if (_t) document.documentElement.setAttribute('data-theme', _t);
+        else if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.setAttribute('data-theme','dark');
+    </script>
+    <script>
+        // Aplicar foto de perfil apenas carga el DOM, sin esperar a Firebase
+        document.addEventListener('DOMContentLoaded', function() {
+            const foto = localStorage.getItem('perfilActivoFoto');
+            if (foto) {
+                const btn = document.getElementById('btnSettings');
+                if (btn) { btn.style.backgroundImage = `url('${foto}')`; btn.innerText = ''; }
+            }
+        });
+    </script>
+    <style>
+        :root {
+            --primary:#2563eb; --primary-dim:rgba(37,99,235,0.1);
+            --accent:#7c3aed; --accent-dim:rgba(124,58,237,0.1);
+            --danger:#ef4444; --success:#10b981; --warn:#f59e0b;
+            --bg:#f1f5f9; --surface:#ffffff; --surface-2:#f8fafc;
+            --border:#e2e8f0; --input-bg:#f8fafc;
+            --text:#0f172a; --text-sub:#64748b; --text-dim:#94a3b8;
+            --header-color:#1e3a8a;
+            --radius:20px; --radius-sm:12px;
+            --shadow:0 4px 20px rgba(0,0,0,0.06); --shadow-lg:0 12px 40px rgba(0,0,0,0.1);
+            --tr:all 0.25s cubic-bezier(0.4,0,0.2,1);
+        }
+        [data-theme="dark"] {
+            --bg:#0f172a; --surface:#1e293b; --surface-2:#273549;
+            --border:#334155; --input-bg:#273549;
+            --text:#f1f5f9; --text-sub:#94a3b8; --text-dim:#64748b;
+            --header-color:#2563eb;
+            --shadow:0 4px 20px rgba(0,0,0,0.3); --shadow-lg:0 12px 40px rgba(0,0,0,0.4);
+            color-scheme: dark;
+        }
+        *,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0;}
+        html{scroll-behavior:smooth;}
+        body{font-family:'DM Sans',-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:28px 16px 40px;transition:background .3s,color .3s;-webkit-font-smoothing:antialiased;}
+
+        .wrap{width:100%;max-width:460px;}
+
+        .app-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+        .logo{display:flex;align-items:center;gap:10px;font-size:1.4rem;font-weight:900;color:var(--header-color);letter-spacing:-0.5px;}
+        .logo svg{width:28px;height:28px;flex-shrink:0;}
+
+        .nav-bar{display:flex;align-items:center;background:var(--surface);border-radius:16px;padding:6px;margin-bottom:22px;border:1px solid var(--border);box-shadow:var(--shadow);gap:2px;}
+        .btn-nav{flex:1;display:flex;flex-direction:column;align-items:center;text-decoration:none;color:var(--text-sub);font-size:8px;font-weight:700;gap:2px;padding:6px 2px;border-radius:10px;background:none;border:none;cursor:pointer;transition:var(--tr);text-transform:uppercase;letter-spacing:.3px;}
+        .btn-nav .ni{font-size:17px;line-height:1;}
+        .btn-nav:hover,.btn-nav.active{color:var(--primary);background:var(--primary-dim);}
+        .btn-nav-set{width:34px;height:34px;border-radius:50%;background:var(--surface-2);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;overflow:hidden;transition:var(--tr);background-size:cover;background-position:center;}
+        .btn-nav-set:hover{border-color:var(--primary);}
+
+        .card{background:var(--surface);border-radius:var(--radius);padding:20px;width:100%;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:14px;position:relative;}
+
+        .countdown-box{background:var(--surface-2);padding:14px 16px;border-radius:var(--radius-sm);margin-bottom:16px;cursor:pointer;border:1.5px solid var(--border);transition:var(--tr);position:relative;}
+        .countdown-box:hover{border-color:var(--primary);}
+        .countdown-label{font-size:0.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;}
+        #timer{font-size:1.15rem;font-weight:900;color:var(--primary);letter-spacing:.5px;}
+        .edit-hint{position:absolute;top:8px;right:10px;font-size:.75rem;opacity:.4;}
+
+        .slabel{font-size:.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;display:block;}
+
+        input,select{width:100%;padding:14px 16px;background:var(--input-bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:.9rem;font-weight:600;outline:none;transition:var(--tr);-webkit-appearance:none;}
+        input:focus,select:focus{border-color:var(--primary);background:var(--surface);box-shadow:0 0 0 3px var(--primary-dim);}
+        input::placeholder{color:var(--text-dim);font-weight:500;}
+        .input-group{margin-bottom:12px;}
+
+        .cat-grid{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px;}
+        .cat-btn{flex:1;min-width:0;padding:9px 6px;border:1.5px solid var(--border);border-radius:10px;background:var(--input-bg);font-size:.62rem;font-weight:800;color:var(--text-sub);cursor:pointer;transition:var(--tr);display:flex;flex-direction:column;align-items:center;gap:3px;font-family:inherit;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;}
+        .cat-btn .cat-icon{font-size:1.05rem;}
+        .cat-btn.active{border-color:var(--primary);background:var(--primary-dim);color:var(--primary);}
+
+        .result-box{background:var(--primary-dim);padding:16px;border-radius:var(--radius-sm);border:1.5px solid var(--primary);margin-bottom:14px;text-align:center;}
+        .result-value{font-size:1.8rem;font-weight:900;color:var(--primary);margin:2px 0;}
+        .result-detail{font-size:.8rem;font-weight:700;color:var(--primary);opacity:.8;}
+
+        /* ── Tip collapsible ── */
+        .tip-collapse-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;margin-bottom:0;}
+        .tip-collapse-title{font-size:.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;display:flex;align-items:center;gap:6px;}
+        .tip-preview{font-size:.7rem;font-weight:800;color:var(--accent);background:var(--accent-dim);padding:3px 8px;border-radius:6px;}
+        .tip-toggle-lbl{font-size:.65rem;color:var(--text-dim);font-weight:700;}
+        .tip-body{display:none;margin-top:12px;}
+        .tip-body.open{display:block;}
+        .tip-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;}
+        .tip-btn{padding:10px 4px;border:1.5px solid var(--border);border-radius:10px;background:var(--input-bg);font-size:.75rem;font-weight:800;color:var(--text-sub);cursor:pointer;transition:var(--tr);display:flex;flex-direction:column;align-items:center;gap:3px;font-family:inherit;}
+        .tip-btn small{font-size:.55rem;font-weight:600;opacity:.8;}
+        .tip-btn.active{border-color:var(--accent);background:var(--accent-dim);color:var(--accent);}
+        .custom-tip{display:flex;flex-direction:column;align-items:center;background:var(--surface-2);border-radius:10px;padding:8px 12px;border:1.5px solid var(--border);transition:var(--tr);}
+        .custom-tip:focus-within{border-color:var(--accent);}
+        .custom-tip-row{display:flex;align-items:center;gap:4px;font-weight:800;color:var(--text-sub);font-size:.7rem;}
+        #custom-tip-input{background:transparent;border:none;padding:0;width:36px;text-align:center;font-size:.8rem;color:var(--accent);font-weight:800;outline:none;font-family:inherit;}
+        #val-tip-custom{font-size:.55rem;font-weight:600;color:var(--accent);opacity:.8;margin-top:2px;}
+
+        .final-box{background:var(--primary);padding:18px;border-radius:var(--radius-sm);color:white;margin-bottom:14px;box-shadow:0 4px 16px rgba(37,99,235,.25);}
+        .final-label{font-size:.65rem;font-weight:800;opacity:.85;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;}
+        .final-value{font-size:2.1rem;font-weight:900;}
+
+        .smart-tip{background:rgba(16,185,129,.08);border:1.5px solid var(--success);border-radius:var(--radius-sm);padding:13px 14px;cursor:pointer;display:flex;align-items:flex-start;gap:10px;transition:var(--tr);}
+        .smart-tip:hover{opacity:.85;}
+        .st-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px;}
+        .st-label{font-size:.55rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--success);margin-bottom:3px;}
+        #tip-content{font-size:.8rem;font-weight:600;color:var(--text);line-height:1.4;transition:opacity .3s;}
+
+        /* ── Split Bill ── */
+        .split-card{background:var(--surface);border-radius:var(--radius);padding:20px;width:100%;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:14px;}
+        .split-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;cursor:pointer;user-select:none;}
+        .split-title{font-size:.85rem;font-weight:900;color:var(--text);display:flex;align-items:center;gap:8px;}
+        .split-toggle{font-size:.7rem;color:var(--text-dim);font-weight:700;display:flex;align-items:center;gap:4px;transition:var(--tr);}
+        .split-body{display:none;}
+        .split-body.open{display:block;}
+        .people-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+        .people-btn{width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border);background:var(--input-bg);font-size:1.1rem;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text);transition:var(--tr);flex-shrink:0;}
+        .people-btn:hover{border-color:var(--primary);background:var(--primary-dim);color:var(--primary);}
+        .people-count{font-size:1.4rem;font-weight:900;color:var(--primary);min-width:28px;text-align:center;}
+        .people-label{font-size:.7rem;color:var(--text-sub);font-weight:700;}
+        .split-result{background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:var(--radius-sm);padding:16px;color:white;margin-top:14px;}
+        .split-result-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;margin-top:10px;align-items:center;}
+        .split-stat{text-align:center;}
+        .split-stat-val{font-size:1.3rem;font-weight:900;line-height:1;}
+        .split-stat-lbl{font-size:.58rem;font-weight:700;opacity:.8;text-transform:uppercase;letter-spacing:.6px;margin-top:3px;}
+        .split-divider{width:1px;height:44px;background:rgba(255,255,255,.25);border-radius:1px;}
+        .split-tip-row{display:flex;gap:6px;margin-bottom:14px;}
+        .split-tip-btn{flex:1;padding:9px 4px;border:1.5px solid var(--border);border-radius:10px;background:var(--input-bg);font-size:.75rem;font-weight:800;color:var(--text-sub);cursor:pointer;transition:var(--tr);font-family:inherit;text-align:center;}
+        .split-tip-btn.active{border-color:var(--accent);background:var(--accent-dim);color:var(--accent);}
+
+        .app-footer{margin-top:8px;padding:12px 0;text-align:center;font-size:.7rem;color:var(--text-dim);font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;}
+        .app-footer img{width:16px;border-radius:2px;}
+        .api-note{font-size:.55rem;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;opacity:.6;text-align:center;margin-top:4px;}
+
+        /* ── Weather Card ── */
+        .weather-card{background:var(--surface);border-radius:var(--radius);padding:16px 20px;width:100%;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:14px;position:relative;overflow:hidden;}
+        .weather-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(37,99,235,0.06),rgba(14,165,233,0.06));pointer-events:none;}
+        .wc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+        .wc-label{font-size:.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;}
+        .wc-refresh{background:none;border:none;cursor:pointer;color:var(--text-dim);padding:6px;border-radius:8px;transition:var(--tr);display:flex;align-items:center;justify-content:center;} .wc-refresh svg{transition:transform 0.3s ease;} .wc-refresh:hover{color:var(--primary);background:var(--primary-dim);} .wc-refresh:hover svg{transform:rotate(45deg);} .wc-refresh.spinning svg{animation:spin 0.7s linear infinite;} @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+        .wc-refresh:hover{color:var(--primary);background:var(--primary-dim);}
+        .wc-main{display:flex;align-items:center;gap:14px;}
+        .wc-icon{font-size:2.8rem;line-height:1;flex-shrink:0;}
+        .wc-info{flex:1;}
+        .wc-temp{font-size:2rem;font-weight:900;color:var(--text);line-height:1;}
+        .wc-temp span{font-size:1rem;font-weight:600;color:var(--text-sub);}
+        .wc-city{font-size:.8rem;font-weight:700;color:var(--text-sub);margin-top:2px;}
+        .wc-desc{font-size:.72rem;font-weight:600;color:var(--primary);margin-top:3px;text-transform:capitalize;}
+        .wc-extras{display:flex;gap:16px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
+        .wc-extra{display:flex;align-items:center;gap:5px;font-size:.72rem;font-weight:700;color:var(--text-sub);}
+        .wc-extra span:first-child{font-size:.95rem;}
+        .wc-loading{text-align:center;padding:14px 0;font-size:.8rem;color:var(--text-dim);font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;}
+        .wc-spinner{width:18px;height:18px;border-radius:50%;border:2.5px solid var(--border);border-top-color:var(--primary);animation:wc-spin .75s linear infinite;flex-shrink:0;}
+        @keyframes wc-spin{to{transform:rotate(360deg);}}
+        .wc-error{font-size:.75rem;color:var(--text-dim);font-weight:600;text-align:center;padding:8px 0;}
+
+        .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:2000;padding:20px;backdrop-filter:blur(10px);}
+        .modal.show{display:flex;animation:mIn .25s ease;}
+        @keyframes mIn{from{opacity:0;transform:scale(.92) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+        .modal-content{background:var(--surface);border-radius:28px;padding:28px 22px;width:100%;max-width:360px;box-shadow:var(--shadow-lg);border:1px solid var(--border);text-align:center;}
+        .modal-title{font-size:1.2rem;font-weight:900;color:var(--primary);margin-bottom:20px;}
+        .modal-actions{display:flex;flex-direction:column;gap:10px;margin-top:18px;}
+        .btn{width:100%;padding:15px;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+        .btn:active{transform:scale(.97);}
+        .btn-primary{background:var(--primary);color:white;box-shadow:0 4px 14px rgba(37,99,235,.3);}
+        .btn-ghost{background:transparent;color:var(--text-sub);border:1.5px solid var(--border);}
+
+        .menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:1000;backdrop-filter:blur(4px);}
+        .settings-drawer{position:fixed;top:0;right:-300px;width:290px;height:100%;background:var(--surface);z-index:1001;transition:.3s ease;padding:28px 20px;display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(0,0,0,.15);border-left:1px solid var(--border);overflow-y:auto;}
+        .settings-drawer.open{right:0;}
+        .drawer-header{font-size:1.1rem;font-weight:900;color:var(--primary);margin-bottom:4px;}
+        .drawer-email{font-size:.75rem;color:var(--text-dim);font-weight:600;margin-bottom:20px;}
+        .drawer-section-label{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:8px;display:block;}
+        .lang-selector{display:flex;background:var(--input-bg);border-radius:var(--radius-sm);padding:4px;gap:4px;margin-bottom:14px;border:1.5px solid var(--border);}
+        .lang-opt{flex:1;padding:8px 4px;border-radius:8px;border:none;background:transparent;cursor:pointer;font-size:.75rem;font-weight:800;color:var(--text-sub);font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;transition:var(--tr);}
+        .lang-opt img{width:18px;border-radius:2px;}
+        .lang-opt.active{background:var(--primary);color:white;}
+        .drawer-btn{width:100%;padding:12px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--input-bg);color:var(--text);cursor:pointer;font-weight:700;margin-bottom:8px;font-size:.85rem;text-align:left;font-family:inherit;transition:var(--tr);display:flex;align-items:center;gap:10px;}
+        .drawer-btn:hover{background:var(--surface-2);border-color:var(--primary);}
+        .btn-danger{color:var(--danger)!important;border-color:rgba(239,68,68,.3)!important;}
+    
+        /* ── PIN OFFLINE OVERLAY ── */
+        #pinOfflineOverlay{
+            display:none;position:fixed;inset:0;z-index:99999;
+            background:var(--bg);
+            flex-direction:column;align-items:center;justify-content:center;
+            padding:24px;font-family:'DM Sans',-apple-system,system-ui,sans-serif;
+        }
+        #pinOfflineOverlay.show{display:flex;}
+        .poo-card{
+            background:var(--surface);border-radius:28px;padding:32px 24px;
+            width:100%;max-width:360px;box-shadow:var(--shadow-lg);
+            border:1.5px solid var(--border);text-align:center;
+            animation:pooIn .35s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        @keyframes pooIn{from{opacity:0;transform:scale(.88) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
+        .poo-badge{
+            display:inline-flex;align-items:center;gap:6px;
+            background:rgba(245,158,11,.12);border:1.5px solid rgba(245,158,11,.3);
+            color:#d97706;border-radius:10px;padding:6px 12px;
+            font-size:.72rem;font-weight:800;margin-bottom:20px;letter-spacing:.3px;
+        }
+        .poo-avatar{
+            width:68px;height:68px;border-radius:16px;margin:0 auto 10px;
+            background:var(--input-bg) no-repeat center/cover;
+            border:2.5px solid var(--border);
+        }
+        .poo-name{font-size:1rem;font-weight:900;color:var(--text);margin-bottom:2px;}
+        .poo-email{font-size:.72rem;font-weight:600;color:var(--text-dim);margin-bottom:24px;}
+        .poo-dots{display:flex;gap:14px;justify-content:center;margin-bottom:28px;}
+        .poo-dot{
+            width:16px;height:16px;border-radius:50%;
+            border:2.5px solid var(--border);background:transparent;transition:all .2s;
+        }
+        .poo-dot.filled{background:var(--primary);border-color:var(--primary);}
+        .poo-dot.error{background:var(--danger);border-color:var(--danger);animation:pooShake .4s ease;}
+        @keyframes pooShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+        .poo-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+        .poo-key{
+            padding:0;border:1.5px solid var(--border);border-radius:14px;
+            background:var(--surface);font-family:inherit;font-size:1.3rem;font-weight:700;
+            color:var(--text);cursor:pointer;transition:var(--tr);aspect-ratio:1;
+            display:flex;align-items:center;justify-content:center;
+        }
+        .poo-key:hover{background:var(--input-bg);border-color:var(--primary);}
+        .poo-key:active{transform:scale(.92);background:var(--primary);color:white;border-color:var(--primary);}
+        .poo-key.empty{border:none;background:transparent;pointer-events:none;}
+        .poo-error{font-size:.78rem;font-weight:700;color:var(--danger);min-height:18px;margin-bottom:4px;}
+
+        /* ── Offline Toast ── */
+        #offline-toast{
+            position:fixed;
+            bottom:24px;
+            left:50%;
+            transform:translateX(-50%) translateY(0);
+            z-index:9998;
+            display:flex;
+            align-items:center;
+            gap:10px;
+            padding:11px 16px;
+            background:var(--surface);
+            border:0.5px solid #EF9F27;
+            border-left:3px solid #BA7517;
+            border-radius:14px;
+            box-shadow:0 8px 28px rgba(0,0,0,.18);
+            font-size:.8rem;
+            font-weight:700;
+            color:var(--text);
+            white-space:nowrap;
+            pointer-events:none;
+            opacity:0;
+            transition:opacity .35s ease, transform .35s ease;
+            max-width:calc(100vw - 32px);
+        }
+        #offline-toast.show{opacity:1;pointer-events:auto;}
+        #offline-toast.hide{opacity:0;transform:translateX(-50%) translateY(12px);}
+        #offline-dot{width:8px;height:8px;border-radius:50%;background:#BA7517;flex-shrink:0;}
+        #offline-label{display:flex;flex-direction:column;gap:1px;}
+        #offline-label strong{font-size:.82rem;color:var(--text);}
+        #offline-label span{font-size:.7rem;font-weight:600;color:var(--text-sub);}
+
+    </style>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(() => {});
+            });
+        }
+    </script>
+</head>
+<body>
+
+<!-- Offline toast -->
+<div id="offline-toast" role="status" aria-live="polite">
+    <div id="offline-dot"></div>
+    <div id="offline-label">
+        <strong data-i18n="offline_title">Sin conexión</strong>
+        <span data-i18n="offline_sub">La calculadora, propina y dividir cuenta siguen funcionando normalmente</span>
+    </div>
+</div>
+
+<div class="wrap">
+    
+   <div class="app-header">
+    <div class="logo">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="8" fill="#1e3a8a"/>
+        <rect x="0" y="10" width="32" height="4" fill="#ef4444"/>
+        <rect x="0" y="18" width="32" height="4" fill="#ef4444"/>
+        <polygon points="16,4 18.4,11 26,11 20,15.5 22.4,22.5 16,18 9.6,22.5 12,15.5 6,11 13.6,11" fill="#ffffff"/>
+      </svg>
+      <span>Tax<span style="color:#ef4444;">USA</span></span>
+    </div>
+    </div>
+    <nav class="nav-bar">
+        <a href="compras.html" class="btn-nav"><span class="ni">🛍️</span><span data-i18n="nav_expenses">GASTOS</span></a>
+        <a href="itinerario.html" class="btn-nav"><span class="ni">📍</span><span data-i18n="nav_itinerary">ITINERARIO</span></a>
+        <a href="unidades.html" class="btn-nav"><span class="ni">⚖️</span><span data-i18n="nav_units">UNIDADES</span></a>
+        <a href="tickets.html" class="btn-nav"><span class="ni">📄</span><span data-i18n="nav_tickets">DOCUMENTOS</span></a>
+        <a href="grupo.html"   class="btn-nav"><span class="ni">👥</span><span data-i18n="nav_group">GRUPO</span></a>
+        <a href="rutas.html" class="btn-nav"><span class="ni">🗺️</span><span data-i18n="nav_routes">RUTAS</span></a>
+        <button class="btn-nav-set" id="btnSettings" onclick="toggleSettings()"></button>
+    </nav>
+
+    <div class="countdown-box" onclick="openTripModal()">
+        <span class="edit-hint">✏️</span>
+        <div class="countdown-label" id="tripLabel">Cargando viaje...</div>
+        <div id="timer">0d 0h 0m 0s</div>
+    </div>
+
+    <!-- ── Weather Card ── -->
+    <div class="weather-card" id="weatherCard">
+        <div class="wc-top">
+            <span class="wc-label" id="wc-label">Clima en destino</span>
+            <button class="wc-refresh" onclick="fetchWeather()" title="Actualizar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg></button>
+        </div>
+        <div id="wc-body"><div class="wc-loading"><div class="wc-spinner"></div><span>Obteniendo clima...</span></div></div>
+    </div>
+
+    <div class="card">
+        <div class="input-group">
+            <span class="slabel" data-i18n="label_price">Precio en Etiqueta (USD)</span>
+            <input type="number" id="price" placeholder="0.00" oninput="calculate()" step="0.01" inputmode="decimal">
+        </div>
+
+        <span class="slabel" data-i18n="label_category">Categoría</span>
+        <div class="cat-grid">
+            <button class="cat-btn active" id="btn-general" onclick="setCategory('general')"><span class="cat-icon">🛍️</span><span data-i18n="cat_general">GENERAL</span></button>
+            <button class="cat-btn" id="btn-tech"    onclick="setCategory('tech')"><span class="cat-icon">💻</span><span data-i18n="cat_tech">TECH</span></button>
+            <button class="cat-btn" id="btn-food"    onclick="setCategory('food')"><span class="cat-icon">🍎</span><span data-i18n="cat_food">COMIDA</span></button>
+            <button class="cat-btn" id="btn-med"     onclick="setCategory('med')"><span class="cat-icon">💊</span><span data-i18n="cat_med">MEDICINA</span></button>
+        </div>
+
+        <div class="input-group">
+            <span class="slabel" data-i18n="label_state">Estado</span>
+            <select id="state-select" onchange="loadCities()"></select>
+        </div>
+        <div class="input-group">
+            <span class="slabel" data-i18n="label_city">Ciudad / Condado</span>
+            <select id="city-select" onchange="calculate()"></select>
+        </div>
+        <!-- Fallback manual: ingresar tax a mano si el usuario no encuentra su ciudad -->
+        <div class="input-group" id="manual-tax-group" style="display:none;">
+            <span class="slabel">TAX MANUAL (%)</span>
+            <input type="number" id="manual-tax-input" placeholder="Ej: 8.25" step="0.01" inputmode="decimal" min="0" max="20" oninput="applyManualTax()" style="border-color:var(--warn);">
+            <div style="font-size:.65rem;font-weight:600;color:var(--text-dim);margin-top:4px;">Ingresá el % de tax si no encontrás tu ciudad.</div>
+        </div>
+        <button id="toggle-manual-tax" onclick="toggleManualTax()" style="background:none;border:none;color:var(--text-dim);font-size:.65rem;font-weight:700;cursor:pointer;padding:2px 0 10px;text-decoration:underline;display:block;">✏️ Ingresar tax manualmente</button>
+
+        <div class="result-box">
+            <div class="result-value" id="total-with-tax">USD 0.00</div>
+            <div class="result-detail" id="tax-detail">Tax Aplicado: 0%</div>
+        </div>
+
+        <div class="tip-collapse-header" onclick="toggleTip()">
+            <div class="tip-collapse-title" data-i18n="label_tip">Propina (Tip)</div>
+            <div style="display:flex;align-items:center;gap:8px;">
+                <span class="tip-preview" id="tip-preview-badge">10%</span>
+                <span class="tip-toggle-lbl" id="tip-toggle-lbl">▼ VER</span>
+            </div>
+        </div>
+        <div class="tip-body" id="tip-body">
+            <div class="tip-grid">
+                <button class="tip-btn" id="tip-0"  onclick="setTip(0)">0%<small id="val-tip-0">$0.00</small></button>
+                <button class="tip-btn active" id="tip-10" onclick="setTip(10)">10%<small id="val-tip-10">$0.00</small></button>
+                <button class="tip-btn" id="tip-15" onclick="setTip(15)">15%<small id="val-tip-15">$0.00</small></button>
+                <button class="tip-btn" id="tip-20" onclick="setTip(20)">20%<small id="val-tip-20">$0.00</small></button>
+            </div>
+            <div class="custom-tip">
+                <div class="custom-tip-row">
+                    <span data-i18n="label_other">OTRO</span>
+                    <input type="number" id="custom-tip-input" placeholder="0" oninput="setCustomTip()" inputmode="numeric">
+                    <span>%</span>
+                </div>
+                <span id="val-tip-custom">$0.00</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="final-box">
+        <div class="final-label" data-i18n="label_total">TOTAL FINAL (INC. TIP)</div>
+        <div class="final-value" id="final-total">USD 0.00</div>
+    </div>
+
+    <!-- ── Split Bill ── -->
+    <div class="split-card">
+        <div class="split-header" onclick="toggleSplit()">
+            <div class="split-title">🍽️ <span data-i18n="split_title">Dividir la Cuenta</span></div>
+            <div class="split-toggle" id="split-toggle-lbl">▼ <span data-i18n="split_open">VER</span></div>
+        </div>
+        <div class="split-body" id="split-body">
+
+            <span class="slabel" data-i18n="split_people">Personas</span>
+            <div class="people-row">
+                <button class="people-btn" onclick="changePeople(-1)">−</button>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+                    <div class="people-count" id="people-count">2</div>
+                    <div class="people-label" data-i18n="split_people_lbl">personas</div>
+                </div>
+                <button class="people-btn" onclick="changePeople(1)">+</button>
+            </div>
+
+            <span class="slabel" data-i18n="split_tip_pct">Propina</span>
+            <div class="split-tip-row">
+                <button class="split-tip-btn active" id="stip-0"  onclick="setSplitTip(0)">0%</button>
+                <button class="split-tip-btn" id="stip-10" onclick="setSplitTip(10)">10%</button>
+                <button class="split-tip-btn" id="stip-15" onclick="setSplitTip(15)">15%</button>
+                <button class="split-tip-btn" id="stip-18" onclick="setSplitTip(18)">18%</button>
+                <button class="split-tip-btn" id="stip-20" onclick="setSplitTip(20)">20%</button>
+            </div>
+
+            <span class="slabel" data-i18n="split_base">Base (precio en etiqueta)</span>
+            <div class="input-group">
+                <input type="number" id="split-price" placeholder="0.00" oninput="calcSplit()" step="0.01" inputmode="decimal">
+            </div>
+
+            <div class="split-result" id="split-result" style="display:none;">
+                <div style="font-size:.6rem;font-weight:800;opacity:.85;text-transform:uppercase;letter-spacing:.8px;" data-i18n="split_result_title">Resultado</div>
+                <div class="split-result-grid">
+                    <div class="split-stat">
+                        <div class="split-stat-val" id="split-per-person">$0.00</div>
+                        <div class="split-stat-lbl" data-i18n="split_per_person">por persona</div>
+                    </div>
+                    <div class="split-divider"></div>
+                    <div class="split-stat">
+                        <div class="split-stat-val" id="split-total-full">$0.00</div>
+                        <div class="split-stat-lbl" data-i18n="split_total">total cuenta</div>
+                    </div>
+                </div>
+                <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.2);display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;">
+                    <div>
+                        <div style="font-size:.9rem;font-weight:900;" id="split-subtotal-disp">$0.00</div>
+                        <div style="font-size:.55rem;font-weight:700;opacity:.75;text-transform:uppercase;letter-spacing:.5px;" data-i18n="split_subtotal">subtotal</div>
+                    </div>
+                    <div>
+                        <div style="font-size:.9rem;font-weight:900;" id="split-tax-disp">$0.00</div>
+                        <div style="font-size:.55rem;font-weight:700;opacity:.75;text-transform:uppercase;letter-spacing:.5px;" data-i18n="split_tax">tax</div>
+                    </div>
+                    <div>
+                        <div style="font-size:.9rem;font-weight:900;" id="split-tip-disp">$0.00</div>
+                        <div style="font-size:.55rem;font-weight:700;opacity:.75;text-transform:uppercase;letter-spacing:.5px;" data-i18n="split_tip_amt">propina</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="smart-tip" onclick="clicConsejo()">
+        <span class="st-icon">💡</span>
+        <div>
+            <div class="st-label" data-i18n="tip_label">CONSEJO ECONÓMICO</div>
+            <div id="tip-content">Cargando consejos...</div>
+        </div>
+    </div>
+
+    <div class="app-footer">
+        <span data-i18n="footer_by">Creado por Juan Cruz Bria</span>
+        <img src="https://flagcdn.com/w40/ar.png" alt="Argentina" onerror="this.outerHTML='🇦🇷';">
+    </div>
+    <div class="api-note">Firebase · FlagCDN · reCAPTCHA v3</div>
+
+</div>
+
+<div id="tripModal" class="modal">
+    <div class="modal-content">
+        <h3 class="modal-title" data-i18n="modal_trip_title">Mi Viaje</h3>
+        <div class="input-group">
+            <span class="slabel" data-i18n="modal_city_label">¿A qué ciudad vas?</span>
+            <input type="text" id="input-destination" placeholder="Orlando">
+        </div>
+        <div class="input-group">
+            <span class="slabel" data-i18n="modal_date_label">Fecha del viaje</span>
+            <input type="date" id="input-date">
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-primary" onclick="saveTripSettings()">💾 <span data-i18n="btn_save">GUARDAR</span></button>
+            <button class="btn btn-ghost" onclick="closeTripModal()">❌ <span data-i18n="btn_close">CERRAR</span></button>
+        </div>
+    </div>
+</div>
+
+<div id="menuOverlay" class="menu-overlay" onclick="toggleSettings()"></div>
+<div id="settingsDrawer" class="settings-drawer">
+    <div class="drawer-header"><span data-i18n="settings_title">Ajustes</span></div>
+    <p id="userEmail" class="drawer-email"></p>
+    <span class="drawer-section-label" data-i18n="label_language">Idioma</span>
+    <div class="lang-selector">
+        <button class="lang-opt" id="lang-es" onclick="window.changeLanguage('es')"><img src="https://flagcdn.com/w20/ar.png" alt="" onerror="this.outerHTML='🇦🇷';"> ES</button>
+        <button class="lang-opt" id="lang-en" onclick="window.changeLanguage('en')"><img src="https://flagcdn.com/w20/us.png" alt="" onerror="this.outerHTML='🇺🇸';"> EN</button>
+        <button class="lang-opt" id="lang-pt" onclick="window.changeLanguage('pt')"><img src="https://flagcdn.com/w20/br.png" alt="" onerror="this.outerHTML='🇧🇷';"> PT</button>
+    </div>
+    <button class="drawer-btn" onclick="changeProfile()">👤 <span data-i18n="btn_change_profile">Cambiar Perfil</span></button>
+    <button class="drawer-btn" onclick="toggleDarkMode()">🌓 <span data-i18n="btn_theme">Cambiar Tema</span></button>
+    <button class="drawer-btn" onclick="location.reload()">🔄 <span data-i18n="btn_update">Actualizar App</span></button>
+    <button class="drawer-btn" onclick="doChangeEmail()">📧 <span data-i18n="btn_email">Cambiar Correo</span></button>
+    <button class="drawer-btn" onclick="doChangePassword()">🔑 <span data-i18n="btn_password">Cambiar Contraseña</span></button>
+    <button class="drawer-btn" onclick="gestionarPIN()">🔢 <span data-i18n="btn_pin">Cambiar PIN Offline</span></button>
+    <button class="drawer-btn" onclick="openSwitchApp()">🌍 <span data-i18n="btn_switch_app">Cambiar Aplicación</span></button>
+    <button class="drawer-btn" onclick="doLogout()">🚪 <span data-i18n="btn_logout">Cerrar Sesión</span></button>
+    <div style="margin-top:auto;padding-top:16px;"><button class="drawer-btn btn-danger" onclick="doDeleteAccount()">🗑️ <span data-i18n="btn_delete">Eliminar Cuenta</span></button></div>
+</div>
+
+
+<!-- ══════════ MODAL PIN OFFLINE ══════════ -->
+<div id="pinModalOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:9999;align-items:center;justify-content:center;">
+  <div id="pinModalBox" style="background:var(--surface);border-radius:var(--radius);padding:28px 24px;width:calc(100% - 40px);max-width:360px;box-shadow:var(--shadow-lg);border:1px solid var(--border);position:relative;">
+    <button onclick="closePinModal()" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--text-dim);line-height:1;">✕</button>
+    <div style="font-size:1.4rem;margin-bottom:6px;">🔢</div>
+    <div style="font-size:1rem;font-weight:900;color:var(--text);margin-bottom:4px;" id="pinModalTitle">Cambiar PIN Offline</div>
+    <div style="font-size:.75rem;font-weight:600;color:var(--text-sub);margin-bottom:20px;" id="pinModalSub">Este PIN se usa para acceder sin conexión</div>
+    <div id="pinStep1">
+      <label style="font-size:.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:6px;" id="pinLabel1">PIN Nuevo (4–6 dígitos)</label>
+      <input id="pinInput1" type="password" inputmode="numeric" maxlength="6" pattern="[0-9]*"
+        style="width:100%;padding:14px 16px;background:var(--input-bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:1.5rem;font-weight:900;text-align:center;letter-spacing:6px;outline:none;margin-bottom:12px;transition:all .2s;"
+        oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+        onfocus="this.style.borderColor='var(--primary)';this.style.boxShadow='0 0 0 3px var(--primary-dim)'"
+        onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'"
+        placeholder="••••">
+      <label style="font-size:.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:6px;" id="pinLabel2">Confirmar PIN</label>
+      <input id="pinInput2" type="password" inputmode="numeric" maxlength="6" pattern="[0-9]*"
+        style="width:100%;padding:14px 16px;background:var(--input-bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:1.5rem;font-weight:900;text-align:center;letter-spacing:6px;outline:none;margin-bottom:16px;transition:all .2s;"
+        oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+        onfocus="this.style.borderColor='var(--primary)';this.style.boxShadow='0 0 0 3px var(--primary-dim)'"
+        onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'"
+        placeholder="••••">
+      <div id="pinError" style="display:none;background:rgba(239,68,68,.1);border:1.5px solid var(--danger);border-radius:10px;padding:10px 12px;font-size:.78rem;font-weight:700;color:var(--danger);margin-bottom:12px;text-align:center;"></div>
+      <button onclick="confirmarPIN()" style="width:100%;padding:15px;border:none;border-radius:var(--radius-sm);background:var(--primary);color:white;font-family:inherit;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.3);transition:.2s;" id="pinConfirmBtn">Guardar PIN</button>
+    </div>
+    <div id="pinStep2" style="display:none;text-align:center;padding:8px 0;">
+      <div style="font-size:2.8rem;margin-bottom:10px;">✅</div>
+      <div style="font-size:1rem;font-weight:900;color:var(--success);margin-bottom:6px;" id="pinSuccessMsg">¡PIN actualizado!</div>
+      <div style="font-size:.8rem;font-weight:600;color:var(--text-sub);" id="pinSuccessSub">Podés usarlo para entrar sin conexión</div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser, verifyBeforeUpdateEmail } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+const FB = { apiKey:"AIzaSyA-eeKl8guVDmTa_NpYvkB0O7-RMbPrkP0", authDomain:"viajes-db538.firebaseapp.com", projectId:"viajes-db538", storageBucket:"viajes-db538.firebasestorage.app", messagingSenderId:"237311739178", appId:"1:237311739178:web:333e468b184c0402a98a53" };
+const app = initializeApp(FB);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+let tripData = { destination:'Orlando', date:'2027-01-01' };
+let currentTip = 10;
+let tipIndex = 0;
+let tipTimer;
+// perfilId lido dentro do onAuthStateChanged para evitar el loop
+let perfilId   = null;
+let perfilFoto = null;
+
+const taxData = {
+    "Alabama":[{n:"Birmingham",t:9.29}],"Alaska":[{n:"Sin Tax",t:0}],"Arizona":[{n:"Phoenix",t:8.6}],"Arkansas":[{n:"Little Rock",t:9.51}],
+    "California":[{n:"Los Angeles",t:9.5},{n:"San Francisco",t:8.63},{n:"San Diego",t:7.75}],"Colorado":[{n:"Denver",t:8.81}],
+    "Connecticut":[{n:"Stamford",t:6.35}],"Delaware":[{n:"Sin Tax",t:0}],
+    "Florida":[{n:"Orlando",t:6.50},{n:"Miami",t:7.00},{n:"Tampa",t:8.50},{n:"Kissimmee",t:6.50}],
+    "Georgia":[{n:"Atlanta",t:8.9}],"Hawaii":[{n:"Honolulu",t:4.5}],"Idaho":[{n:"Boise",t:6.0}],"Illinois":[{n:"Chicago",t:10.25}],
+    "Indiana":[{n:"New Castle",t:7.0}],"Iowa":[{n:"Des Moines",t:7.0}],"Kansas":[{n:"Wichita",t:7.5}],"Kentucky":[{n:"Louisville",t:6.0}],
+    "Louisiana":[{n:"New Orleans",t:9.45}],"Maine":[{n:"Portland",t:5.5}],"Maryland":[{n:"Baltimore",t:6.0}],"Massachusetts":[{n:"Boston",t:6.25}],
+    "Michigan":[{n:"Detroit",t:6.0}],"Minnesota":[{n:"Minneapolis",t:8.03}],"Mississippi":[{n:"Jackson",t:7.07}],"Missouri":[{n:"St. Louis",t:8.29}],
+    "Montana":[{n:"Sin Tax",t:0}],"Nebraska":[{n:"Omaha",t:7.0}],"Nevada":[{n:"Las Vegas",t:8.38}],"New Hampshire":[{n:"Sin Tax",t:0}],
+    "New Jersey":[{n:"Jersey City",t:6.63}],"New Mexico":[{n:"Albuquerque",t:7.88}],"New York":[{n:"NYC",t:8.88},{n:"Buffalo",t:8.75}],
+    "North Carolina":[{n:"Charlotte",t:7.25}],"North Dakota":[{n:"Fargo",t:6.85}],"Ohio":[{n:"Columbus",t:7.5}],"Oklahoma":[{n:"Oklahoma City",t:8.63}],
+    "Oregon":[{n:"Sin Tax",t:0}],"Pennsylvania":[{n:"Philadelphia",t:8.0}],"Rhode Island":[{n:"Providence",t:7.0}],"South Carolina":[{n:"Charleston",t:9.0}],
+    "South Dakota":[{n:"Sioux Falls",t:6.4}],"Tennessee":[{n:"Nashville",t:9.25}],"Texas":[{n:"Houston",t:8.25},{n:"Dallas",t:8.25},{n:"Austin",t:8.25}],
+    "Utah":[{n:"Salt Lake City",t:7.75}],"Vermont":[{n:"Burlington",t:7.0}],"Virginia":[{n:"Virginia Beach",t:6.0}],"Washington":[{n:"Seattle",t:10.25}],
+    "West Virginia":[{n:"Bridgeport",t:6.5}],"Wisconsin":[{n:"Milwaukee",t:5.5}],"Wyoming":[{n:"Cheyenne",t:6.0}]
+};
+
+const i18n = {
+    es:{
+        nav_expenses:"GASTOS",nav_itinerary:"ITINERARIO",nav_compare:"COMPARAR",nav_units:"UNIDADES", nav_tickets: "DOCUMENTOS", nav_group: "GRUPO", nav_routes: "RUTAS",
+        label_price:"Precio en Etiqueta (USD)",label_category:"Categoría",
+        cat_general:"GENERAL",cat_tech:"TECH",cat_food:"COMIDA",cat_med:"MEDICINA",
+        label_state:"Estado",label_city:"Ciudad / Condado",tax_applied:"Tax Aplicado",
+        label_tip:"Propina (Tip)",label_total:"TOTAL FINAL (INC. TIP)",label_other:"OTRO",
+        settings_title:"Ajustes",label_language:"Idioma", btn_pin: "Cambiar PIN Offline",
+        btn_change_profile:"Cambiar Perfil",btn_theme:"Cambiar Tema",btn_update:"Actualizar App",
+        btn_email:"Cambiar Correo",btn_password:"Cambiar Contraseña",btn_switch_app:"Cambiar Aplicación",btn_logout:"Cerrar Sesión",btn_delete:"Eliminar Cuenta",
+        modal_trip_title:"Mi Viaje",modal_city_label:"¿A qué ciudad vas?",modal_date_label:"Fecha del viaje",
+        btn_save:"GUARDAR",btn_close:"CERRAR",trip_prefix:"Faltan para",
+        footer_by:"Creado por Juan Cruz Bria",tip_label:"CONSEJO ECONÓMICO",
+        d:"d",h:"h",m:"m",s:"s",
+        alert_upcoming: "🚀 El Comparador de Precios estará disponible próximamente.",
+        split_title:"Dividir la Cuenta",split_open:"VER",split_close:"OCULTAR",
+        split_people:"Personas",split_people_lbl:"personas",split_tip_pct:"Propina",
+        split_base:"Base (precio en etiqueta)",split_result_title:"Resultado",
+        split_per_person:"por persona",split_total:"total cuenta",
+        split_subtotal:"subtotal",split_tax:"tax",split_tip_amt:"propina",
+        offline_title:"Sin conexión",
+        offline_sub:"La calculadora, propina y dividir cuenta siguen funcionando normalmente"
+    },
+    en:{
+        nav_expenses:"EXPENSES",nav_itinerary:"ITINERARY",nav_compare:"COMPARE",nav_units:"UNITS", nav_tickets: "DOCUMENTS", nav_group: "GROUP", nav_routes: "ROUTES",
+        label_price:"Pre-tax Price (USD)",label_category:"Category",
+        cat_general:"GENERAL",cat_tech:"TECH",cat_food:"FOOD",cat_med:"MEDICINE",
+        label_state:"State",label_city:"City / County",tax_applied:"Applied Tax",
+        label_tip:"Tip",label_total:"FINAL TOTAL (TIP INC.)",label_other:"OTHER",
+        settings_title:"Settings",label_language:"Language", btn_pin: "Change PIN Offline",
+        btn_change_profile:"Change Profile",btn_theme:"Toggle Theme",btn_update:"Update App",
+        btn_email:"Change Email",btn_password:"Change Password",btn_switch_app:"Switch App",btn_logout:"Sign Out",btn_delete:"Delete Account",
+        modal_trip_title:"My Trip",modal_city_label:"Where are you going?",modal_date_label:"Trip Date",
+        btn_save:"SAVE",btn_close:"CLOSE",trip_prefix:"Days until",
+        footer_by:"Created by Juan Cruz Bria",tip_label:"ECONOMIC TIP",
+        d:"d",h:"h",m:"m",s:"s",
+        alert_upcoming: "🚀 The Price Comparator will be available soon.",
+        split_title:"Split the Bill",split_open:"SHOW",split_close:"HIDE",
+        split_people:"People",split_people_lbl:"people",split_tip_pct:"Tip",
+        split_base:"Base (pre-tax price)",split_result_title:"Result",
+        split_per_person:"per person",split_total:"total bill",
+        split_subtotal:"subtotal",split_tax:"tax",split_tip_amt:"tip",
+        offline_title:"No connection",
+        offline_sub:"Calculator, tip and split bill work normally without internet"
+    },
+    pt:{
+        nav_expenses:"GASTOS",nav_itinerary:"ITINERÁRIO",nav_compare:"COMPARAR",nav_units:"UNIDADES", nav_tickets: "DOCUMENTOS", nav_group: "GRUPO", nav_routes: "ROTAS",
+        label_price:"Preço na Etiqueta (USD)",label_category:"Categoria",
+        cat_general:"GERAL",cat_tech:"TECH",cat_food:"COMIDA",cat_med:"MEDICINA",
+        label_state:"Estado",label_city:"Cidade / Condado",tax_applied:"Tax Aplicado",
+        label_tip:"Gorjeta (Tip)",label_total:"TOTAL FINAL (COM GORJETA)",label_other:"OUTRO",
+        settings_title:"Configurações",label_language:"Idioma", btn_pin: "Alterar PIN Offline",
+        btn_change_profile:"Trocar Perfil",btn_theme:"Alternar Tema",btn_update:"Atualizar App",
+        btn_email:"Alterar E-mail",btn_password:"Alterar Senha",btn_switch_app:"Trocar Aplicativo",btn_logout:"Sair",btn_delete:"Excluir Conta",
+        modal_trip_title:"Minha Viagem",modal_city_label:"Para qual cidade você vai?",modal_date_label:"Data da viagem",
+        btn_save:"SALVAR",btn_close:"FECHAR",trip_prefix:"Faltam para",
+        footer_by:"Criado por Juan Cruz Bria",tip_label:"DICA ECONÔMICA",
+        d:"d",h:"h",m:"m",s:"s",
+        alert_upcoming: "🚀 O Comparador de Preços estará disponível em breve.",
+        split_title:"Dividir a Conta",split_open:"VER",split_close:"OCULTAR",
+        split_people:"Pessoas",split_people_lbl:"pessoas",split_tip_pct:"Gorjeta",
+        split_base:"Base (preço na etiqueta)",split_result_title:"Resultado",
+        split_per_person:"por pessoa",split_total:"total conta",
+        split_subtotal:"subtotal",split_tax:"tax",split_tip_amt:"gorjeta",
+        offline_title:"Sem conexão",
+        offline_sub:"Calculadora, gorjeta e dividir conta funcionam normalmente sem internet"
+    }
+};
+
+const econTips = {
+    es:["Delaware y Oregon tienen 0% de Sales Tax. Ideal para Apple o lujo.","En NYC, ropa y calzado de menos de $110 están exentos de tax municipal.","New Jersey tiene 0% de tax en ropa. Ideal si vas al Jersey Gardens desde NY.","En Miami (7%), los outlets como Sawgrass rinden más con su libro de cupones.","Texas ofrece 'Tax Free Shopping' para turistas extranjeros en locales adheridos.","Recuerda: en EE.UU. el precio de etiqueta NUNCA incluye el impuesto de venta.","Minnesota y Pennsylvania no cobran impuestos en la mayoría de la ropa.","Las propinas se calculan sobre el valor total CON impuestos en muchos tickets.","Si comprás online y retirás en tienda, pagás el tax de esa ubicación.","Florida suspende el Sales Tax en algunos fines de semana del año escolar."],
+    en:["Delaware and Oregon have 0% Sales Tax. Ideal for Apple or luxury items.","In NYC, clothing under $110 is exempt from local sales tax.","New Jersey has 0% tax on clothing. Great if you visit Jersey Gardens from NY.","In Miami (7%), outlets like Sawgrass are better with their coupon book.","Texas offers Tax Free Shopping for foreign tourists at participating stores.","Remember: in the US, the price tag NEVER includes sales tax.","Minnesota and Pennsylvania don't charge tax on most clothing.","Tips are calculated on the total WITH taxes on many receipts.","If you order online and pick up in store, you pay that location's tax.","Florida suspends Sales Tax some weekends during back-to-school season."],
+    pt:["Delaware e Oregon têm 0% de Sales Tax. Ótimo para Apple ou artigos de luxo.","Em NYC, roupas abaixo de US$110 são isentas de imposto municipal.","New Jersey tem 0% de imposto em roupas. Ideal perto de NY no Jersey Gardens.","Em Miami (7%), outlets como Sawgrass rendem mais com o cupom book deles.","Texas oferece Tax Free Shopping para turistas estrangeiros em lojas participantes.","Lembre: nos EUA a etiqueta NUNCA inclui o imposto de venda.","Minnesota e Pennsylvania não cobram imposto na maioria das roupas.","A gorjeta é calculada sobre o total COM impostos em muitos tickets.","Se comprar online e retirar na loja, paga o tax daquela localização.","Florida suspende o Sales Tax em alguns fins de semana do ano letivo."]
+};
+
+window.cambiarConsejo = () => {
+    const lang = localStorage.getItem('appLang') || 'es';
+    const el = document.getElementById('tip-content');
+    if (!el) return;
+    el.style.opacity = 0;
+    setTimeout(() => {
+        tipIndex = (tipIndex + 1) % econTips[lang].length;
+        el.innerText = econTips[lang][tipIndex];
+        el.style.opacity = 1;
+    }, 300);
+};
+window.clicConsejo = () => {
+    clearInterval(tipTimer);
+    window.cambiarConsejo();
+    tipTimer = setInterval(window.cambiarConsejo, 8000);
+};
+
+window.changeLanguage = (lang) => {
+    localStorage.setItem('appLang', lang);
+     document.documentElement.setAttribute('lang', lang); 
+    document.querySelectorAll('.lang-opt').forEach(o => o.classList.remove('active'));
+    document.getElementById('lang-' + lang)?.classList.add('active');
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.getAttribute('data-i18n');
+        if (i18n[lang]?.[k]) el.innerText = i18n[lang][k];
+    });
+    const tc = document.getElementById('tip-content');
+    if (tc) tc.innerText = econTips[lang][tipIndex];
+    calculate();
+    updateTripUI();
+    document.title = lang === 'en' ? 'TaxUSA — Home' : lang === 'pt' ? 'TaxUSA — Início' : 'TaxUSA — Inicio';
+    if (window.taxieUpdateLang) window.taxieUpdateLang(lang);
+
+    // Retraducir label "Clima en destino" sin recargar clima (usar caché)
+    const lbl = document.getElementById('wc-label');
+    if (lbl) {
+        lbl.textContent = lang === 'en' ? 'Weather at destination' : lang === 'pt' ? 'Clima no destino' : 'Clima en destino';
+    }
+    // Retraducir descripción del clima si hay datos en caché
+    if (weatherCache && weatherCache.data) {
+        renderWeather(weatherCache.data, weatherCache.city, lang);
+    }
+
+    // Retraducir toggle del tip (SHOW/HIDE)
+    const tipToggleLbl = document.getElementById('tip-toggle-lbl');
+    if (tipToggleLbl) {
+        if (tipOpen) {
+            tipToggleLbl.textContent = lang === 'en' ? '▲ HIDE' : '▲ OCULTAR';
+        } else {
+            tipToggleLbl.textContent = lang === 'en' ? '▼ SHOW' : lang === 'pt' ? '▼ VER' : '▼ VER';
+        }
+    }
+
+    // Retraducir toggle del split (VER/OCULTAR/SHOW/HIDE)
+    const splitToggleLbl = document.getElementById('split-toggle-lbl');
+    if (splitToggleLbl) {
+        if (splitOpen) {
+            splitToggleLbl.innerHTML = '▲ <span>' + (i18n[lang].split_close || 'OCULTAR') + '</span>';
+        } else {
+            splitToggleLbl.innerHTML = '▼ <span>' + (i18n[lang].split_open || 'VER') + '</span>';
+        }
+    }
+};
+
+window.setCategory = (cat) => {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('btn-' + cat).classList.add('active');
+    calculate();
+};
+window.setTip = (pct) => {
+    currentTip = pct;
+    document.querySelectorAll('.tip-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tip-' + pct).classList.add('active');
+    document.getElementById('custom-tip-input').value = '';
+    calculate();
+    updateTipBadge();
+};
+window.setCustomTip = () => {
+    const v = parseFloat(document.getElementById('custom-tip-input').value);
+    currentTip = isNaN(v) ? 0 : v;
+    if (!isNaN(v)) document.querySelectorAll('.tip-btn').forEach(b => b.classList.remove('active'));
+    calculate();
+    updateTipBadge();
+};
+// ── Tax manual fallback ──────────────────────────────────────────────────
+let manualTaxActive = false;
+
+window.calculate = () => {
+    const price = parseFloat(document.getElementById('price').value) || 0;
+    let tax;
+    if (manualTaxActive) {
+        const manVal = parseFloat(document.getElementById('manual-tax-input')?.value);
+        tax = isNaN(manVal) ? 0 : manVal;
+    } else {
+        tax = parseFloat(document.getElementById('city-select').value) || 0;
+    }
+    const cat = document.querySelector('.cat-btn.active');
+    if (cat && (cat.id === 'btn-med' || cat.id === 'btn-food')) tax = 0;
+    const subtotal = price * (1 + tax / 100);
+    const fmt = n => n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+    [0,10,15,20].forEach(p => { const el = document.getElementById(`val-tip-${p}`); if(el) el.innerText = `$${fmt(subtotal * p/100)}`; });
+    const cv = parseFloat(document.getElementById('custom-tip-input').value) || 0;
+    document.getElementById('val-tip-custom').innerText = `$${fmt(subtotal * cv/100)}`;
+    document.getElementById('total-with-tax').innerText = `USD ${fmt(subtotal)}`;
+    const lang = localStorage.getItem('appLang') || 'es';
+    document.getElementById('tax-detail').innerText = `${i18n[lang].tax_applied}: ${tax}%`;
+    document.getElementById('final-total').innerText = `USD ${fmt(subtotal * (1 + currentTip/100))}`;
+};
+window.toggleManualTax = () => {
+    manualTaxActive = !manualTaxActive;
+    const lang = localStorage.getItem('appLang') || 'es';
+    const grp = document.getElementById('manual-tax-group');
+    const btn = document.getElementById('toggle-manual-tax');
+    const stateG = document.getElementById('state-select')?.closest('.input-group');
+    const cityG  = document.getElementById('city-select')?.closest('.input-group');
+    const lblManual = document.querySelector('#manual-tax-group .slabel');
+    const lblHint   = document.querySelector('#manual-tax-group div');
+    if (manualTaxActive) {
+        if (grp) grp.style.display = 'block';
+        if (btn) btn.textContent = lang==='en' ? '✕ Use state/city selector' : '✕ Usar selector de estado/ciudad';
+        if (lblManual) lblManual.textContent = lang==='en' ? 'MANUAL TAX (%)' : 'TAX MANUAL (%)';
+        if (lblHint) lblHint.textContent = lang==='en' ? 'Enter the tax % if your city is not listed.' : 'Ingresá el % de tax si no encontrás tu ciudad.';
+        if (stateG) stateG.style.opacity = '.4';
+        if (cityG)  cityG.style.opacity  = '.4';
+        document.getElementById('manual-tax-input')?.focus();
+    } else {
+        if (grp) grp.style.display = 'none';
+        if (btn) btn.textContent = lang==='en' ? '✏️ Enter tax manually' : '✏️ Ingresar tax manualmente';
+        if (stateG) stateG.style.opacity = '1';
+        if (cityG)  cityG.style.opacity  = '1';
+        const inp = document.getElementById('manual-tax-input');
+        if (inp) inp.value = '';
+        calculate();
+    }
+};
+window.applyManualTax = () => {
+    calculate();
+};
+
+window.loadCities = () => {
+    const state = document.getElementById('state-select').value;
+    const cs = document.getElementById('city-select');
+    cs.innerHTML = '';
+    (taxData[state] || []).forEach(c => { const o = document.createElement('option'); o.value = c.t; o.text = `${c.n} (${c.t}%)`; cs.appendChild(o); });
+    calculate();
+};
+
+window.openTripModal = () => document.getElementById('tripModal').classList.add('show');
+window.closeTripModal = () => document.getElementById('tripModal').classList.remove('show');
+window.saveTripSettings = async () => {
+    const dest = document.getElementById('input-destination').value || 'Orlando';
+    const date = document.getElementById('input-date').value || '2027-01-01';
+    tripData = { destination: dest, date };
+    // Cache locally for offline use
+    try { localStorage.setItem('taxusa_cached_trip', JSON.stringify(tripData)); } catch(e) {}
+    if (currentUser && perfilId) {
+        try { await setDoc(doc(db, 'usuarios', currentUser.uid, 'perfiles', perfilId), { trip: tripData }, { merge: true }); }
+        catch(e) { console.error(e); }
+    }
+    updateTripUI();
+    fetchWeather(dest);
+    autoSelectTaxByCity(dest);
+    closeTripModal();
+};
+function updateTripUI() {
+    const lang = localStorage.getItem('appLang') || 'es';
+    document.getElementById('tripLabel').innerText = `${i18n[lang].trip_prefix} ${tripData.destination} ✈️`;
+    document.getElementById('input-destination').value = tripData.destination;
+    document.getElementById('input-date').value = tripData.date;
+}
+function updateCountdown() {
+    if (!tripData.date) return;
+    const diff = new Date(tripData.date + 'T00:00:00').getTime() - Date.now();
+    const lang = localStorage.getItem('appLang') || 'es';
+    const t = i18n[lang];
+    if (diff <= 0) { document.getElementById('timer').innerText = lang === 'es' ? '¡Buen viaje! ✈️' : 'Safe travels! ✈️'; return; }
+    const d=Math.floor(diff/864e5), h=Math.floor((diff%864e5)/36e5), m=Math.floor((diff%36e5)/6e4), s=Math.floor((diff%6e4)/1e3);
+    document.getElementById('timer').innerText = `${d}${t.d} ${h}${t.h} ${m}${t.m} ${s}${t.s}`;
+}
+
+window.toggleSettings = () => {
+    const d = document.getElementById('settingsDrawer');
+    const open = d.classList.toggle('open');
+    document.getElementById('menuOverlay').style.display = open ? 'block' : 'none';
+};
+window.toggleDarkMode = () => {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const next = isDark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+};
+window.changeProfile = () => { localStorage.removeItem('perfilActivoId'); window.location.href = 'profiles.html'; };
+window.gestionarPIN = () => {
+    document.getElementById('settingsDrawer').classList.remove('open');
+    document.getElementById('menuOverlay').style.display = 'none';
+    const lang = localStorage.getItem('appLang') || 'es';
+    const texts = {
+        es: { title:'Cambiar PIN Offline', sub:'Este PIN se usa para acceder sin conexión', l1:'PIN Nuevo (4–6 dígitos)', l2:'Confirmar PIN', btn:'Guardar PIN', ok:'¡PIN actualizado!', okSub:'Podés usarlo para entrar sin conexión' },
+        en: { title:'Change Offline PIN', sub:'This PIN is used to access without internet', l1:'New PIN (4–6 digits)', l2:'Confirm PIN', btn:'Save PIN', ok:'PIN updated!', okSub:'You can use it to sign in offline' },
+        pt: { title:'Alterar PIN Offline', sub:'Este PIN é usado para acessar sem internet', l1:'Novo PIN (4–6 dígitos)', l2:'Confirmar PIN', btn:'Salvar PIN', ok:'PIN atualizado!', okSub:'Você pode usá-lo para entrar sem conexão' }
+    };
+    const t = texts[lang] || texts.es;
+    document.getElementById('pinModalTitle').textContent = t.title;
+    document.getElementById('pinModalSub').textContent = t.sub;
+    document.getElementById('pinLabel1').textContent = t.l1;
+    document.getElementById('pinLabel2').textContent = t.l2;
+    document.getElementById('pinConfirmBtn').textContent = t.btn;
+    document.getElementById('pinSuccessMsg').textContent = t.ok;
+    document.getElementById('pinSuccessSub').textContent = t.okSub;
+    document.getElementById('pinInput1').value = '';
+    document.getElementById('pinInput2').value = '';
+    document.getElementById('pinError').style.display = 'none';
+    document.getElementById('pinStep1').style.display = 'block';
+    document.getElementById('pinStep2').style.display = 'none';
+    const overlay = document.getElementById('pinModalOverlay');
+    overlay.style.display = 'flex';
+    setTimeout(() => document.getElementById('pinInput1').focus(), 100);
+};
+window.closePinModal = () => {
+    document.getElementById('pinModalOverlay').style.display = 'none';
+};
+window.confirmarPIN = async () => {
+    const lang = localStorage.getItem('appLang') || 'es';
+    const errMsgs = { es:'Los PINs no coinciden o son muy cortos (mín. 4 dígitos).', en:"PINs don't match or are too short (min. 4 digits).", pt:'Os PINs não coincidem ou são curtos demais (mín. 4 dígitos).' };
+    const p1 = document.getElementById('pinInput1').value.trim();
+    const p2 = document.getElementById('pinInput2').value.trim();
+    const errEl = document.getElementById('pinError');
+    if (p1.length < 4 || p1 !== p2) {
+        errEl.textContent = errMsgs[lang] || errMsgs.es;
+        errEl.style.display = 'block';
+        document.getElementById('pinInput1').style.borderColor = 'var(--danger)';
+        document.getElementById('pinInput2').style.borderColor = 'var(--danger)';
+        return;
+    }
+    errEl.style.display = 'none';
+    // FIX: guardar como SHA-256 en taxusa_pin_hash (misma clave que usa el overlay offline)
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(p1));
+    const hashHex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+    localStorage.setItem('taxusa_pin_hash', hashHex);
+    localStorage.removeItem('taxusa_offline_pin'); // limpiar clave vieja si existía
+    document.getElementById('pinStep1').style.display = 'none';
+    document.getElementById('pinStep2').style.display = 'block';
+    setTimeout(() => window.closePinModal(), 2200);
+};
+window.doLogout = () => signOut(auth).then(() => window.location.replace('login.html'));
+window.doChangeEmail = async () => {
+    if (!currentUser) return;
+    const e = prompt('Nuevo correo:');
+    if (e) { try { await verifyBeforeUpdateEmail(currentUser, e); alert('Verificación enviada.'); } catch(er) { alert(er.message); } }
+};
+window.doChangePassword = async () => {
+    if (!currentUser) return;
+    try { await sendPasswordResetEmail(auth, currentUser.email); alert('Correo de recuperación enviado.'); } catch(er) { alert(er.message); }
+};
+window.doDeleteAccount = async () => {
+    if (!confirm('¿Eliminar cuenta permanentemente?')) return;
+    try { await deleteDoc(doc(db, 'usuarios', currentUser.uid)); await deleteUser(currentUser); window.location.replace('login.html'); }
+    catch(e) { alert('Reautenticación requerida.'); }
+};
+
+onAuthStateChanged(auth, async (user) => {
+    // ── OFFLINE: Firebase devuelve null si no puede validar token online.
+    // Si hay un PIN guardado y la sesión fue desbloqueada, permitir continuar. ──
+    if (!user) {
+        const pinHash   = localStorage.getItem('taxusa_pin_hash');
+        const pinEmail  = localStorage.getItem('taxusa_offline_email');
+        const unlocked  = sessionStorage.getItem('offline_unlocked');
+        // Si hay PIN configurado: el overlay offline se encargará de pedirlo (o ya fue desbloqueado)
+        if (pinHash && pinEmail) {
+            // Cargar datos cacheados para mostrar la UI
+            const perfilNombre = localStorage.getItem('perfilActivoNombre');
+            const emailEl = document.getElementById('userEmail');
+            if (emailEl) emailEl.innerText = perfilNombre || pinEmail;
+            const foto = localStorage.getItem('perfilActivoFoto') || '';
+            if (foto) { const btn = document.getElementById('btnSettings'); if(btn){ btn.style.backgroundImage = `url('${foto}')`; btn.innerText = ''; } }
+            // Leer datos del viaje cacheados en localStorage
+            try {
+                const cachedTrip = localStorage.getItem('taxusa_cached_trip');
+                if (cachedTrip) tripData = JSON.parse(cachedTrip);
+            } catch(e) {}
+            updateTripUI();
+            // Auto-seleccionar estado/ciudad desde el destino cacheado (datos offline, sin API)
+            autoSelectTaxByCity(tripData.destination);
+            // Mostrar clima cacheado si existe, u ocultar el widget
+            if (weatherCache && weatherCache.data) {
+                const lang = localStorage.getItem('appLang') || 'es';
+                renderWeather(weatherCache.data, weatherCache.city, lang);
+            } else {
+                const wc = document.getElementById('wc-body');
+                if (wc) wc.innerHTML = '<div class="wc-error">⚠️ Sin conexión — clima no disponible</div>';
+            }
+            return;
+        }
+        // Sin PIN ni sesión cacheada → redirigir a login
+        window.location.replace('login.html');
+        return;
+    }
+
+    currentUser = user;
+    // Leer perfilId y perfilFoto AQUÍ (no al iniciar el módulo) para evitar el loop de redirección
+    perfilId   = localStorage.getItem('perfilActivoId');
+    perfilFoto = localStorage.getItem('perfilActivoFoto');
+    const perfilNombre = localStorage.getItem('perfilActivoNombre');
+    document.getElementById('userEmail').innerText = perfilNombre || user.email;
+    if (!perfilId) { window.location.replace('profiles.html'); return; }
+
+    const img = perfilFoto || user.photoURL;
+    if (img) { const btn = document.getElementById('btnSettings'); btn.style.backgroundImage = `url('${img}')`; btn.innerText = ''; }
+
+    try {
+        const snap = await getDoc(doc(db, 'usuarios', user.uid, 'perfiles', perfilId));
+        if (snap.exists() && snap.data().trip) {
+            tripData = snap.data().trip;
+            // Cache for offline use
+            try { localStorage.setItem('taxusa_cached_trip', JSON.stringify(tripData)); } catch(e) {}
+        }
+        autoSelectTaxByCity(tripData.destination);
+    } catch(e) { console.error(e); }
+
+    updateTripUI();
+    fetchWeather(tripData.destination);
+});
+
+// ── Weather ────────
+const WMO = {
+    0:'Despejado',1:'Mayormente despejado',2:'Parcialmente nublado',3:'Nublado',
+    45:'Niebla',48:'Niebla con escarcha',
+    51:'Llovizna leve',53:'Llovizna',55:'Llovizna intensa',
+    61:'Lluvia leve',63:'Lluvia',65:'Lluvia intensa',
+    71:'Nieve leve',73:'Nieve',75:'Nieve intensa',
+    80:'Chubascos leves',81:'Chubascos',82:'Chubascos fuertes',
+    95:'Tormenta',96:'Tormenta con granizo',99:'Tormenta fuerte'
+};
+const WMO_EN = {
+    0:'Clear sky',1:'Mostly clear',2:'Partly cloudy',3:'Overcast',
+    45:'Foggy',48:'Icy fog',
+    51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',
+    61:'Light rain',63:'Rain',65:'Heavy rain',
+    71:'Light snow',73:'Snow',75:'Heavy snow',
+    80:'Light showers',81:'Showers',82:'Heavy showers',
+    95:'Thunderstorm',96:'Hail storm',99:'Severe storm'
+};
+const WMO_PT = {
+    0:'Céu limpo',1:'Principalmente limpo',2:'Parcialmente nublado',3:'Nublado',
+    45:'Neblina',48:'Neblina com geada',
+    51:'Garoa leve',53:'Garoa',55:'Garoa intensa',
+    61:'Chuva fraca',63:'Chuva',65:'Chuva forte',
+    71:'Neve fraca',73:'Neve',75:'Neve intensa',
+    80:'Pancadas leves',81:'Pancadas',82:'Pancadas fortes',
+    95:'Trovoada',96:'Trovoada com granizo',99:'Tempestade'
+};
+const WI = {
+    0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',
+    51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',
+    71:'🌨️',73:'❄️',75:'❄️',80:'🌦️',81:'🌧️',82:'⛈️',
+    95:'⛈️',96:'⛈️',99:'🌪️'
+};
+const WIND_DIR = ['N','NE','E','SE','S','SO','O','NO'];
+
+let weatherCache = { city: '', data: null, ts: 0 };
+
+window.fetchWeather = async function(city) {
+    const lang = localStorage.getItem('appLang') || 'es';
+    city = city || tripData.destination || 'Orlando';
+    const body = document.getElementById('wc-body');
+    const lbl  = document.getElementById('wc-label');
+    const refreshBtn = document.querySelector('.wc-refresh');
+    if (refreshBtn) refreshBtn.classList.add('spinning');
+    if (!body) return;
+
+    // Cache 30 min per same city
+    const now = Date.now();
+    if (weatherCache.city === city && weatherCache.data && (now - weatherCache.ts) < 1800000) {
+        renderWeather(weatherCache.data, city, lang);
+        if (refreshBtn) refreshBtn.classList.remove('spinning');
+        return;
+    }
+
+    // Si no hay conexión, mostrar cache o mensaje sin spinner infinito
+    if (!navigator.onLine) {
+        if (refreshBtn) refreshBtn.classList.remove('spinning');
+        if (weatherCache && weatherCache.data) {
+            renderWeather(weatherCache.data, weatherCache.city, lang);
+        } else {
+            body.innerHTML = '<div class="wc-error">📵 Sin conexión — clima no disponible</div>';
+        }
+        return;
+    }
+
+    body.innerHTML = '<div class="wc-loading"><div class="wc-spinner"></div><span>' + (lang==='en'?'Fetching weather...':lang==='pt'?'Obtendo clima...':'Obteniendo clima...') + '</span></div>';
+
+    try {
+        
+        const geoRes = await fetch('https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(city) + '&count=1&language=' + (lang==='pt'?'pt':'es') + '&format=json');
+        const geoData = await geoRes.json();
+        if (!geoData.results || !geoData.results.length) throw new Error('Ciudad no encontrada');
+
+        const { latitude, longitude, name, country_code } = geoData.results[0];
+        const displayName = name + (country_code ? ', ' + country_code.toUpperCase() : '');
+
+      
+        const wRes = await fetch(
+            'https://api.open-meteo.com/v1/forecast?latitude=' + latitude + '&longitude=' + longitude +
+            '&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m,wind_direction_10m' +
+            '&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto'
+        );
+        const wData = await wRes.json();
+        const c = wData.current;
+
+        const result = {
+            tempF: Math.round(c.temperature_2m),
+            tempC: Math.round((c.temperature_2m - 32) * 5/9),
+            feelsF: Math.round(c.apparent_temperature),
+            feelsC: Math.round((c.apparent_temperature - 32) * 5/9),
+            humidity: c.relative_humidity_2m,
+            wind: Math.round(c.wind_speed_10m),
+            windDir: WIND_DIR[Math.round(c.wind_direction_10m / 45) % 8],
+            code: c.weather_code,
+            displayName
+        };
+
+        weatherCache = { city, data: result, ts: Date.now() };
+        renderWeather(result, city, lang);
+
+    } catch(e) {
+        if (refreshBtn) refreshBtn.classList.remove('spinning');
+        const errTxt = lang==='en' ? 'Could not load weather. Tap 🔄 to retry.' : lang==='pt' ? 'Não foi possível carregar o clima. Toque 🔄 para tentar.' : 'No se pudo cargar el clima. Tocá 🔄 para reintentar.';
+        body.innerHTML = '<div class="wc-error">⚠️ ' + errTxt + '</div>';
+    }
+};
+
+function renderWeather(r, city, lang) {
+    const body = document.getElementById('wc-body');
+    const lbl  = document.getElementById('wc-label');
+    if (!body) return;
+
+    const wmoMap = lang==='en' ? WMO_EN : lang==='pt' ? WMO_PT : WMO;
+    const desc = wmoMap[r.code] || wmoMap[0];
+    const icon = WI[r.code] || '🌡️';
+
+    const feelsLbl = lang==='en' ? 'Feels like' : lang==='pt' ? 'Sensação' : 'Sensación';
+    const humLbl   = lang==='en' ? 'Humidity'   : lang==='pt' ? 'Umidade'  : 'Humedad';
+    const windLbl  = lang==='en' ? 'Wind'        : lang==='pt' ? 'Vento'    : 'Viento';
+    const lblTxt   = lang==='en' ? 'Weather at destination' : lang==='pt' ? 'Clima no destino' : 'Clima en destino';
+
+    if (lbl) lbl.textContent = lblTxt;
+
+    body.innerHTML =
+        '<div class="wc-main">' +
+            '<div class="wc-icon">' + icon + '</div>' +
+            '<div class="wc-info">' +
+                '<div class="wc-temp">' + r.tempF + '°<span>F / ' + r.tempC + '°C</span></div>' +
+                '<div class="wc-city">' + r.displayName + '</div>' +
+                '<div class="wc-desc">' + desc + '</div>' +
+            '</div>' +
+        '</div>' +
+        '<div class="wc-extras">' +
+            '<div class="wc-extra"><span>🌡️</span><span>' + feelsLbl + ': ' + r.feelsF + '°F</span></div>' +
+            '<div class="wc-extra"><span>💧</span><span>' + humLbl + ': ' + r.humidity + '%</span></div>' +
+            '<div class="wc-extra"><span>💨</span><span>' + windLbl + ': ' + r.wind + ' mph ' + r.windDir + '</span></div>' +
+        '</div>';
+}
+
+// ── Split Bill ───
+let splitPeople = 2;
+let splitTipPct = 0;
+let splitOpen   = false;
+
+window.toggleSplit = () => {
+    splitOpen = !splitOpen;
+    const body = document.getElementById('split-body');
+    const lbl  = document.getElementById('split-toggle-lbl');
+    const lang = localStorage.getItem('appLang') || 'es';
+    body.classList.toggle('open', splitOpen);
+    if (lbl) lbl.innerHTML = splitOpen
+        ? '▲ <span>' + (i18n[lang].split_close || 'OCULTAR') + '</span>'
+        : '▼ <span>' + (i18n[lang].split_open  || 'VER') + '</span>';
+};
+
+window.changePeople = (delta) => {
+    splitPeople = Math.max(1, Math.min(20, splitPeople + delta));
+    const el = document.getElementById('people-count');
+    if (el) el.textContent = splitPeople;
+    calcSplit();
+};
+
+window.setSplitTip = (pct) => {
+    splitTipPct = pct;
+    document.querySelectorAll('.split-tip-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.getElementById('stip-' + pct);
+    if (btn) btn.classList.add('active');
+    calcSplit();
+};
+
+window.calcSplit = () => {
+    const raw   = parseFloat(document.getElementById('split-price')?.value) || 0;
+    const res   = document.getElementById('split-result');
+    if (!res) return;
+    if (raw <= 0) { res.style.display = 'none'; return; }
+
+    // Use the currently selected tax from the main calculator
+    const taxPct = parseFloat(document.getElementById('city-select')?.value) || 0;
+    const cat    = document.querySelector('.cat-btn.active')?.id;
+    const noTax  = (cat === 'btn-med' || cat === 'btn-food');
+    const effectiveTax = noTax ? 0 : taxPct;
+
+    const tax      = raw * effectiveTax / 100;
+    const subtotal = raw + tax;
+    const tip      = subtotal * splitTipPct / 100;
+    const total    = subtotal + tip;
+    const perPerson = total / splitPeople;
+
+    const fmt = n => n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+    document.getElementById('split-per-person').textContent  = '$' + fmt(perPerson);
+    document.getElementById('split-total-full').textContent  = '$' + fmt(total);
+    document.getElementById('split-subtotal-disp').textContent = '$' + fmt(raw);
+    document.getElementById('split-tax-disp').textContent    = '$' + fmt(tax);
+    document.getElementById('split-tip-disp').textContent    = '$' + fmt(tip);
+    res.style.display = 'block';
+};
+
+
+// ── Toggle propina ───────────────────────────────────────
+let tipOpen = false;
+window.toggleTip = () => {
+    tipOpen = !tipOpen;
+    const body = document.getElementById('tip-body');
+    const lbl  = document.getElementById('tip-toggle-lbl');
+    const lang = localStorage.getItem('appLang') || 'es';
+    body.classList.toggle('open', tipOpen);
+    if (lbl) lbl.textContent = tipOpen
+        ? (lang === 'en' ? '▲ HIDE' : lang === 'pt' ? '▲ OCULTAR' : '▲ OCULTAR')
+        : (lang === 'en' ? '▼ SHOW' : lang === 'pt' ? '▼ VER' : '▼ VER');
+};
+
+// Actualizar badge de propina seleccionada
+function updateTipBadge() {
+    const badge = document.getElementById('tip-preview-badge');
+    if (!badge) return;
+    const custom = parseFloat(document.getElementById('custom-tip-input')?.value);
+    badge.textContent = (!isNaN(custom) && custom > 0) ? custom + '%' : currentTip + '%';
+}
+
+// ── Auto-seleccionar estado/ciudad por destino del viaje ─────────────────
+
+// Tabla de aliases: español, portugués y variantes comunes → nombre exacto en taxData
+const CITY_ALIASES = {
+    // Nueva York / New York
+    'nueva york':'NYC','new york':'NYC','nueva york city':'NYC','ny':'NYC','nyc':'NYC',
+    'new york city':'NYC','manhattan':'NYC','brooklyn':'NYC','queens':'NYC','bronx':'NYC',
+    'nova york':'NYC',
+    // Buffalo
+    'buffalo':'Buffalo',
+    // Los Ángeles / Los Angeles
+    'los angeles':'Los Angeles','los ángeles':'Los Angeles','la':'Los Angeles',
+    'los angeles ca':'Los Angeles','los ángeles ca':'Los Angeles',
+    // San Francisco
+    'san francisco':'San Francisco','sf':'San Francisco','san francisco ca':'San Francisco',
+    // San Diego
+    'san diego':'San Diego',
+    // Miami
+    'miami':'Miami','miami fl':'Miami',
+    // Orlando
+    'orlando':'Orlando','orlando fl':'Orlando',
+    // Tampa
+    'tampa':'Tampa',
+    // Kissimmee
+    'kissimmee':'Kissimmee',
+    // Chicago
+    'chicago':'Chicago','chicago il':'Chicago',
+    // Houston
+    'houston':'Houston','houston tx':'Houston',
+    // Dallas
+    'dallas':'Dallas','dallas tx':'Dallas',
+    // Austin
+    'austin':'Austin','austin tx':'Austin',
+    // Las Vegas
+    'las vegas':'Las Vegas','vegas':'Las Vegas','las vegas nv':'Las Vegas',
+    // Seattle
+    'seattle':'Seattle','seattle wa':'Seattle',
+    // Boston
+    'boston':'Boston','boston ma':'Boston',
+    // Atlanta
+    'atlanta':'Atlanta','atlanta ga':'Atlanta',
+    // Denver
+    'denver':'Denver','denver co':'Denver',
+    // Phoenix
+    'phoenix':'Phoenix','phoenix az':'Phoenix',
+    // Nashville
+    'nashville':'Nashville','nashville tn':'Nashville',
+    // New Orleans
+    'nueva orleans':'New Orleans','new orleans':'New Orleans','new orleans la':'New Orleans',
+    // Philadelphia
+    'filadelfia':'Philadelphia','philadelphia':'Philadelphia','philly':'Philadelphia','philadelphia pa':'Philadelphia',
+    // Minneapolis
+    'minneapolis':'Minneapolis','minneapolis mn':'Minneapolis',
+    // Portland
+    'portland':'Portland','portland me':'Portland',
+    // Salt Lake City
+    'salt lake city':'Salt Lake City','slc':'Salt Lake City','salt lake':'Salt Lake City',
+    'salt lake city ut':'Salt Lake City',
+    // Detroit
+    'detroit':'Detroit','detroit mi':'Detroit',
+    // Milwaukee
+    'milwaukee':'Milwaukee','milwaukee wi':'Milwaukee',
+    // Louisville
+    'louisville':'Louisville','louisville ky':'Louisville',
+    // Baltimore
+    'baltimore':'Baltimore','baltimore md':'Baltimore',
+    // Charlotte
+    'charlotte':'Charlotte','charlotte nc':'Charlotte',
+    // Columbus
+    'columbus':'Columbus','columbus oh':'Columbus',
+    // Indianapolis / New Castle IN
+    'indianapolis':'New Castle','indianapolis in':'New Castle',
+    // Oklahoma City
+    'oklahoma city':'Oklahoma City','okc':'Oklahoma City',
+    // Albuquerque
+    'albuquerque':'Albuquerque','albuquerque nm':'Albuquerque',
+    // Jersey City / New Jersey
+    'jersey city':'Jersey City','new jersey':'Jersey City','newark':'Jersey City',
+    'nueva jersey':'Jersey City',
+    // Washington DC → Virginia Beach (Virginia)
+    'washington dc':'Virginia Beach','washington d.c.':'Virginia Beach','dc':'Virginia Beach',
+    'virginia beach':'Virginia Beach',
+    // Honolulu / Hawaii
+    'honolulu':'Honolulu','hawaii':'Honolulu','hawái':'Honolulu',
+    // Omaha
+    'omaha':'Omaha','omaha ne':'Omaha',
+    // Des Moines
+    'des moines':'Des Moines','des moines ia':'Des Moines',
+    // St. Louis
+    'st louis':'St. Louis','saint louis':'St. Louis','san luis':'St. Louis','st. louis':'St. Louis',
+    // Kansas City / Wichita
+    'wichita':'Wichita','kansas city':'Wichita',
+    // Little Rock
+    'little rock':'Little Rock','little rock ar':'Little Rock',
+    // Birmingham
+    'birmingham':'Birmingham','birmingham al':'Birmingham',
+    // Jackson MS
+    'jackson':'Jackson','jackson ms':'Jackson',
+    // Sioux Falls
+    'sioux falls':'Sioux Falls','sioux falls sd':'Sioux Falls',
+    // Fargo
+    'fargo':'Fargo','fargo nd':'Fargo',
+    // Cheyenne
+    'cheyenne':'Cheyenne','cheyenne wy':'Cheyenne',
+    // Boise
+    'boise':'Boise','boise id':'Boise',
+    // Bridgeport WV
+    'bridgeport':'Bridgeport','charleston wv':'Bridgeport',
+    // Providence
+    'providence':'Providence','providence ri':'Providence',
+    // Burlington VT
+    'burlington':'Burlington','burlington vt':'Burlington',
+    // Stamford CT
+    'stamford':'Stamford','connecticut':'Stamford','hartford':'Stamford',
+    // Charleston SC
+    'charleston sc':'Charleston','charleston':'Charleston',
+    // Anchorage / Alaska
+    'alaska':'Sin Tax','anchorage':'Sin Tax',
+    // Delaware
+    'delaware':'Sin Tax','wilmington':'Sin Tax',
+    // Montana
+    'montana':'Sin Tax','billings':'Sin Tax',
+    // New Hampshire
+    'new hampshire':'Sin Tax','nueva hampshire':'Sin Tax','manchester nh':'Sin Tax',
+    // Oregon
+    'oregon':'Sin Tax','oregón':'Sin Tax','portland or':'Sin Tax',
+    // Tampa
+    'tampa fl':'Tampa',
+    // Clearwater → Tampa FL
+    'clearwater':'Tampa','st. petersburg':'Tampa','st petersburg':'Tampa',
+    // Fort Lauderdale → Miami
+    'fort lauderdale':'Miami','fort lauderdale fl':'Miami',
+    // Fort Worth → Dallas
+    'fort worth':'Dallas','fort worth tx':'Dallas',
+    // San Antonio → Houston (Texas)
+    'san antonio':'Houston','san antonio tx':'Houston',
+    // Anaheim / Long Beach → Los Angeles
+    'anaheim':'Los Angeles','long beach':'Los Angeles','santa monica':'Los Angeles',
+    'pasadena':'Los Angeles','burbank':'Los Angeles',
+    // San Jose → San Francisco
+    'san jose':'San Francisco','san josé':'San Francisco','silicon valley':'San Francisco',
+    // Oakland → San Francisco
+    'oakland':'San Francisco',
+    // Sacramento → Los Angeles (California)
+    'sacramento':'Los Angeles',
+    // Scottsdale → Phoenix
+    'scottsdale':'Phoenix','tempe':'Phoenix','mesa':'Phoenix','chandler':'Phoenix',
+    // Tucson → Phoenix
+    'tucson':'Phoenix',
+    // Henderson → Las Vegas
+    'henderson':'Las Vegas','north las vegas':'Las Vegas',
+    // Reno → Las Vegas (Nevada)
+    'reno':'Las Vegas',
+    // Cincinnati → Columbus
+    'cincinnati':'Columbus','cleveland':'Columbus','akron':'Columbus',
+    // Pittsburgh → Philadelphia
+    'pittsburgh':'Philadelphia','pittsburgh pa':'Philadelphia',
+    // Raleigh → Charlotte
+    'raleigh':'Charlotte','durham':'Charlotte','chapel hill':'Charlotte',
+    // Memphis → Nashville
+    'memphis':'Nashville','memphis tn':'Nashville','knoxville':'Nashville',
+    // Richmond → Virginia Beach
+    'richmond':'Virginia Beach','richmond va':'Virginia Beach',
+    // St. Paul → Minneapolis
+    'st paul':'Minneapolis','saint paul':'Minneapolis','st. paul':'Minneapolis',
+    // Kansas City MO → St. Louis
+    'kansas city mo':'St. Louis',
+    // Savannah → Atlanta
+    'savannah':'Atlanta','savannah ga':'Atlanta',
+    // Jacksonville → Orlando (Florida)
+    'jacksonville':'Orlando','jacksonville fl':'Orlando',
+    // Tallahassee → Orlando
+    'tallahassee':'Orlando',
+    // Newark NJ → Jersey City
+    'newark nj':'Jersey City',
+    // Stamford / New Haven → Stamford CT
+    'new haven':'Stamford','hartford ct':'Stamford',
+};
+
+// Tabla de aliases de ESTADOS → primer ciudad del estado en taxData
+const STATE_ALIASES = {
+    'alabama':'Alabama','al':'Alabama',
+    'alaska':'Alaska','ak':'Alaska',
+    'arizona':'Arizona','az':'Arizona',
+    'arkansas':'Arkansas','ar':'Arkansas',
+    'california':'California','ca':'California','cali':'California',
+    'colorado':'Colorado','co':'Colorado',
+    'connecticut':'Connecticut','ct':'Connecticut',
+    'delaware':'Delaware','de':'Delaware',
+    'florida':'Florida','fl':'Florida',
+    'georgia':'Georgia','ga':'Georgia',
+    'hawaii':'Hawaii','hi':'Hawaii','hawái':'Hawaii',
+    'idaho':'Idaho','id':'Idaho',
+    'illinois':'Illinois','il':'Illinois',
+    'indiana':'Indiana','in':'Indiana',
+    'iowa':'Iowa','ia':'Iowa',
+    'kansas':'Kansas','ks':'Kansas',
+    'kentucky':'Kentucky','ky':'Kentucky',
+    'louisiana':'Louisiana','la':'Louisiana',
+    'maine':'Maine','me':'Maine',
+    'maryland':'Maryland','md':'Maryland',
+    'massachusetts':'Massachusetts','ma':'Massachusetts',
+    'michigan':'Michigan','mi':'Michigan',
+    'minnesota':'Minnesota','mn':'Minnesota',
+    'mississippi':'Mississippi','ms':'Mississippi',
+    'missouri':'Missouri','mo':'Missouri',
+    'montana':'Montana','mt':'Montana',
+    'nebraska':'Nebraska','ne':'Nebraska',
+    'nevada':'Nevada','nv':'Nevada',
+    'new hampshire':'New Hampshire','nh':'New Hampshire','nueva hampshire':'New Hampshire',
+    'new jersey':'New Jersey','nj':'New Jersey','nueva jersey':'New Jersey',
+    'new mexico':'New Mexico','nm':'New Mexico','nuevo méxico':'New Mexico','nuevo mexico':'New Mexico',
+    'new york':'New York','ny':'New York','nueva york state':'New York',
+    'north carolina':'North Carolina','nc':'North Carolina','carolina del norte':'North Carolina',
+    'north dakota':'North Dakota','nd':'North Dakota','dakota del norte':'North Dakota',
+    'ohio':'Ohio','oh':'Ohio',
+    'oklahoma':'Oklahoma','ok':'Oklahoma',
+    'oregon':'Oregon','or':'Oregon','oregón':'Oregon',
+    'pennsylvania':'Pennsylvania','pa':'Pennsylvania','pensilvania':'Pennsylvania',
+    'rhode island':'Rhode Island','ri':'Rhode Island',
+    'south carolina':'South Carolina','sc':'South Carolina','carolina del sur':'South Carolina',
+    'south dakota':'South Dakota','sd':'South Dakota','dakota del sur':'South Dakota',
+    'tennessee':'Tennessee','tn':'Tennessee',
+    'texas':'Texas','tx':'Texas',
+    'utah':'Utah','ut':'Utah',
+    'vermont':'Vermont','vt':'Vermont',
+    'virginia':'Virginia','va':'Virginia',
+    'washington':'Washington','wa':'Washington',
+    'west virginia':'West Virginia','wv':'West Virginia','virginia occidental':'West Virginia',
+    'wisconsin':'Wisconsin','wi':'Wisconsin',
+    'wyoming':'Wyoming','wy':'Wyoming',
+};
+
+// Mapa principal ciudad → { state, cityName } construido desde taxData
+const CITY_TO_TAX = {};
+for (const [state, cities] of Object.entries(taxData)) {
+    for (const city of cities) {
+        CITY_TO_TAX[city.n.toLowerCase()] = { state, cityName: city.n };
+    }
+}
+
+// Resuelve un alias de ciudad al cityName canónico en taxData
+function resolveCityAlias(dest) {
+    // 1. Alias directo de ciudad
+    const aliasCity = CITY_ALIASES[dest];
+    if (aliasCity) {
+        const entry = CITY_TO_TAX[aliasCity.toLowerCase()];
+        if (entry) return entry;
+    }
+    // 2. Coincidencia exacta en taxData
+    if (CITY_TO_TAX[dest]) return CITY_TO_TAX[dest];
+    // 3. El destino es un estado → tomar primera ciudad del estado
+    const aliasState = STATE_ALIASES[dest];
+    if (aliasState && taxData[aliasState]) {
+        const firstCity = taxData[aliasState][0];
+        return { state: aliasState, cityName: firstCity.n };
+    }
+    // 4. Coincidencia parcial en taxData
+    for (const [key, val] of Object.entries(CITY_TO_TAX)) {
+        if (dest.includes(key) || key.includes(dest)) return val;
+    }
+    return null;
+}
+
+window.autoSelectTaxByCity = (destination) => {
+    if (!destination) return;
+    const dest = destination.toLowerCase().trim()
+        // quitar acentos para comparación
+        .normalize('NFD').replace(/[̀-ͯ]/g, '');
+
+    // también normalizar las keys del alias al buscar
+    const destNorm = dest;
+    let match = null;
+
+    // buscar en aliases normalizados
+    for (const [alias, target] of Object.entries(CITY_ALIASES)) {
+        const aliasNorm = alias.normalize('NFD').replace(/[̀-ͯ]/g,'');
+        if (aliasNorm === destNorm) {
+            match = CITY_TO_TAX[target.toLowerCase()];
+            if (match) break;
+        }
+    }
+    // buscar en state aliases
+    if (!match) {
+        for (const [alias, stateName] of Object.entries(STATE_ALIASES)) {
+            const aliasNorm = alias.normalize('NFD').replace(/[̀-ͯ]/g,'');
+            if (aliasNorm === destNorm && taxData[stateName]) {
+                const firstCity = taxData[stateName][0];
+                match = { state: stateName, cityName: firstCity.n };
+                break;
+            }
+        }
+    }
+    // coincidencia directa en taxData
+    if (!match) match = CITY_TO_TAX[destNorm];
+    // coincidencia parcial
+    if (!match) {
+        for (const [key, val] of Object.entries(CITY_TO_TAX)) {
+            const keyNorm = key.normalize('NFD').replace(/[̀-ͯ]/g,'');
+            if (destNorm.includes(keyNorm) || keyNorm.includes(destNorm)) { match = val; break; }
+        }
+    }
+    if (!match) return;
+
+    const stateSelect = document.getElementById('state-select');
+    const citySelect  = document.getElementById('city-select');
+    if (!stateSelect || !citySelect) return;
+
+    stateSelect.value = match.state;
+    loadCities();
+    for (let i = 0; i < citySelect.options.length; i++) {
+        if (citySelect.options[i].text.startsWith(match.cityName)) {
+            citySelect.selectedIndex = i;
+            break;
+        }
+    }
+    calculate();
+};
+
+const _origCalc = window.calculate;
+window.calculate = () => {
+    _origCalc && _origCalc();
+    
+    const mainPrice = document.getElementById('price')?.value;
+    const splitInput = document.getElementById('split-price');
+    if (splitInput && mainPrice && !splitInput.value) {
+        
+    }
+    calcSplit();
+};
+
+window.onload = () => {
+    const ss = document.getElementById('state-select');
+    Object.keys(taxData).sort().forEach(s => { const o = document.createElement('option'); o.value = s; o.text = s; if(s==='Florida') o.selected=true; ss.appendChild(o); });
+    loadCities();
+    setInterval(updateCountdown, 1000);
+    const lang = localStorage.getItem('appLang') || 'es';
+    window.changeLanguage(lang);
+    const tc = document.getElementById('tip-content');
+    if (tc) tc.innerText = econTips[lang][tipIndex];
+    tipTimer = setInterval(window.cambiarConsejo, 8000);
+};
+
+</script>
+
+<!-- ═══════════════ TAXUSA AI CHAT ═══════════════ -->
+<style>
+#ai-bubble {
+    position: fixed; bottom: 24px; left: 20px; z-index: 3000;
+    width: 56px; height: 56px; border-radius: 50%; border: none; cursor: pointer;
+    background: linear-gradient(135deg,#2563eb,#1d4ed8);
+    box-shadow: 0 4px 20px rgba(37,99,235,0.45);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .2s, box-shadow .2s;
+}
+#ai-bubble:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(37,99,235,0.55); }
+#ai-bubble:active { transform: scale(0.95); }
+#ai-bubble svg { width: 26px; height: 26px; }
+#ai-badge {
+    position:absolute; top:6px; right:6px; width:10px; height:10px;
+    background:#22c55e; border-radius:50%; border:2px solid #1e3a8a; display:none;
+}
+#ai-chat {
+    position: fixed; bottom: 88px; left: 16px; z-index: 2999;
+    width: min(360px, calc(100vw - 32px));
+    width: 340px; max-height: 520px; border-radius: 16px; overflow: hidden;
+    display: none; flex-direction: column;
+    background: var(--card, #1e293b);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.45);
+    border: 1px solid var(--border, #334155);
+    animation: chatIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+#ai-chat.open { display: flex; }
+@keyframes chatIn {
+    from { opacity:0; transform:translateY(16px) scale(0.96); }
+    to   { opacity:1; transform:translateY(0)   scale(1); }
+}
+#ai-header {
+    display:flex; align-items:center; gap:10px; padding:12px 14px;
+    background: linear-gradient(135deg,#2563eb,#1d4ed8); flex-shrink:0;
+}
+#ai-header svg { width:22px; height:22px; flex-shrink:0; }
+.ai-header-text { flex:1; }
+.ai-header-title { font-size:0.9rem; font-weight:800; color:white; line-height:1; }
+.ai-header-sub   { font-size:0.65rem; color:rgba(255,255,255,0.75); font-weight:600; margin-top:2px; }
+#ai-close {
+    background:rgba(255,255,255,0.15); border:none; color:white; cursor:pointer;
+    width:24px; height:24px; border-radius:50%; font-size:0.75rem; display:flex;
+    align-items:center; justify-content:center; transition:background .15s;
+}
+#ai-close:hover { background:rgba(255,255,255,0.3); }
+#ai-messages {
+    flex:1; overflow-y:auto; padding:12px 12px 4px; display:flex;
+    flex-direction:column; gap:8px; scroll-behavior:smooth;
+}
+#ai-messages::-webkit-scrollbar { width:4px; }
+#ai-messages::-webkit-scrollbar-track { background:transparent; }
+#ai-messages::-webkit-scrollbar-thumb { background:var(--border,#334155); border-radius:4px; }
+.ai-msg {
+    max-width:88%; padding:9px 12px; border-radius:12px; font-size:0.82rem;
+    line-height:1.5; word-break:break-word; animation:msgIn .18s ease;
+}
+@keyframes msgIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+.ai-msg.user {
+    align-self:flex-end; background:#2563eb; color:white; border-bottom-right-radius:4px;
+}
+.ai-msg.bot {
+    align-self:flex-start; background:var(--hover,#273548); color:var(--text,#e2e8f0);
+    border-bottom-left-radius:4px;
+}
+.ai-msg.bot ul  { margin:4px 0 4px 0; padding-left:18px; }
+.ai-msg.bot li  { margin:2px 0; }
+.ai-msg.bot p   { margin:4px 0; }
+.ai-msg.bot strong { color:#93c5fd; }
+.ai-msg.bot h3  { font-size:0.85rem; font-weight:700; margin:6px 0 2px; color:#93c5fd; }
+.ai-msg.bot a   { color:#60a5fa; text-decoration:underline; }
+.ai-msg.bot.typing {
+    display:flex; gap:5px; align-items:center; padding:10px 14px;
+}
+.ai-dot {
+    width:7px; height:7px; background:var(--muted,#64748b); border-radius:50%;
+    animation:dot .9s infinite ease-in-out;
+}
+.ai-dot:nth-child(2){animation-delay:.18s}
+.ai-dot:nth-child(3){animation-delay:.36s}
+@keyframes dot { 0%,80%,100%{transform:scale(0.7);opacity:.5} 40%{transform:scale(1);opacity:1} }
+#ai-suggestions {
+    display:flex; gap:6px; flex-wrap:wrap; padding:6px 10px 2px; flex-shrink:0;
+}
+.ai-chip {
+    background:var(--hover,#273548); border:1px solid var(--border,#334155);
+    color:var(--text,#e2e8f0); border-radius:20px; padding:4px 10px; font-size:0.72rem;
+    cursor:pointer; transition:background .15s, transform .1s; white-space:nowrap;
+}
+.ai-chip:hover { background:var(--border,#334155); transform:scale(1.04); }
+#ai-input-area {
+    display:flex; gap:6px; padding:10px; border-top:1px solid var(--border,#334155);
+    flex-shrink:0; background:var(--card,#1e293b);
+}
+#ai-input {
+    flex:1; background:var(--hover,#273548); border:1px solid var(--border,#334155);
+    border-radius:10px; padding:8px 12px; color:var(--text,#e2e8f0); font-size:0.83rem;
+    resize:none; outline:none; line-height:1.4; max-height:80px; overflow-y:auto; font-family:inherit;
+}
+#ai-input:focus { border-color:#2563eb; }
+#ai-send {
+    width:36px; height:36px; border-radius:10px; border:none; background:#2563eb;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:background .15s, transform .1s; flex-shrink:0; align-self:flex-end;
+}
+#ai-send:hover { background:#1d4ed8; transform:scale(1.05); }
+#ai-send:disabled { background:var(--border,#334155); cursor:not-allowed; transform:none; }
+#ai-send svg { width:16px; fill:white; }
+</style>
+
+<button id="ai-bubble" aria-label="Taxie — Asistente de viaje">
+    <span id="ai-badge"></span>
+    <svg viewBox="0 0 32 32" fill="none">
+        <rect width="32" height="32" rx="8" fill="white" fill-opacity="0.15"/>
+        <rect x="0" y="10" width="32" height="4" fill="#ef4444" opacity="0.9"/>
+        <rect x="0" y="18" width="32" height="4" fill="#ef4444" opacity="0.9"/>
+        <polygon points="16,4 18.4,11 26,11 20,15.5 22.4,22.5 16,18 9.6,22.5 12,15.5 6,11 13.6,11" fill="#ffffff"/>
+    </svg>
+</button>
+
+<div id="ai-chat">
+    <div id="ai-header">
+        <svg viewBox="0 0 32 32" fill="none">
+            <rect x="0" y="10" width="32" height="4" fill="#ef4444" opacity="0.9"/>
+            <rect x="0" y="18" width="32" height="4" fill="#ef4444" opacity="0.9"/>
+            <polygon points="16,4 18.4,11 26,11 20,15.5 22.4,22.5 16,18 9.6,22.5 12,15.5 6,11 13.6,11" fill="#ffffff"/>
+        </svg>
+        <div class="ai-header-text">
+            <div class="ai-header-title">Taxie ✈️</div>
+            <div class="ai-header-sub" id="ai-header-sub">Tu guia de viaje a USA</div>
+        </div>
+        <button id="ai-close">x</button>
+    </div>
+    <div id="ai-messages"></div>
+    <div id="ai-suggestions"></div>
+    <div id="ai-input-area">
+        <textarea id="ai-input" rows="1"></textarea>
+        <button id="ai-send">
+            <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+        </button>
+    </div>
+</div>
+
+<script>
+(function() {
+    
+    var GROQ_URL = 'https://taxusa.juanbria18.workers.dev';
+    var MODEL = 'llama-3.3-70b-versatile';
+    var lang = localStorage.getItem('appLang') || 'es';
+    var perfilId   = localStorage.getItem('perfilActivoId') || 'default';
+    var HISTORY_KEY = 'taxie_history_' + perfilId;
+
+    var chatHistory = [];
+    try {
+        var saved = localStorage.getItem(HISTORY_KEY);
+        if (saved) chatHistory = JSON.parse(saved);
+    } catch(e) { chatHistory = []; }
+
+    var isOpen = false;
+    var isLoading = false;
+    var hasShownWelcome = false;
+
+    var WELCOME_ES = '\u00a1Hola! Soy **Taxie** \ud83d\uddfd\u2708\ufe0f\n\nTu asistente personal para viajes a USA. Puedo ayudarte con:\n\n\u2022 \ud83c\udff0 Destinos y parques tematicos\n\u2022 \ud83d\udecd\ufe0f Outlets y compras sin tax\n\u2022 \ud83d\udcb5 Propinas, impuestos y presupuesto\n\u2022 \ud83c\udfe8 Hoteles y transporte\n\u2022 \ud83c\udf24\ufe0f Clima y documentacion\n\n\u00bfEn que puedo ayudarte hoy?';
+    var WELCOME_EN = 'Hi! I am **Taxie** \ud83d\uddfd\u2708\ufe0f\n\nYour personal USA travel guide. I can help you with:\n\n\u2022 \ud83c\udff0 Destinations & theme parks\n\u2022 \ud83d\udecd\ufe0f Outlets & tax-free shopping\n\u2022 \ud83d\udcb5 Tips, taxes & budgeting\n\u2022 \ud83c\udfe8 Hotels & transportation\n\u2022 \ud83c\udf24\ufe0f Weather & travel documents\n\nWhat can I help you with today?';
+    var WELCOME_PT = 'Olá! Sou o **Taxie** \ud83d\uddfd\u2708\ufe0f\n\nSeu assistente pessoal para viagens aos EUA. Posso te ajudar com:\n\n\u2022 \ud83c\udff0 Destinos e parques temáticos\n\u2022 \ud83d\udecd\ufe0f Outlets e compras sem tax\n\u2022 \ud83d\udcb5 Gorjetas, impostos e orçamento\n\u2022 \ud83c\udfe8 Hotéis e transporte\n\u2022 \ud83c\udf24\ufe0f Clima e documentação\n\nComo posso te ajudar hoje?';
+
+    var CHIPS_ES = ['\ud83c\udff0 Disney Orlando', '\ud83d\udecd\ufe0f Mejores outlets', '\ud83d\udcb0 Propinas en USA', '\ud83c\udf21\ufe0f Clima en Florida', '\u2708\ufe0f Aeropuertos', '\ud83d\ude97 Alquilar auto'];
+    var CHIPS_EN = ['\ud83c\udff0 Disney Orlando', '\ud83d\udecd\ufe0f Best outlets', '\ud83d\udcb0 Tipping in USA', '\ud83c\udf21\ufe0f Florida weather', '\u2708\ufe0f Airports', '\ud83d\ude97 Rent a car'];
+    var CHIPS_PT = ['\ud83c\udff0 Disney Orlando', '\ud83d\udecd\ufe0f Melhores outlets', '\ud83d\udcb0 Gorjetas nos EUA', '\ud83c\udf21\ufe0f Clima na Flórida', '\u2708\ufe0f Aeroportos', '\ud83d\ude97 Alugar carro'];
+
+    var SUB_ES = 'Tu guia de viaje a USA \ud83d\uddfa\ufe0f';
+    var SUB_EN = 'Your USA Travel Guide \ud83d\uddfa\ufe0f';
+    var SUB_PT = 'Seu guia de viagem aos EUA \ud83d\uddfa\ufe0f';
+    var PH_ES  = 'Preguntale a Taxie sobre tu viaje...';
+    var PH_EN  = 'Ask Taxie about your trip...';
+    var PH_PT  = 'Pergunte ao Taxie sobre sua viagem...';
+    var ERR_ES = 'Ups, algo fallo. Verifica tu conexion e intenta de nuevo.';
+    var ERR_EN = 'Oops, something went wrong. Check your connection and try again.';
+    var ERR_PT = 'Ops, algo deu errado. Verifique sua conexão e tente novamente.';
+
+    var isPt = (lang === 'pt');
+    var isEs = (lang !== 'en' && lang !== 'pt');
+    var chips  = isPt ? CHIPS_PT : isEs ? CHIPS_ES : CHIPS_EN;
+    var sub    = isPt ? SUB_PT   : isEs ? SUB_ES   : SUB_EN;
+    var ph     = isPt ? PH_PT    : isEs ? PH_ES    : PH_EN;
+    var errMsg = isPt ? ERR_PT   : isEs ? ERR_ES   : ERR_EN;
+
+    var SYSTEM = isPt
+        ? 'Você é o Taxie, assistente de viagens para os EUA. Seu tom é claro, direto e amigável. Quando alguém pergunta sobre informações em tempo real (filas nos parques, cotações, clima atual, horários ou preços atualizados), você busca as informações antes de responder. Use marcadores e **negritos** só quando realmente ajudam a organizar a informação; para respostas simples, uma ou duas frases diretas são suficientes. Nunca comece com "Claro!", "Com certeza!" ou frases de preenchimento. Responda apenas sobre viagens aos EUA; se perguntarem outra coisa, redirecione brevemente. Data atual: ' + new Date().toLocaleDateString('pt-BR') + '.'
+        : isEs
+        ? 'Eres Taxie, asistente de viajes a USA. Tu tono es claro, directo y amable — ni frío ni demasiado informal. Cuando alguien pregunta por info en tiempo real (filas en parques, cotizaciones, clima actual, horarios o precios actualizados), buscás la información actualizada antes de responder. Usás viñetas y **negritas** solo cuando realmente ayudan a organizar la info; si la respuesta es simple, una o dos oraciones directas son suficientes. Nunca empezás con "¡Claro!", "¡Por supuesto!" ni frases de relleno. Solo respondés sobre viajes a USA; si preguntan otra cosa, lo aclarás brevemente y redirigís. Fecha actual: ' + new Date().toLocaleDateString('es-AR') + '.'
+        : 'You are Taxie, a USA travel assistant. Your tone is clear, direct and warm — not overly casual, not robotic. When someone asks for real-time info (park wait times, exchange rates, current weather, updated prices), search for current data before answering. Use bullet points and **bold** only when they genuinely help organize information; for simple questions, one or two direct sentences are better. Never open with "Of course!", "Great question!" or filler phrases. Only answer about USA travel; redirect anything off-topic without making it awkward. Today\'s date: ' + new Date().toLocaleDateString('en-US') + '.';
+
+    function saveHistory() {
+        try { localStorage.setItem(HISTORY_KEY, JSON.stringify(chatHistory.slice(-40))); } catch(e) {}
+    }
+
+    function formatBotText(text) {
+        var html = text
+            .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        var lines = html.split('\n');
+        var result = [];
+        var inList = false;
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i].trim();
+            var isBullet = /^[\u2022\-\*]\s/.test(line);
+            if (isBullet) {
+                if (!inList) { result.push('<ul>'); inList = true; }
+                result.push('<li>' + line.replace(/^[\u2022\-\*]\s+/,'') + '</li>');
+            } else {
+                if (inList) { result.push('</ul>'); inList = false; }
+                if (line !== '') result.push('<p>' + line + '</p>');
+            }
+        }
+        if (inList) result.push('</ul>');
+        return result.join('');
+    }
+
+    function init() {
+        var bubble     = document.getElementById('ai-bubble');
+        var chatEl     = document.getElementById('ai-chat');
+        var messagesEl = document.getElementById('ai-messages');
+        var inputEl    = document.getElementById('ai-input');
+        var sendBtn    = document.getElementById('ai-send');
+        var suggestEl  = document.getElementById('ai-suggestions');
+        var headerSub  = document.getElementById('ai-header-sub');
+        var closeBtn   = document.getElementById('ai-close');
+
+        if (!bubble || !chatEl) return;
+
+        if (headerSub) headerSub.textContent = sub;
+        if (inputEl)   inputEl.placeholder   = ph;
+
+        if (suggestEl) {
+            suggestEl.innerHTML = chips.map(function(c) {
+                return '<button class="ai-chip">' + c + '</button>';
+            }).join('');
+            suggestEl.querySelectorAll('.ai-chip').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    if (inputEl) inputEl.value = btn.textContent;
+                    sendMessage();
+                    suggestEl.style.display = 'none';
+                });
+            });
+        }
+
+        function toggleChat() {
+            isOpen = !isOpen;
+            if (isOpen) {
+                chatEl.style.display = 'flex';
+                chatEl.offsetHeight;
+                chatEl.classList.add('open');
+                if (!hasShownWelcome) {
+                    hasShownWelcome = true;
+                    if (chatHistory.length > 0) {
+                        chatHistory.forEach(function(m) {
+                            addMessage(m.role === 'user' ? 'user' : 'bot', m.content, true);
+                        });
+                        if (suggestEl) suggestEl.style.display = 'none';
+                    } else {
+                        var welcome = isPt ? WELCOME_PT : isEs ? WELCOME_ES : WELCOME_EN;
+                        setTimeout(function() { addMessage('bot', welcome); }, 200);
+                    }
+                }
+                setTimeout(function() { if (inputEl) inputEl.focus(); }, 300);
+            } else {
+                chatEl.classList.remove('open');
+                setTimeout(function() { chatEl.style.display = 'none'; }, 250);
+            }
+        }
+
+        bubble.addEventListener('click', function(e) { e.stopPropagation(); toggleChat(); });
+        if (closeBtn) closeBtn.addEventListener('click', function(e) { e.stopPropagation(); toggleChat(); });
+
+        document.addEventListener('click', function(e) {
+            if (isOpen && !chatEl.contains(e.target) && !bubble.contains(e.target)) {
+                isOpen = false;
+                chatEl.classList.remove('open');
+                setTimeout(function() { chatEl.style.display = 'none'; }, 250);
+            }
+        });
+
+        function addMessage(role, text, silent) {
+            if (!messagesEl) return;
+            var div = document.createElement('div');
+            div.className = 'ai-msg ' + (role === 'user' ? 'user' : 'bot');
+            if (role === 'user') {
+                div.textContent = text;
+            } else {
+                div.innerHTML = formatBotText(text);
+            }
+            if (silent) div.style.animation = 'none';
+            messagesEl.appendChild(div);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        function showTyping() {
+            if (!messagesEl) return;
+            var div = document.createElement('div');
+            div.className = 'ai-msg bot typing';
+            div.id = 'ai-typing';
+            div.innerHTML = '<div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div>';
+            messagesEl.appendChild(div);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        function hideTyping() {
+            var el = document.getElementById('ai-typing');
+            if (el) el.remove();
+        }
+
+        function sendMessage() {
+            window._taxieSend = sendMessage;
+            if (!inputEl) return;
+            var text = inputEl.value.trim();
+            if (!text || isLoading) return;
+            inputEl.value = '';
+            inputEl.style.height = 'auto';
+            addMessage('user', text);
+            if (suggestEl) suggestEl.style.display = 'none';
+            isLoading = true;
+            if (sendBtn) sendBtn.disabled = true;
+            showTyping();
+            chatHistory.push({ role: 'user', content: text });
+            fetch(GROQ_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    model: MODEL,
+                    messages: [{ role: 'system', content: SYSTEM }].concat(chatHistory.slice(-14)),
+                    max_tokens: 800,
+                    temperature: 0.7,
+                    stream: false,
+                    tools: [{ type: 'function', function: { name: 'web_search', description: 'Search the web for real-time information like park wait times, exchange rates, current weather, store hours or updated prices.', parameters: { type: 'object', properties: { query: { type: 'string', description: 'Search query' } }, required: ['query'] } } }],
+                    tool_choice: 'auto'
+                })
+            })
+            .then(function(res) { return res.json().then(function(d) { return { ok: res.ok, data: d }; }); })
+            .then(function(r) {
+                if (!r.ok) throw new Error(r.data.error && r.data.error.message || 'API error');
+                var msg = r.data.choices && r.data.choices[0] && r.data.choices[0].message;
+                // If model wants to call a tool, do the search then follow up
+                if (msg && msg.tool_calls && msg.tool_calls.length > 0) {
+                    var tc = msg.tool_calls[0];
+                    var query = '';
+                    try { query = JSON.parse(tc.function.arguments).query; } catch(e) {}
+                    var searchUrl = 'https://taxusa.juanbria18.workers.dev';
+                    var msgsWithTool = [{ role: 'system', content: SYSTEM }]
+                        .concat(chatHistory.slice(-14))
+                        .concat([
+                            { role: 'assistant', content: null, tool_calls: msg.tool_calls },
+                            { role: 'tool', tool_call_id: tc.id, content: 'No se pudo obtener resultado en tiempo real para: ' + query + '. Respondé con lo que sabés e indicá que los datos pueden no ser del momento exacto.' }
+                        ]);
+                    return fetch(searchUrl, {
+                        method: 'POST',
+                        body: JSON.stringify({ model: MODEL, messages: msgsWithTool, max_tokens: 800, temperature: 0.7, stream: false })
+                    }).then(function(res2) { return res2.json().then(function(d2) { return { ok: res2.ok, data: d2 }; }); })
+                    .then(function(r2) {
+                        if (!r2.ok) throw new Error(r2.data.error && r2.data.error.message || 'API error');
+                        var reply2 = r2.data.choices && r2.data.choices[0] && r2.data.choices[0].message && r2.data.choices[0].message.content || errMsg;
+                        chatHistory.push({ role: 'assistant', content: reply2 });
+                        saveHistory();
+                        hideTyping();
+                        addMessage('bot', reply2);
+                    });
+                }
+                var reply = msg && msg.content || errMsg;
+                chatHistory.push({ role: 'assistant', content: reply });
+                saveHistory();
+                hideTyping();
+                addMessage('bot', reply);
+            })
+            .catch(function(e) {
+                hideTyping();
+                addMessage('bot', errMsg);
+                console.error('[Taxie]', e);
+            })
+            .finally(function() {
+                isLoading = false;
+                if (sendBtn) sendBtn.disabled = false;
+                if (inputEl) inputEl.focus();
+            });
+        }
+
+        if (sendBtn) sendBtn.addEventListener('click', sendMessage);
+        if (inputEl) {
+            inputEl.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+            });
+            inputEl.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+            });
+        }
+    }
+
+    window.taxieUpdateLang = function(newLang) {
+        isEs = (newLang !== 'en' && newLang !== 'pt');
+        isPt = (newLang === 'pt');
+        SYSTEM = isPt
+            ? 'Você é o Taxie, assistente de viagens para os EUA. Seu tom é claro, direto e amigável. Quando alguém pergunta sobre informações em tempo real (filas nos parques, cotações, clima atual, horários ou preços atualizados), você busca as informações antes de responder. Use marcadores e **negritos** só quando realmente ajudam a organizar a informação; para respostas simples, uma ou duas frases diretas são suficientes. Nunca comece com "Claro!", "Com certeza!" ou frases de preenchimento. Responda apenas sobre viagens aos EUA; se perguntarem outra coisa, redirecione brevemente. Data atual: ' + new Date().toLocaleDateString('pt-BR') + '.'
+            : isEs
+            ? 'Eres Taxie, asistente de viajes a USA. Tu tono es claro, directo y amable — ni frío ni demasiado informal. Cuando alguien pregunta por info en tiempo real (filas en parques, cotizaciones, clima actual, horarios o precios actualizados), buscás la información actualizada antes de responder. Usás viñetas y **negritas** solo cuando realmente ayudan a organizar la info; si la respuesta es simple, una o dos oraciones directas son suficientes. Nunca empezás con "¡Claro!", "¡Por supuesto!" ni frases de relleno. Solo respondés sobre viajes a USA; si preguntan otra cosa, lo aclarás brevemente y redirigís. Fecha actual: ' + new Date().toLocaleDateString('es-AR') + '.'
+            : 'You are Taxie, a USA travel assistant. Your tone is clear, direct and warm — not overly casual, not robotic. When someone asks for real-time info (park wait times, exchange rates, current weather, updated prices), search for current data before answering. Use bullet points and **bold** only when they genuinely help organize information; for simple questions, one or two direct sentences are better. Never open with "Of course!", "Great question!" or filler phrases. Only answer about USA travel; redirect anything off-topic without making it awkward. Today\'s date: ' + new Date().toLocaleDateString('en-US') + '.';
+        errMsg = isPt ? ERR_PT : isEs ? ERR_ES : ERR_EN;
+        var inputEl   = document.getElementById('ai-input');
+        var headerSub = document.getElementById('ai-header-sub');
+        var suggestEl = document.getElementById('ai-suggestions');
+        if (inputEl)   inputEl.placeholder = isPt ? PH_PT : isEs ? PH_ES : PH_EN;
+        if (headerSub) headerSub.textContent = isPt ? SUB_PT : isEs ? SUB_ES : SUB_EN;
+        if (suggestEl) {
+            var newChips = isPt ? CHIPS_PT : isEs ? CHIPS_ES : CHIPS_EN;
+            suggestEl.innerHTML = newChips.map(function(c) {
+                return '<button class="ai-chip">' + c + '</button>';
+            }).join('');
+            suggestEl.querySelectorAll('.ai-chip').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var inp = document.getElementById('ai-input');
+                    if (inp) inp.value = btn.textContent;
+                    if (window._taxieSend) window._taxieSend();
+                    suggestEl.style.display = 'none';
+                });
+            });
+        }
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+</script>
+
+
+<!-- ══ PIN OFFLINE OVERLAY ══ -->
+<div id="pinOfflineOverlay">
+  <div class="poo-card">
+    <div class="poo-badge">📵 Sin conexión</div>
+    <div class="poo-avatar" id="pooAvatar"></div>
+    <div class="poo-name" id="pooName">Usuario</div>
+    <div class="poo-email" id="pooEmail"></div>
+    <div class="poo-dots" id="pooDots">
+      <div class="poo-dot"></div>
+      <div class="poo-dot"></div>
+      <div class="poo-dot"></div>
+      <div class="poo-dot"></div>
+    </div>
+    <div class="poo-error" id="pooError"></div>
+    <div class="poo-keypad" id="pooKeypad"></div>
+  </div>
+</div>
+
+<script>
+// ══ PIN OFFLINE OVERLAY LOGIC ══
+(function() {
+    const MAX_ATTEMPTS = 5;
+    let buf = '', attempts = 0;
+
+    async function sha256(str) {
+        const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+        return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2,'0')).join('');
+    }
+
+    async function checkOffline() {
+        // Probe real connectivity (navigator.onLine no es confiable en Safari)
+        try {
+            await fetch('https://www.gstatic.com/generate_204', { method:'HEAD', cache:'no-store', mode:'no-cors', signal: AbortSignal.timeout(1500) });
+            return false; // hay internet
+        } catch(e) {
+            return true; // sin internet
+        }
+    }
+
+    function updateDots(n) {
+        document.querySelectorAll('#pooDots .poo-dot').forEach((d,i) => {
+            d.classList.toggle('filled', i < n);
+            d.classList.remove('error');
+        });
+    }
+
+    function shakeError(msg) {
+        document.getElementById('pooError').innerText = msg;
+        document.querySelectorAll('#pooDots .poo-dot').forEach(d => d.classList.add('error'));
+        setTimeout(() => document.querySelectorAll('#pooDots .poo-dot').forEach(d => d.classList.remove('error')), 500);
+    }
+
+    function renderKeypad() {
+        const keys = ['1','2','3','4','5','6','7','8','9','empty','0','del'];
+        const kp = document.getElementById('pooKeypad');
+        kp.innerHTML = '';
+        keys.forEach(k => {
+            const btn = document.createElement('button');
+            btn.className = 'poo-key' + (k === 'empty' ? ' empty' : '');
+            btn.innerText = k === 'del' ? '⌫' : k === 'empty' ? '' : k;
+            if (k !== 'empty') btn.addEventListener('click', () => onKey(k === 'del' ? 'del' : k));
+            kp.appendChild(btn);
+        });
+    }
+
+    async function onKey(key) {
+        if (attempts >= MAX_ATTEMPTS) return;
+        if (key === 'del') { buf = buf.slice(0,-1); }
+        else { if (buf.length >= 4) return; buf += key; }
+        updateDots(buf.length);
+        document.getElementById('pooError').innerText = '';
+
+        if (buf.length === 4) {
+            const entered = buf; buf = ''; updateDots(0);
+            const hash = await sha256(entered);
+            const stored = localStorage.getItem('taxusa_pin_hash');
+            if (hash === stored) {
+                // PIN correcto — guardar sesión y ocultar overlay
+                sessionStorage.setItem('offline_unlocked', '1');
+                document.getElementById('pinOfflineOverlay').classList.remove('show');
+            } else {
+                attempts++;
+                const left = MAX_ATTEMPTS - attempts;
+                const lang = localStorage.getItem('appLang') || 'es';
+                const msgs = {
+                    es: left > 0 ? `PIN incorrecto. Quedan ${left} intentos.` : 'Demasiados intentos fallidos.',
+                    en: left > 0 ? `Wrong PIN. ${left} attempts left.` : 'Too many failed attempts.',
+                    pt: left > 0 ? `PIN incorreto. ${left} tentativas restantes.` : 'Muitas tentativas.'
+                };
+                shakeError(msgs[lang] || msgs.es);
+            }
+        }
+    }
+
+    async function init() {
+        const offline = await checkOffline();
+        if (!offline) return; // hay internet, no mostrar nada
+
+        // Ya desbloqueado en esta sesión — no pedir PIN de nuevo
+        if (sessionStorage.getItem('offline_unlocked')) return;
+
+        const hash = localStorage.getItem('taxusa_pin_hash');
+        if (!hash) return; // no hay PIN configurado, dejar pasar
+
+        // Mostrar overlay
+        const overlay = document.getElementById('pinOfflineOverlay');
+        overlay.classList.add('show');
+
+        // Cargar datos del usuario
+        const name  = localStorage.getItem('perfilActivoNombre') || localStorage.getItem('taxusa_offline_email') || '';
+        const email = localStorage.getItem('taxusa_offline_email') || '';
+        const foto  = localStorage.getItem('perfilActivoFoto') || '';
+        document.getElementById('pooName').innerText  = name.split('@')[0];
+        document.getElementById('pooEmail').innerText = email;
+        if (foto) document.getElementById('pooAvatar').style.backgroundImage = `url('${foto}')`;
+
+        renderKeypad();
+    }
+
+    // Arrancar apenas carga el DOM
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+</script>
+
+<!-- ── Offline Toast ── -->
+<script>
+(function(){
+    var toast = document.getElementById('offline-toast');
+    function updateStatus(){
+        if(!navigator.onLine){
+            toast.classList.remove('hide');
+            toast.classList.add('show');
+        } else {
+            toast.classList.remove('show');
+            toast.classList.add('hide');
+        }
+    }
+    window.addEventListener('online',  updateStatus);
+    window.addEventListener('offline', updateStatus);
+    updateStatus();
+})();
+</script>
+
+<!-- ══════════ MODAL CAMBIAR APLICACIÓN ══════════ -->
+<div id="switchAppModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(12px);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--surface);border-radius:28px;padding:28px 24px;width:100%;max-width:340px;box-shadow:var(--shadow-lg);border:1px solid var(--border);text-align:center;">
+    <div id="switchAppTitle" style="font-size:1.1rem;font-weight:900;color:var(--text);margin-bottom:6px;">Cambiar Aplicación</div>
+    <div id="switchAppSub" style="font-size:.8rem;font-weight:600;color:var(--text-sub);margin-bottom:22px;">¿A qué destino querés ir?</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button onclick="doSwitchApp('usa')" style="width:100%;padding:14px;border-radius:14px;border:2px solid rgba(239,68,68,.4);background:linear-gradient(135deg,rgba(37,99,235,.1),rgba(239,68,68,.08));cursor:pointer;font-family:inherit;font-weight:800;font-size:.95rem;color:var(--text);display:flex;align-items:center;gap:12px;transition:all .2s;">
+        <img src="https://flagcdn.com/w40/us.png" style="width:32px;border-radius:4px;flex-shrink:0;" alt="US" onerror="this.outerHTML='🇺🇸';">
+        <div style="text-align:left;">
+          <div style="color:#ef4444;font-weight:900;">TaxUSA</div>
+          <div style="font-size:.72rem;font-weight:600;color:var(--text-sub);">Estados Unidos</div>
+        </div>
+      </button>
+      <button onclick="doSwitchApp('europe')" style="width:100%;padding:14px;border-radius:14px;border:2px solid rgba(0,51,153,.4);background:linear-gradient(135deg,rgba(0,51,153,.1),rgba(255,204,0,.06));cursor:pointer;font-family:inherit;font-weight:800;font-size:.95rem;color:var(--text);display:flex;align-items:center;gap:12px;transition:all .2s;">
+        <img src="https://flagcdn.com/w40/eu.png" style="width:32px;border-radius:4px;flex-shrink:0;" alt="EU" onerror="this.outerHTML='🇪🇺';">
+        <div style="text-align:left;">
+          <div style="color:#003399;font-weight:900;">TaxEurope</div>
+          <div style="font-size:.72rem;font-weight:600;color:var(--text-sub);">Europa</div>
+        </div>
+      </button>
+      <button onclick="document.getElementById('switchAppModal').style.display='none'" id="switchAppCancel" style="width:100%;padding:11px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface-2);cursor:pointer;font-family:inherit;font-weight:700;font-size:.85rem;color:var(--text-sub);margin-top:4px;">Cancelar</button>
+    </div>
+  </div>
+</div>
+<script>
+window.openSwitchApp = function() {
+  const lang = localStorage.getItem('taxfly_lang') || 'es';
+  const texts = {
+    es: { title:'Cambiar Aplicación', sub:'¿A qué destino querés ir?', cancel:'Cancelar' },
+    en: { title:'Switch App', sub:'Which destination do you want?', cancel:'Cancel' },
+    pt: { title:'Trocar Aplicativo', sub:'Para qual destino você quer ir?', cancel:'Cancelar' }
+  };
+  const t = texts[lang] || texts.es;
+  document.getElementById('switchAppTitle').textContent = t.title;
+  document.getElementById('switchAppSub').textContent = t.sub;
+  document.getElementById('switchAppCancel').textContent = t.cancel;
+  document.getElementById('switchAppModal').style.display = 'flex';
+};
+window.doSwitchApp = function(destino) {
+  localStorage.setItem('taxfly_destino', destino);
+  document.getElementById('switchAppModal').style.display = 'none';
+  if (destino === 'usa') {
+    window.location.href = 'index.html';
+  } else {
+    window.location.href = 'europe.html';
+  }
+};
+</script>
+    
+
+</body>
+</html>
