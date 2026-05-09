@@ -387,8 +387,8 @@ textarea{resize:none;line-height:1.5;}
       <button onclick="clearStops()" style="flex:1;padding:10px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface-2);color:var(--text-sub);font-family:inherit;font-weight:700;font-size:.8rem;cursor:pointer;" data-i18n="btn_clear_all">🗑️ Limpiar todo</button>
     </div>
 
-    <button class="btn-generate" id="btn-gen" onclick="generateRoute()" disabled>
-      <span data-i18n="btn_generate">🗺️ Generar Ruta</span>
+    <button class="btn-generate" id="btn-gen" onclick="generateRoute()" disabled style="background:linear-gradient(135deg,#7c3aed,#2563eb);box-shadow:0 4px 14px rgba(124,58,237,.35);">
+      <span>✨ Generar Ruta con IA</span>
     </button>
   </div>
 
@@ -396,7 +396,7 @@ textarea{resize:none;line-height:1.5;}
   <div id="ruta-result" style="padding-bottom:80px;">
     <!-- Topbar: título + acciones -->
     <div class="result-topbar">
-      <div class="result-title" data-i18n="result_ready">Tu ruta está lista ✅</div>
+      <div class="result-title" data-i18n="result_ready">✨ Ruta optimizada con IA</div>
       <div class="result-actions">
         <button class="action-btn" onclick="downloadHTML()" data-i18n="btn_download">⬇️ HTML</button>
         <button class="action-btn" onclick="resetAll()" data-i18n="btn_new">↺ Nueva</button>
@@ -1103,16 +1103,120 @@ dz.addEventListener('drop', e => {
   reader.readAsText(file);
 });
 
-// ── GENERATE ROUTE ──
-function generateRoute() {
+// ── GENERATE ROUTE (con IA) ──
+async function generateRoute() {
   if (!stops.length) return;
   const hotel   = document.getElementById('hotel-input').value.trim() || 'Tu alojamiento';
   const dateVal = document.getElementById('start-date').value;
-  const perDay  = Math.ceil(stops.length / days);
-  const dayData = [];
   const lang    = localStorage.getItem('appLang') || 'es';
   const dayWord = { es:'Día', en:'Day', pt:'Dia' }[lang] || 'Día';
 
+  // Mostrar spinner y deshabilitar botón
+  const btn = document.getElementById('btn-gen');
+  const originalHTML = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div><span>' + {es:'Optimizando ruta con IA…',en:'Optimizing route with AI…',pt:'Otimizando rota com IA…'}[lang] + '</span>';
+
+  let orderedStops = stops; // fallback al orden original
+
+  try {
+    const stopsPayload = stops.map((s, i) => ({
+      index: i,
+      name: s.name,
+      desc: s.desc || '',
+      url: s.url || ''
+    }));
+
+    const systemPrompt = `You are a travel route optimization expert. Your ONLY task is to return a valid JSON array.
+Given a list of stops (places to visit) and a starting point (hotel), group them into ${days} day(s) to minimize travel between stops each day — keeping geographically close places together.
+
+Rules:
+- Return ONLY a JSON array of arrays of original stop indexes (0-based), no explanation, no markdown, no backticks.
+- Each inner array = one day's stops, in optimal visit order.
+- Every stop index must appear exactly once across all days.
+- Spread stops as evenly as possible across days.
+- Keep nearby places together on the same day.
+- If there is no geographic info, keep the original order but distribute evenly.
+
+Example output for 3 stops, 2 days: [[0,2],[1]]`;
+
+    const userMsg = `Hotel/Starting point: ${hotel}
+Number of days: ${days}
+Stops to organize:
+${JSON.stringify(stopsPayload, null, 2)}
+
+Return ONLY the JSON array of arrays of indexes.`;
+
+    const res = await fetch('https://taxusa.juanbria18.workers.dev', {
+      method: 'POST',
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userMsg }
+        ],
+        max_tokens: 800,
+        temperature: 0.2,
+        stream: false
+      })
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      const raw = data.choices?.[0]?.message?.content || '';
+      // Extraer el JSON aunque venga con texto extra
+      const jsonMatch = raw.match(/\[[\s\S]*\]/);
+      if (jsonMatch) {
+        const parsed = JSON.parse(jsonMatch[0]);
+        // Validar que es un array de arrays de índices válidos
+        const allIndexes = parsed.flat();
+        const valid = Array.isArray(parsed) &&
+          parsed.every(day => Array.isArray(day)) &&
+          allIndexes.length === stops.length &&
+          allIndexes.every(i => typeof i === 'number' && i >= 0 && i < stops.length);
+        if (valid) {
+          // Reconstruir stops en el orden sugerido por la IA
+          const dayData = [];
+          parsed.forEach((dayIndexes, d) => {
+            if (!dayIndexes.length) return;
+            const chunk = dayIndexes.map(i => stops[i]);
+            let label = `${dayWord} ${d+1}`;
+            let shortLabel = `${dayWord} ${d+1}`;
+            let dateLabel = '';
+            if (dateVal) {
+              const date = new Date(dateVal + 'T12:00:00');
+              date.setDate(date.getDate() + d);
+              const locale = lang === 'pt' ? 'pt-BR' : lang === 'en' ? 'en-US' : 'es-AR';
+              const shortDate = date.toLocaleDateString(locale, { day:'2-digit', month:'2-digit' });
+              const weekday  = date.toLocaleDateString(locale, { weekday:'short' });
+              label      = `${dayWord} ${d+1} — ${weekday} ${shortDate}`;
+              shortLabel = `${dayWord} ${d+1}`;
+              dateLabel  = `${weekday} ${shortDate}`;
+            }
+            dayData.push({ label, shortLabel, dateLabel, stops: chunk });
+          });
+          routeData = { hotel, dayData };
+          visited = {};
+          activeDay = 0;
+          saveVisited();
+          btn.innerHTML = originalHTML;
+          btn.disabled = stops.length === 0;
+          document.getElementById('builder-card').style.display = 'none';
+          document.getElementById('ruta-result').style.display  = 'block';
+          renderResult();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          showToast('✨ ' + {es:'Ruta optimizada con IA',en:'Route optimized with AI',pt:'Rota otimizada com IA'}[lang]);
+          return;
+        }
+      }
+    }
+  } catch(e) {}
+
+  // Fallback: distribución simple sin IA
+  btn.innerHTML = originalHTML;
+  btn.disabled = stops.length === 0;
+  const perDay = Math.ceil(stops.length / days);
+  const dayDataFallback = [];
   for (let d = 0; d < days; d++) {
     const chunk = stops.slice(d * perDay, (d+1) * perDay);
     if (!chunk.length) continue;
@@ -1129,10 +1233,9 @@ function generateRoute() {
       shortLabel = `${dayWord} ${d+1}`;
       dateLabel  = `${weekday} ${shortDate}`;
     }
-    dayData.push({ label, shortLabel, dateLabel, stops: chunk });
+    dayDataFallback.push({ label, shortLabel, dateLabel, stops: chunk });
   }
-
-  routeData = { hotel, dayData };
+  routeData = { hotel, dayData: dayDataFallback };
   visited   = {};
   activeDay = 0;
   saveVisited();
@@ -1140,6 +1243,7 @@ function generateRoute() {
   document.getElementById('ruta-result').style.display  = 'block';
   renderResult();
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  showToast('⚠️ ' + {es:'IA no disponible, ruta generada sin optimizar',en:'AI unavailable, route generated without optimization',pt:'IA indisponível, rota gerada sem otimização'}[lang]);
 }
 
 // ── ACTIVE DAY for tabs ──
