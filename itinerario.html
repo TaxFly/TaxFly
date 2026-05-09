@@ -9,6 +9,7 @@
     </script>
     <style>.grecaptcha-badge{visibility:hidden!important;opacity:0!important;pointer-events:none!important;}</style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Bangers&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800&display=swap" rel="stylesheet"></noscript>
     <script>
@@ -228,7 +229,384 @@
         #sync-banner.visible{display:flex;}
         .sync-spinner{width:14px;height:14px;border-radius:50%;border:2px solid rgba(16,185,129,.3);border-top-color:var(--success);animation:sp .7s linear infinite;flex-shrink:0;}
         @keyframes sp{to{transform:rotate(360deg);}}
-    </style>
+    
+        /* ══ PARQUES TAB scoped ══ */
+        #panel-parques {
+            --bg:#0d0d1a; --card:#161630; --text:#f0eeff; --muted:#8888aa;
+            background:#0d0d1a; border-radius:16px; padding:16px;
+            font-family:'Nunito','DM Sans',sans-serif;
+        }
+        #tab-parques { display:none; }
+        #tab-parques.visible { display:flex; }
+
+
+#panel-parques *{ box-sizing: border-box; margin: 0; padding: 0; }
+
+
+
+#panel-parques header h1{
+    font-family: 'Bangers', cursive;
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, #f5c518, #ff6b00, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+  }
+
+#panel-parques .subtitle{
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-top: 0.4rem;
+    font-weight: 600;
+  }
+
+  /* Global progress */
+#panel-parques .global-progress{
+    max-width: 700px;
+    margin: 1.5rem auto;
+    padding: 1rem 1.5rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    text-align: center;
+  }
+
+#panel-parques .global-progress .big-count{
+    font-family: 'Bangers', cursive;
+    font-size: 3rem;
+    letter-spacing: 2px;
+    color: var(--disney-gold);
+    line-height: 1;
+  }
+
+#panel-parques .global-progress .big-label{
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 0.2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+#panel-parques .progress-bar-outer{
+    background: rgba(255,255,255,0.08);
+    border-radius: 99px;
+    height: 10px;
+    margin-top: 0.8rem;
+    overflow: hidden;
+  }
+
+#panel-parques .progress-bar-inner{
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, #f5c518, #ff6b00);
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+    width: 0%;
+  }
+
+  /* Filter tabs */
+#panel-parques .filter-bar{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    padding: 0.5rem 1rem 1.5rem;
+  }
+
+#panel-parques .filter-btn{
+    border: none;
+    border-radius: 99px;
+    padding: 0.4rem 1rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0.55;
+    background: rgba(255,255,255,0.07);
+    color: var(--text);
+    letter-spacing: 0.3px;
+  }
+
+#panel-parques .filter-btn:hover{ opacity: 0.85; transform: translateY(-1px); }
+#panel-parques .filter-btn.active{ opacity: 1; transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
+
+  /* Park sections */
+#panel-parques .parks-container{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1rem 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+#panel-parques .park-section{
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: all 0.3s;
+  }
+
+#panel-parques .park-section.hidden{ display: none; }
+
+#panel-parques .park-header{
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    gap: 1rem;
+  }
+
+#panel-parques .park-header-left{
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+#panel-parques .park-emoji{ font-size: 1.8rem; line-height: 1; }
+
+#panel-parques .park-name{
+    font-family: 'Bangers', cursive;
+    font-size: 1.5rem;
+    letter-spacing: 1.5px;
+    line-height: 1;
+  }
+
+#panel-parques .park-zone-label{
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.7;
+    margin-top: 2px;
+  }
+
+#panel-parques .park-stats{
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    flex-shrink: 0;
+  }
+
+#panel-parques .park-count{
+    font-family: 'Bangers', cursive;
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+  }
+
+#panel-parques .mini-bar-outer{
+    width: 80px;
+    height: 6px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+#panel-parques .mini-bar-inner{
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+#panel-parques .chevron{
+    font-size: 1.1rem;
+    transition: transform 0.3s;
+    opacity: 0.6;
+  }
+
+#panel-parques .park-section.collapsed .chevron{ transform: rotate(-90deg); }
+
+  /* Zones inside a park */
+#panel-parques .park-body{
+    padding: 0 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+#panel-parques .park-section.collapsed .park-body{ display: none; }
+
+#panel-parques .zone-block{ }
+
+#panel-parques .zone-title{
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0.5;
+    padding: 0.5rem 0.5rem 0.4rem;
+  }
+
+#panel-parques .attractions-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0.5rem;
+  }
+
+  /* Attraction card */
+#panel-parques .attraction-card{
+    background: rgba(255,255,255,0.04);
+    border: 1.5px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(.4,0,.2,1);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+#panel-parques .attraction-card::before{
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.2s;
+    background: rgba(39,174,96,0.08);
+  }
+
+#panel-parques .attraction-card:hover{ 
+    border-color: rgba(255,255,255,0.18);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  }
+
+#panel-parques .attraction-card.done{
+    background: rgba(39,174,96,0.1);
+    border-color: rgba(39,174,96,0.35);
+  }
+
+#panel-parques .attraction-card.done::before{ opacity: 1; }
+
+#panel-parques .check-circle{
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+  }
+
+#panel-parques .attraction-card.done .check-circle{
+    background: var(--done-green);
+    border-color: var(--done-green);
+    box-shadow: 0 0 12px rgba(39,174,96,0.5);
+  }
+
+#panel-parques .attraction-info{ flex: 1; min-width: 0; }
+
+#panel-parques .attraction-name{
+    font-size: 0.88rem;
+    font-weight: 700;
+    line-height: 1.3;
+    transition: all 0.2s;
+  }
+
+#panel-parques .attraction-card.done .attraction-name{
+    text-decoration: line-through;
+    opacity: 0.55;
+  }
+
+#panel-parques .attraction-height{
+    font-size: 0.7rem;
+    color: var(--disney-gold);
+    font-weight: 700;
+    margin-top: 2px;
+  }
+
+  /* Park color themes */
+#panel-parques .park-mk{ background: linear-gradient(135deg, rgba(107,47,160,0.25), rgba(107,47,160,0.05)); }
+#panel-parques .park-mk .park-header{ background: linear-gradient(90deg, rgba(107,47,160,0.5), transparent); }
+#panel-parques .park-mk .park-name{ color: #c084fc; }
+#panel-parques .park-mk .mini-bar-inner{ background: #c084fc; }
+#panel-parques .park-mk .park-count{ color: #c084fc; }
+
+#panel-parques .park-epcot{ background: linear-gradient(135deg, rgba(0,150,136,0.2), rgba(0,150,136,0.03)); }
+#panel-parques .park-epcot .park-header{ background: linear-gradient(90deg, rgba(0,150,136,0.45), transparent); }
+#panel-parques .park-epcot .park-name{ color: #4dd0c4; }
+#panel-parques .park-epcot .mini-bar-inner{ background: #4dd0c4; }
+#panel-parques .park-epcot .park-count{ color: #4dd0c4; }
+
+#panel-parques .park-hs{ background: linear-gradient(135deg, rgba(192,57,43,0.2), rgba(192,57,43,0.03)); }
+#panel-parques .park-hs .park-header{ background: linear-gradient(90deg, rgba(192,57,43,0.45), transparent); }
+#panel-parques .park-hs .park-name{ color: #ff7675; }
+#panel-parques .park-hs .mini-bar-inner{ background: #ff7675; }
+#panel-parques .park-hs .park-count{ color: #ff7675; }
+
+#panel-parques .park-ioa{ background: linear-gradient(135deg, rgba(46,125,50,0.2), rgba(46,125,50,0.03)); }
+#panel-parques .park-ioa .park-header{ background: linear-gradient(90deg, rgba(46,125,50,0.45), transparent); }
+#panel-parques .park-ioa .park-name{ color: #69f0ae; }
+#panel-parques .park-ioa .mini-bar-inner{ background: #69f0ae; }
+#panel-parques .park-ioa .park-count{ color: #69f0ae; }
+
+#panel-parques .park-usf{ background: linear-gradient(135deg, rgba(21,101,192,0.2), rgba(21,101,192,0.03)); }
+#panel-parques .park-usf .park-header{ background: linear-gradient(90deg, rgba(21,101,192,0.45), transparent); }
+#panel-parques .park-usf .park-name{ color: #64b5f6; }
+#panel-parques .park-usf .mini-bar-inner{ background: #64b5f6; }
+#panel-parques .park-usf .park-count{ color: #64b5f6; }
+
+#panel-parques .park-epic{ background: linear-gradient(135deg, rgba(74,20,140,0.3), rgba(74,20,140,0.05)); }
+#panel-parques .park-epic .park-header{ background: linear-gradient(90deg, rgba(74,20,140,0.55), transparent); }
+#panel-parques .park-epic .park-name{ color: #ce93d8; }
+#panel-parques .park-epic .mini-bar-inner{ background: #ce93d8; }
+#panel-parques .park-epic .park-count{ color: #ce93d8; }
+
+  /* Filter buttons per park color */
+#panel-parques .btn-all{ background: linear-gradient(135deg, #f5c518, #ff6b00); color: #000; }
+#panel-parques .btn-mk.active{ background: rgba(107,47,160,0.5); color: #c084fc; }
+#panel-parques .btn-epcot.active{ background: rgba(0,150,136,0.4); color: #4dd0c4; }
+#panel-parques .btn-hs.active{ background: rgba(192,57,43,0.4); color: #ff7675; }
+#panel-parques .btn-ioa.active{ background: rgba(46,125,50,0.4); color: #69f0ae; }
+#panel-parques .btn-usf.active{ background: rgba(21,101,192,0.4); color: #64b5f6; }
+#panel-parques .btn-epic.active{ background: rgba(74,20,140,0.5); color: #ce93d8; }
+
+  /* Reset button */
+#panel-parques .reset-btn{
+    display: block;
+    margin: 0 auto 1rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--muted);
+    padding: 0.4rem 1.2rem;
+    border-radius: 99px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+
+#panel-parques .reset-btn:hover{ color: #ff6b6b; border-color: rgba(255,107,107,0.4); }
+
+  /* Confetti animation for completion */
+  @keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+  }
+
+#panel-parques .check-circle.popping{ animation: pop 0.25s ease; }
+
+  @media (max-width: 500px) {
+    .attractions-grid { grid-template-columns: 1fr; }
+    .mini-bar-outer { display: none; }
+    .park-name { font-size: 1.2rem; }
+  }
+
+</style>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -284,6 +662,9 @@
         </button>
         <button class="tab-btn" onclick="switchTab('notas')" id="tab-notas">
             <span class="ti">📝</span><span data-i18n="tab_notes">NOTAS</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('parques')" id="tab-parques">
+            <span class="ti">🎢</span><span>PARQUES</span>
         </button>
     </div>
 
@@ -468,6 +849,622 @@
         <div class="api-note" style="font-size:.62rem;opacity:.7;">Powered by Queue-Times.com · Dolarapi</div>
     </div>
 </div>
+
+
+   <!-- ═══════ TAB PARQUES (solo Orlando) ═══════ -->
+   <div class="tab-panel" id="panel-parques">
+<div class="global-progress">
+  <div class="big-count" id="pk-globalDone">0</div>
+  <div class="big-label">de <span id="pk-globalTotal">0</span> atracciones completadas</div>
+  <div class="progress-bar-outer">
+    <div class="progress-bar-inner" id="pk-globalBar"></div>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <button class="filter-btn btn-all active" onclick="pk_filterParks('all')">🎡 Todos</button>
+  <button class="filter-btn btn-mk" onclick="pk_filterParks('mk')">🏰 Magic Kingdom</button>
+  <button class="filter-btn btn-epcot" onclick="pk_filterParks('epcot')">🌍 EPCOT</button>
+  <button class="filter-btn btn-hs" onclick="pk_filterParks('hs')">🎬 Hollywood Studios</button>
+  <button class="filter-btn btn-ioa" onclick="pk_filterParks('ioa')">🦖 Islands of Adventure</button>
+  <button class="filter-btn btn-usf" onclick="pk_filterParks('usf')">🎭 Universal Studios</button>
+  <button class="filter-btn btn-epic" onclick="pk_filterParks('epic')">✨ Epic Universe</button>
+</div>
+
+<div class="parks-container" id="pk-parksContainer"></div>
+
+<button class="reset-btn" onclick="pk_resetAll()">↺ Reiniciar todo</button>
+
+<script>
+const PARKS_DATA = [
+  {
+    id: 'mk',
+    name: 'Magic Kingdom',
+    emoji: '🏰',
+    label: 'Walt Disney World',
+    cssClass: 'park-mk',
+    zones: [
+      {
+        name: 'Main Street, U.S.A.',
+        attractions: [
+          { name: 'Walt Disney World Railroad', height: null },
+          { name: 'Town Square Theater (Meet Mickey)', height: null },
+        ]
+      },
+      {
+        name: 'Adventureland',
+        attractions: [
+          { name: 'Swiss Family Treehouse', height: null },
+          { name: 'The Magic Carpets of Aladdin', height: null },
+          { name: 'Jungle Cruise', height: null },
+          { name: "Walt Disney's Enchanted Tiki Room", height: null },
+          { name: 'Pirates of the Caribbean', height: null },
+        ]
+      },
+      {
+        name: 'Frontierland',
+        attractions: [
+          { name: "Tiana's Bayou Adventure", height: '40"/ 102 cm' },
+          { name: 'Big Thunder Mountain Railroad (temp. cerrada)', height: '40"/ 102 cm' },
+          { name: 'Country Bear Musical Jamboree', height: null },
+        ]
+      },
+      {
+        name: 'Liberty Square',
+        attractions: [
+          { name: 'The Hall of Presidents', height: null },
+          { name: 'Haunted Mansion', height: null },
+        ]
+      },
+      {
+        name: 'Fantasyland',
+        attractions: [
+          { name: '"it\'s a small world"', height: null },
+          { name: "Peter Pan's Flight", height: null },
+          { name: 'Prince Charming Regal Carrousel', height: null },
+          { name: "Mickey's PhilharMagic", height: null },
+          { name: 'Princess Fairytale Hall', height: null },
+          { name: 'The Many Adventures of Winnie the Pooh', height: null },
+          { name: 'Seven Dwarfs Mine Train', height: '38"/ 97 cm' },
+          { name: 'Enchanted Tales with Belle', height: null },
+          { name: 'Under the Sea – Journey of The Little Mermaid', height: null },
+          { name: 'Meet Ariel at Her Grotto', height: null },
+          { name: 'The Barnstormer', height: '35"/ 89 cm' },
+          { name: 'Dumbo the Flying Elephant', height: null },
+          { name: 'Mad Tea Party', height: null },
+          { name: 'Meet Mirabel at Fairytale Garden', height: null },
+        ]
+      },
+      {
+        name: 'Tomorrowland',
+        attractions: [
+          { name: 'TRON Lightcycle / Run', height: '48"/ 122 cm' },
+          { name: 'Tomorrowland Speedway', height: '32"/ 81 cm (solo) / 54"/ 137 cm (conducir)' },
+          { name: 'Space Mountain', height: '44"/ 112 cm' },
+          { name: 'Astro Orbiter', height: null },
+          { name: 'Tomorrowland Transit Authority PeopleMover', height: null },
+          { name: "Walt Disney's Carousel of Progress", height: null },
+          { name: "Buzz Lightyear's Space Ranger Spin", height: null },
+          { name: 'Monsters, Inc. Laugh Floor', height: null },
+          { name: "Pete's Silly Sideshow", height: null },
+        ]
+      },
+    ]
+  },
+  {
+    id: 'epcot',
+    name: 'EPCOT',
+    emoji: '🌍',
+    label: 'Walt Disney World',
+    cssClass: 'park-epcot',
+    zones: [
+      {
+        name: 'World Celebration',
+        attractions: [
+          { name: 'Spaceship Earth', height: null },
+          { name: 'Meet Mickey & Friends', height: null },
+          { name: 'Disney & Pixar Short Film Festival', height: null },
+          { name: 'Journey Into Imagination With Figment', height: null },
+        ]
+      },
+      {
+        name: 'World Discovery',
+        attractions: [
+          { name: 'Guardians of the Galaxy: Cosmic Rewind', height: '42"/ 107 cm' },
+          { name: 'Mission: SPACE – Green Mission', height: '40"/ 102 cm' },
+          { name: 'Mission: SPACE – Orange Mission', height: '44"/ 112 cm' },
+          { name: 'REIMAGINED! Test Track', height: '40"/ 102 cm' },
+        ]
+      },
+      {
+        name: 'World Nature',
+        attractions: [
+          { name: 'Journey of Water, Inspired by Moana', height: null },
+          { name: 'Awesome Planet', height: null },
+          { name: 'Soarin\'', height: '40"/ 102 cm' },
+          { name: 'Living with the Land', height: null },
+          { name: 'The Seas with Nemo & Friends', height: null },
+          { name: 'Turtle Talk with Crush', height: null },
+          { name: 'SeaBase Aquarium', height: null },
+        ]
+      },
+      {
+        name: 'World Showcase',
+        attractions: [
+          { name: 'Gran Fiesta Tour Starring The Three Caballeros (México)', height: null },
+          { name: 'Meet Anna and Elsa at Royal Sommerhus (Noruega)', height: null },
+          { name: 'Frozen Ever After (Noruega)', height: null },
+          { name: 'Reflections of China', height: null },
+          { name: 'The American Adventure', height: null },
+          { name: 'Palais du Cinéma (Francia)', height: null },
+          { name: 'Beauty and the Beast Sing-Along (Francia)', height: null },
+          { name: 'Impressions de France (Francia)', height: null },
+          { name: "Remy's Ratatouille Adventure (Francia)", height: null },
+          { name: 'Canada Far and Wide in Circle-Vision 360', height: null },
+        ]
+      },
+    ]
+  },
+  {
+    id: 'hs',
+    name: 'Hollywood Studios',
+    emoji: '🎬',
+    label: 'Walt Disney World',
+    cssClass: 'park-hs',
+    zones: [
+      {
+        name: 'Hollywood Boulevard',
+        attractions: [
+          { name: "Mickey & Minnie's Runaway Railway", height: null },
+        ]
+      },
+      {
+        name: 'Echo Lake',
+        attractions: [
+          { name: "Indiana Jones™ Epic Stunt Spectacular!", height: null },
+          { name: 'Star Tours – The Adventures Continue', height: '40"/ 102 cm' },
+          { name: 'Vacation Fun (Animated Short)', height: null },
+          { name: 'For the First Time in Forever: A "Frozen" Sing-Along Celebration', height: null },
+        ]
+      },
+      {
+        name: 'Commissary Lane',
+        attractions: [
+          { name: 'Meet Mickey and Minnie at Red Carpet Dreams', height: null },
+        ]
+      },
+      {
+        name: 'Star Wars: Galaxy\'s Edge',
+        attractions: [
+          { name: 'Star Wars: Rise of the Resistance', height: '40"/ 102 cm' },
+          { name: "Millennium Falcon: Smugglers Run", height: '38"/ 97 cm' },
+        ]
+      },
+      {
+        name: 'Toy Story Land',
+        attractions: [
+          { name: 'Alien Swirling Saucers', height: '32"/ 81 cm' },
+          { name: 'Slinky Dog Dash', height: '38"/ 97 cm' },
+          { name: 'Toy Story Mania!', height: null },
+        ]
+      },
+      {
+        name: 'Animation Courtyard',
+        attractions: [
+          { name: 'Walt Disney Presents', height: null },
+          { name: 'The Little Mermaid – A Musical Adventure', height: null },
+        ]
+      },
+      {
+        name: 'Sunset Boulevard',
+        attractions: [
+          { name: 'Disney Villains: Unfairly Ever After', height: null },
+          { name: "Rock 'n' Roller Coaster® Starring Aerosmith", height: '48"/ 122 cm' },
+          { name: 'The Twilight Zone Tower of Terror™', height: '40"/ 102 cm' },
+          { name: 'Fantasmic!', height: null },
+          { name: 'Beauty and the Beast – Live on Stage', height: null },
+        ]
+      },
+      {
+        name: 'Pixar Plaza',
+        attractions: [
+          { name: 'Meet Edna Mode at the Edna Mode Experience', height: null },
+        ]
+      },
+    ]
+  },
+  {
+    id: 'ioa',
+    name: 'Islands of Adventure',
+    emoji: '🦖',
+    label: 'Universal Orlando',
+    cssClass: 'park-ioa',
+    zones: [
+      {
+        name: 'Marvel Super Hero Island',
+        attractions: [
+          { name: 'The Incredible Hulk Coaster®', height: '54"/ 138 cm' },
+          { name: 'Storm Force Accelatron®', height: null },
+          { name: "Doctor Doom's Fearfall®", height: '52"/ 133 cm' },
+          { name: 'The Amazing Adventures of Spider-Man®', height: '40"/ 102 cm' },
+          { name: 'Meet the Marvel Super Heroes', height: null },
+        ]
+      },
+      {
+        name: 'Toon Lagoon',
+        attractions: [
+          { name: 'Classic Comic Strip Characters', height: null },
+          { name: 'Me Ship, The Olive®', height: null },
+          { name: "Popeye & Bluto's Bilge-Rat Barges®", height: '42"/ 107 cm' },
+          { name: "Dudley Do-Right's Ripsaw Falls®", height: '44"/ 112 cm' },
+        ]
+      },
+      {
+        name: 'Skull Island: Reign of Kong',
+        attractions: [
+          { name: 'Skull Island: Reign of Kong', height: '36"/ 92 cm' },
+        ]
+      },
+      {
+        name: 'Jurassic Park',
+        attractions: [
+          { name: 'Camp Jurassic', height: null },
+          { name: 'Pteranodon Flyers', height: '36"–56"/ 92–143 cm' },
+          { name: 'Jurassic Park River Adventure', height: '42"/ 107 cm' },
+          { name: 'Raptor Encounter', height: null },
+          { name: 'Jurassic Park Discovery Center', height: null },
+          { name: 'Jurassic World VelociCoaster', height: '51"/ 130 cm' },
+        ]
+      },
+      {
+        name: 'The Wizarding World of Harry Potter – Hogsmeade',
+        attractions: [
+          { name: 'Harry Potter and the Forbidden Journey™', height: '48"/ 122 cm' },
+          { name: 'Flight of the Hippogriff™', height: '36"/ 92 cm' },
+          { name: 'Frog Choir / Triwizard Spirit Rally', height: null },
+          { name: 'Ollivanders™', height: null },
+          { name: "Hagrid's Magical Creatures Motorbike Adventure™", height: '48"/ 122 cm' },
+          { name: 'Hogwarts™ Express – Hogsmeade™ Station', height: null },
+        ]
+      },
+      {
+        name: 'The Lost Continent',
+        attractions: [
+          { name: 'The Mystic Fountain', height: null },
+        ]
+      },
+      {
+        name: 'Seuss Landing',
+        attractions: [
+          { name: 'The High in the Sky Seuss Trolley Train Ride!™', height: '36"/ 92 cm' },
+          { name: 'Caro-Seuss-el™', height: null },
+          { name: "Oh! The Stories You'll Hear!™", height: null },
+          { name: 'Dr. Seuss Character Zone', height: null },
+          { name: 'One Fish, Two Fish, Red Fish, Blue Fish™', height: null },
+          { name: 'The Cat in the Hat™', height: '36"/ 92 cm' },
+          { name: "If I Ran The Zoo™", height: null },
+        ]
+      },
+    ]
+  },
+  {
+    id: 'usf',
+    name: 'Universal Studios Florida',
+    emoji: '🎭',
+    label: 'Universal Orlando',
+    cssClass: 'park-usf',
+    zones: [
+      {
+        name: 'Minion Land',
+        attractions: [
+          { name: "Illumination's Villain-Con Minion Blast", height: null },
+          { name: 'Despicable Me Minion Mayhem', height: '40"/ 102 cm' },
+          { name: 'Illumination Theater™', height: null },
+        ]
+      },
+      {
+        name: 'New York',
+        attractions: [
+          { name: 'Hollywood Rip Ride Rockit', height: '51"–79"/ 130–201 cm' },
+          { name: 'Meet The TRANSFORMERS™', height: null },
+          { name: 'TRANSFORMERS™: The Ride-3D', height: '40"/ 102 cm' },
+          { name: 'Race Through New York Starring Jimmy Fallon', height: '40"/ 102 cm' },
+          { name: 'Marilyn & the Diamond Bellas', height: null },
+          { name: 'Revenge of the Mummy', height: '48"/ 122 cm' },
+          { name: 'The Blues Brothers® Show', height: null },
+          { name: 'Sing it!', height: null },
+          { name: '¡Vamos! – Báilalo', height: null },
+        ]
+      },
+      {
+        name: 'San Francisco',
+        attractions: [
+          { name: 'Beat Builders', height: null },
+          { name: 'Fast & Furious – Supercharged', height: '40"/ 102 cm' },
+        ]
+      },
+      {
+        name: 'The Wizarding World of Harry Potter – Diagon Alley',
+        attractions: [
+          { name: 'Hogwarts™ Express – King\'s Cross Station', height: null },
+          { name: 'Knight Bus™', height: null },
+          { name: 'Harry Potter and the Escape from Gringotts™', height: '42"/ 107 cm' },
+          { name: 'Ollivanders™', height: null },
+          { name: 'Gringotts™ Money Exchange', height: null },
+          { name: 'The Tales of Beedle the Bard™ / Celestina Warbeck and the Banshees', height: null },
+        ]
+      },
+      {
+        name: 'World Expo',
+        attractions: [
+          { name: 'MEN IN BLACK™ Alien Attack™', height: '42"/ 107 cm' },
+        ]
+      },
+      {
+        name: 'Springfield, U.S.A.: Home of the Simpsons',
+        attractions: [
+          { name: 'The Simpsons Ride™', height: '40"/ 102 cm' },
+          { name: "Kang & Kodos' Twirl 'n' Hurl", height: null },
+        ]
+      },
+      {
+        name: "Woody Woodpecker's KidZone",
+        attractions: [
+          { name: 'Animal Actors on Location!', height: null },
+          { name: 'E.T. Adventure', height: '34"/ 87 cm' },
+          { name: 'Meet SpongeBob SquarePants and Friends', height: null },
+        ]
+      },
+      {
+        name: 'Hollywood',
+        attractions: [
+          { name: 'NBC Media Center', height: null },
+          { name: 'Drive In and Dance', height: null },
+          { name: 'Character Party Zone', height: null },
+          { name: "Universal Orlando's Horror Make-Up Show", height: null },
+          { name: 'Hollywood Character Zone', height: null },
+          { name: 'The Bourne Stuntacular', height: null },
+        ]
+      },
+    ]
+  },
+  {
+    id: 'epic',
+    name: 'Epic Universe',
+    emoji: '✨',
+    label: 'Universal Orlando',
+    cssClass: 'park-epic',
+    zones: [
+      {
+        name: 'Celestial Park',
+        attractions: [
+          { name: 'Stardust Racers', height: '48"/ 122 cm' },
+          { name: 'Constellation Carousel', height: null },
+          { name: 'Astronomica', height: null },
+        ]
+      },
+      {
+        name: 'Super Nintendo World™',
+        attractions: [
+          { name: 'Mario Kart™: Bowser\'s Challenge', height: '40"/ 102 cm' },
+          { name: 'Mine-Cart Madness™', height: '40"/ 102 cm' },
+          { name: "Yoshi's Adventure™", height: '34"/ 87 cm' },
+          { name: 'Mario & Luigi Meet & Greet', height: null },
+          { name: 'Princess Peach Meet & Greet', height: null },
+          { name: 'Toad Meet & Greet', height: null },
+          { name: 'Donkey Kong Meet & Greet', height: null },
+        ]
+      },
+      {
+        name: 'Dark Universe',
+        attractions: [
+          { name: 'Monsters Unchained: The Frankenstein Experiment', height: '48"/ 122 cm' },
+          { name: 'Curse of the Werewolf', height: '40"/ 102 cm' },
+          { name: 'Dark Universe Character Meet & Greet', height: null },
+          { name: 'Darkmoor Monster Makeup Experience', height: null },
+        ]
+      },
+      {
+        name: 'The Wizarding World of Harry Potter – Ministry of Magic',
+        attractions: [
+          { name: 'Harry Potter and the Battle at the Ministry™', height: '40"/ 102 cm' },
+          { name: 'Le Cirque Arcanus™', height: null },
+          { name: 'Cosme Acajor Baguettes Magique™', height: null },
+        ]
+      },
+      {
+        name: 'How to Train Your Dragon – Isle of Berk',
+        attractions: [
+          { name: "Hiccup's Wing Gliders", height: '40"/ 102 cm' },
+          { name: "Dragon Racer's Rally", height: '48"/ 122 cm' },
+          { name: 'Fyre Drill', height: null },
+          { name: 'The Untrainable Dragon', height: null },
+          { name: 'Viking Training Camp', height: null },
+          { name: 'Meet Toothless and Friends', height: null },
+        ]
+      },
+    ]
+  },
+];
+
+// --- State ---
+let state = {};
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem('parkTracker_v1');
+    if (saved) state = JSON.parse(saved);
+  } catch(e) { state = {}; }
+}
+
+function saveState() {
+  try { localStorage.setItem('parkTracker_v1', JSON.stringify(state)); } catch(e) {}
+}
+
+function toggleAttraction(parkId, zoneIdx, attrIdx) {
+  const key = `${parkId}_${zoneIdx}_${attrIdx}`;
+  state[key] = !state[key];
+  saveState();
+  updateUI(parkId);
+  updateGlobalProgress();
+}
+
+function isDone(parkId, zoneIdx, attrIdx) {
+  return !!state[`${parkId}_${zoneIdx}_${attrIdx}`];
+}
+
+// --- Build UI ---
+function buildParks() {
+  const container = document.getElementById('pk-parksContainer');
+  if (!container) return;
+  container.innerHTML = '';
+
+  PARKS_DATA.forEach(park => {
+    const section = document.createElement('div');
+    section.className = `park-section ${park.cssClass}`;
+    section.id = `park-${park.id}`;
+
+    // Header
+    const header = document.createElement('div');
+    header.className = 'park-header';
+    header.onclick = () => section.classList.toggle('collapsed');
+
+    const total = park.zones.reduce((s, z) => s + z.attractions.length, 0);
+
+    header.innerHTML = `
+      <div class="park-header-left">
+        <span class="park-emoji">${park.emoji}</span>
+        <div>
+          <div class="park-name">${park.name}</div>
+          <div class="park-zone-label">${park.label}</div>
+        </div>
+      </div>
+      <div class="park-stats">
+        <span class="park-count" id="count-${park.id}">0/${total}</span>
+        <div class="mini-bar-outer">
+          <div class="mini-bar-inner" id="bar-${park.id}" style="width:0%"></div>
+        </div>
+        <span class="chevron">▾</span>
+      </div>
+    `;
+
+    // Body
+    const body = document.createElement('div');
+    body.className = 'park-body';
+
+    park.zones.forEach((zone, zoneIdx) => {
+      const zoneBlock = document.createElement('div');
+      zoneBlock.className = 'zone-block';
+
+      const zoneTitle = document.createElement('div');
+      zoneTitle.className = 'zone-title';
+      zoneTitle.textContent = zone.name;
+      zoneBlock.appendChild(zoneTitle);
+
+      const grid = document.createElement('div');
+      grid.className = 'attractions-grid';
+
+      zone.attractions.forEach((attr, attrIdx) => {
+        const card = document.createElement('div');
+        card.className = 'attraction-card' + (isDone(park.id, zoneIdx, attrIdx) ? ' done' : '');
+        card.id = `card-${park.id}-${zoneIdx}-${attrIdx}`;
+        card.innerHTML = `
+          <div class="check-circle" id="check-${park.id}-${zoneIdx}-${attrIdx}">${isDone(park.id, zoneIdx, attrIdx) ? '✓' : ''}</div>
+          <div class="attraction-info">
+            <div class="attraction-name">${attr.name}</div>
+            ${attr.height ? `<div class="attraction-height">↑ ${attr.height}</div>` : ''}
+          </div>
+        `;
+        card.onclick = () => {
+          toggleAttraction(park.id, zoneIdx, attrIdx);
+          const c = document.getElementById(`card-${park.id}-${zoneIdx}-${attrIdx}`);
+          const ch = document.getElementById(`check-${park.id}-${zoneIdx}-${attrIdx}`);
+          const done = isDone(park.id, zoneIdx, attrIdx);
+          c.classList.toggle('done', done);
+          ch.textContent = done ? '✓' : '';
+          ch.classList.add('popping');
+          setTimeout(() => ch.classList.remove('popping'), 250);
+        };
+        grid.appendChild(card);
+      });
+
+      zoneBlock.appendChild(grid);
+      body.appendChild(zoneBlock);
+    });
+
+    section.appendChild(header);
+    section.appendChild(body);
+    container.appendChild(section);
+
+    updateUI(park.id);
+  });
+
+  updateGlobalProgress();
+}
+
+function updateUI(parkId) {
+  const park = PARKS_DATA.find(p => p.id === parkId);
+  if (!park) return;
+  let done = 0, total = 0;
+  park.zones.forEach((zone, zi) => {
+    zone.attractions.forEach((_, ai) => {
+      total++;
+      if (isDone(parkId, zi, ai)) done++;
+    });
+  });
+  const countEl = document.getElementById(`count-${parkId}`);
+  const barEl = document.getElementById(`bar-${parkId}`);
+  if (countEl) countEl.textContent = `${done}/${total}`;
+  if (barEl) barEl.style.width = `${total ? (done/total)*100 : 0}%`;
+}
+
+function updateGlobalProgress() {
+  const doneEl = document.getElementById('pk-globalDone');
+  const totalEl = document.getElementById('pk-globalTotal');
+  const barEl = document.getElementById('pk-globalBar');
+  if (!doneEl || !totalEl || !barEl) return;
+  let done = 0, total = 0;
+  PARKS_DATA.forEach(park => {
+    park.zones.forEach((zone, zi) => {
+      zone.attractions.forEach((_, ai) => {
+        total++;
+        if (isDone(park.id, zi, ai)) done++;
+      });
+    });
+  });
+  doneEl.textContent = done;
+  totalEl.textContent = total;
+  barEl.style.width = `${total ? (done/total)*100 : 0}%`;
+}
+
+function pk_filterParks(id) {
+  if (!document.getElementById('pk-parksContainer')) return;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+
+  PARKS_DATA.forEach(park => {
+    const el = document.getElementById(`park-${park.id}`);
+    if (id === 'all' || park.id === id) {
+      el.classList.remove('hidden');
+    } else {
+      el.classList.add('hidden');
+    }
+  });
+}
+
+function pk_resetAll() {
+  if (!document.getElementById('pk-parksContainer')) return;
+  if (!confirm('¿Reiniciar todo el progreso? Esto borrará todas tus atracciones tachadas.')) return;
+  state = {};
+  saveState();
+  buildParks();
+}
+
+// --- Init ---
+loadState();
+buildParks();
+</script>
+   </div>
 
 <!-- SETTINGS DRAWER -->
 <div id="menuOverlay" class="menu-overlay" onclick="toggleSettings()"></div>
@@ -795,11 +1792,28 @@
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('panel-' + tab).classList.add('active');
         document.getElementById('tab-' + tab).classList.add('active');
+        if (tab === 'parques' && !window._parquesInited) {
+            window._parquesInited = true;
+            if (typeof pk_initParques === 'function') pk_initParques();
+        }
+    };
+    window._updateParquesTab = () => {
+        const city = document.getElementById('citySelector')?.value;
+        const tab  = document.getElementById('tab-parques');
+        if (!tab) return;
+        if (city === 'orlando') {
+            tab.classList.add('visible');
+        } else {
+            tab.classList.remove('visible');
+            if (document.getElementById('panel-parques')?.classList.contains('active'))
+                window.switchTab('lugares');
+        }
     };
     window._i18n = i18n;
 
     // ═══ Queues ═══
     window.renderCityData = async () => {
+        if (window._updateParquesTab) window._updateParquesTab();
         const cityKey = document.getElementById('citySelector').value;
         const container = document.getElementById('dynamicQueues');
         const cityData = citiesConfig[cityKey];
@@ -1242,6 +2256,7 @@ window.removeCustomItem = (customIdx) => {
         if (tipEl) tipEl.innerText = tips[lang][currentTipIndex];
         document.title = lang === 'en' ? 'TaxUSA — Itinerary' : lang === 'pt' ? 'TaxUSA — Itinerário' : 'TaxUSA — Itinerario';
         renderCityData();
+        if (window._updateParquesTab) window._updateParquesTab();
         renderChecklist(lang);
         if (window.renderCityGrid) window.renderCityGrid();
         if (window.taxieUpdateLang) window.taxieUpdateLang(lang);
@@ -2087,5 +3102,606 @@ window.doSwitchApp = function(destino) {
 };
 </script>
 
+
+<script>
+// ══ TRACKER DE PARQUES (Orlando) ══
+(function(){
+
+const PARKS_DATA = [
+  {
+    id: 'mk',
+    name: 'Magic Kingdom',
+    emoji: '🏰',
+    label: 'Walt Disney World',
+    cssClass: 'park-mk',
+    zones: [
+      {
+        name: 'Main Street, U.S.A.',
+        attractions: [
+          { name: 'Walt Disney World Railroad', height: null },
+          { name: 'Town Square Theater (Meet Mickey)', height: null },
+        ]
+      },
+      {
+        name: 'Adventureland',
+        attractions: [
+          { name: 'Swiss Family Treehouse', height: null },
+          { name: 'The Magic Carpets of Aladdin', height: null },
+          { name: 'Jungle Cruise', height: null },
+          { name: "Walt Disney's Enchanted Tiki Room", height: null },
+          { name: 'Pirates of the Caribbean', height: null },
+        ]
+      },
+      {
+        name: 'Frontierland',
+        attractions: [
+          { name: "Tiana's Bayou Adventure", height: '40"/ 102 cm' },
+          { name: 'Big Thunder Mountain Railroad (temp. cerrada)', height: '40"/ 102 cm' },
+          { name: 'Country Bear Musical Jamboree', height: null },
+        ]
+      },
+      {
+        name: 'Liberty Square',
+        attractions: [
+          { name: 'The Hall of Presidents', height: null },
+          { name: 'Haunted Mansion', height: null },
+        ]
+      },
+      {
+        name: 'Fantasyland',
+        attractions: [
+          { name: '"it\'s a small world"', height: null },
+          { name: "Peter Pan's Flight", height: null },
+          { name: 'Prince Charming Regal Carrousel', height: null },
+          { name: "Mickey's PhilharMagic", height: null },
+          { name: 'Princess Fairytale Hall', height: null },
+          { name: 'The Many Adventures of Winnie the Pooh', height: null },
+          { name: 'Seven Dwarfs Mine Train', height: '38"/ 97 cm' },
+          { name: 'Enchanted Tales with Belle', height: null },
+          { name: 'Under the Sea – Journey of The Little Mermaid', height: null },
+          { name: 'Meet Ariel at Her Grotto', height: null },
+          { name: 'The Barnstormer', height: '35"/ 89 cm' },
+          { name: 'Dumbo the Flying Elephant', height: null },
+          { name: 'Mad Tea Party', height: null },
+          { name: 'Meet Mirabel at Fairytale Garden', height: null },
+        ]
+      },
+      {
+        name: 'Tomorrowland',
+        attractions: [
+          { name: 'TRON Lightcycle / Run', height: '48"/ 122 cm' },
+          { name: 'Tomorrowland Speedway', height: '32"/ 81 cm (solo) / 54"/ 137 cm (conducir)' },
+          { name: 'Space Mountain', height: '44"/ 112 cm' },
+          { name: 'Astro Orbiter', height: null },
+          { name: 'Tomorrowland Transit Authority PeopleMover', height: null },
+          { name: "Walt Disney's Carousel of Progress", height: null },
+          { name: "Buzz Lightyear's Space Ranger Spin", height: null },
+          { name: 'Monsters, Inc. Laugh Floor', height: null },
+          { name: "Pete's Silly Sideshow", height: null },
+        ]
+      },
+    ]
+  },
+  {
+    id: 'epcot',
+    name: 'EPCOT',
+    emoji: '🌍',
+    label: 'Walt Disney World',
+    cssClass: 'park-epcot',
+    zones: [
+      {
+        name: 'World Celebration',
+        attractions: [
+          { name: 'Spaceship Earth', height: null },
+          { name: 'Meet Mickey & Friends', height: null },
+          { name: 'Disney & Pixar Short Film Festival', height: null },
+          { name: 'Journey Into Imagination With Figment', height: null },
+        ]
+      },
+      {
+        name: 'World Discovery',
+        attractions: [
+          { name: 'Guardians of the Galaxy: Cosmic Rewind', height: '42"/ 107 cm' },
+          { name: 'Mission: SPACE – Green Mission', height: '40"/ 102 cm' },
+          { name: 'Mission: SPACE – Orange Mission', height: '44"/ 112 cm' },
+          { name: 'REIMAGINED! Test Track', height: '40"/ 102 cm' },
+        ]
+      },
+      {
+        name: 'World Nature',
+        attractions: [
+          { name: 'Journey of Water, Inspired by Moana', height: null },
+          { name: 'Awesome Planet', height: null },
+          { name: 'Soarin\'', height: '40"/ 102 cm' },
+          { name: 'Living with the Land', height: null },
+          { name: 'The Seas with Nemo & Friends', height: null },
+          { name: 'Turtle Talk with Crush', height: null },
+          { name: 'SeaBase Aquarium', height: null },
+        ]
+      },
+      {
+        name: 'World Showcase',
+        attractions: [
+          { name: 'Gran Fiesta Tour Starring The Three Caballeros (México)', height: null },
+          { name: 'Meet Anna and Elsa at Royal Sommerhus (Noruega)', height: null },
+          { name: 'Frozen Ever After (Noruega)', height: null },
+          { name: 'Reflections of China', height: null },
+          { name: 'The American Adventure', height: null },
+          { name: 'Palais du Cinéma (Francia)', height: null },
+          { name: 'Beauty and the Beast Sing-Along (Francia)', height: null },
+          { name: 'Impressions de France (Francia)', height: null },
+          { name: "Remy's Ratatouille Adventure (Francia)", height: null },
+          { name: 'Canada Far and Wide in Circle-Vision 360', height: null },
+        ]
+      },
+    ]
+  },
+  {
+    id: 'hs',
+    name: 'Hollywood Studios',
+    emoji: '🎬',
+    label: 'Walt Disney World',
+    cssClass: 'park-hs',
+    zones: [
+      {
+        name: 'Hollywood Boulevard',
+        attractions: [
+          { name: "Mickey & Minnie's Runaway Railway", height: null },
+        ]
+      },
+      {
+        name: 'Echo Lake',
+        attractions: [
+          { name: "Indiana Jones™ Epic Stunt Spectacular!", height: null },
+          { name: 'Star Tours – The Adventures Continue', height: '40"/ 102 cm' },
+          { name: 'Vacation Fun (Animated Short)', height: null },
+          { name: 'For the First Time in Forever: A "Frozen" Sing-Along Celebration', height: null },
+        ]
+      },
+      {
+        name: 'Commissary Lane',
+        attractions: [
+          { name: 'Meet Mickey and Minnie at Red Carpet Dreams', height: null },
+        ]
+      },
+      {
+        name: 'Star Wars: Galaxy\'s Edge',
+        attractions: [
+          { name: 'Star Wars: Rise of the Resistance', height: '40"/ 102 cm' },
+          { name: "Millennium Falcon: Smugglers Run", height: '38"/ 97 cm' },
+        ]
+      },
+      {
+        name: 'Toy Story Land',
+        attractions: [
+          { name: 'Alien Swirling Saucers', height: '32"/ 81 cm' },
+          { name: 'Slinky Dog Dash', height: '38"/ 97 cm' },
+          { name: 'Toy Story Mania!', height: null },
+        ]
+      },
+      {
+        name: 'Animation Courtyard',
+        attractions: [
+          { name: 'Walt Disney Presents', height: null },
+          { name: 'The Little Mermaid – A Musical Adventure', height: null },
+        ]
+      },
+      {
+        name: 'Sunset Boulevard',
+        attractions: [
+          { name: 'Disney Villains: Unfairly Ever After', height: null },
+          { name: "Rock 'n' Roller Coaster® Starring Aerosmith", height: '48"/ 122 cm' },
+          { name: 'The Twilight Zone Tower of Terror™', height: '40"/ 102 cm' },
+          { name: 'Fantasmic!', height: null },
+          { name: 'Beauty and the Beast – Live on Stage', height: null },
+        ]
+      },
+      {
+        name: 'Pixar Plaza',
+        attractions: [
+          { name: 'Meet Edna Mode at the Edna Mode Experience', height: null },
+        ]
+      },
+    ]
+  },
+  {
+    id: 'ioa',
+    name: 'Islands of Adventure',
+    emoji: '🦖',
+    label: 'Universal Orlando',
+    cssClass: 'park-ioa',
+    zones: [
+      {
+        name: 'Marvel Super Hero Island',
+        attractions: [
+          { name: 'The Incredible Hulk Coaster®', height: '54"/ 138 cm' },
+          { name: 'Storm Force Accelatron®', height: null },
+          { name: "Doctor Doom's Fearfall®", height: '52"/ 133 cm' },
+          { name: 'The Amazing Adventures of Spider-Man®', height: '40"/ 102 cm' },
+          { name: 'Meet the Marvel Super Heroes', height: null },
+        ]
+      },
+      {
+        name: 'Toon Lagoon',
+        attractions: [
+          { name: 'Classic Comic Strip Characters', height: null },
+          { name: 'Me Ship, The Olive®', height: null },
+          { name: "Popeye & Bluto's Bilge-Rat Barges®", height: '42"/ 107 cm' },
+          { name: "Dudley Do-Right's Ripsaw Falls®", height: '44"/ 112 cm' },
+        ]
+      },
+      {
+        name: 'Skull Island: Reign of Kong',
+        attractions: [
+          { name: 'Skull Island: Reign of Kong', height: '36"/ 92 cm' },
+        ]
+      },
+      {
+        name: 'Jurassic Park',
+        attractions: [
+          { name: 'Camp Jurassic', height: null },
+          { name: 'Pteranodon Flyers', height: '36"–56"/ 92–143 cm' },
+          { name: 'Jurassic Park River Adventure', height: '42"/ 107 cm' },
+          { name: 'Raptor Encounter', height: null },
+          { name: 'Jurassic Park Discovery Center', height: null },
+          { name: 'Jurassic World VelociCoaster', height: '51"/ 130 cm' },
+        ]
+      },
+      {
+        name: 'The Wizarding World of Harry Potter – Hogsmeade',
+        attractions: [
+          { name: 'Harry Potter and the Forbidden Journey™', height: '48"/ 122 cm' },
+          { name: 'Flight of the Hippogriff™', height: '36"/ 92 cm' },
+          { name: 'Frog Choir / Triwizard Spirit Rally', height: null },
+          { name: 'Ollivanders™', height: null },
+          { name: "Hagrid's Magical Creatures Motorbike Adventure™", height: '48"/ 122 cm' },
+          { name: 'Hogwarts™ Express – Hogsmeade™ Station', height: null },
+        ]
+      },
+      {
+        name: 'The Lost Continent',
+        attractions: [
+          { name: 'The Mystic Fountain', height: null },
+        ]
+      },
+      {
+        name: 'Seuss Landing',
+        attractions: [
+          { name: 'The High in the Sky Seuss Trolley Train Ride!™', height: '36"/ 92 cm' },
+          { name: 'Caro-Seuss-el™', height: null },
+          { name: "Oh! The Stories You'll Hear!™", height: null },
+          { name: 'Dr. Seuss Character Zone', height: null },
+          { name: 'One Fish, Two Fish, Red Fish, Blue Fish™', height: null },
+          { name: 'The Cat in the Hat™', height: '36"/ 92 cm' },
+          { name: "If I Ran The Zoo™", height: null },
+        ]
+      },
+    ]
+  },
+  {
+    id: 'usf',
+    name: 'Universal Studios Florida',
+    emoji: '🎭',
+    label: 'Universal Orlando',
+    cssClass: 'park-usf',
+    zones: [
+      {
+        name: 'Minion Land',
+        attractions: [
+          { name: "Illumination's Villain-Con Minion Blast", height: null },
+          { name: 'Despicable Me Minion Mayhem', height: '40"/ 102 cm' },
+          { name: 'Illumination Theater™', height: null },
+        ]
+      },
+      {
+        name: 'New York',
+        attractions: [
+          { name: 'Hollywood Rip Ride Rockit', height: '51"–79"/ 130–201 cm' },
+          { name: 'Meet The TRANSFORMERS™', height: null },
+          { name: 'TRANSFORMERS™: The Ride-3D', height: '40"/ 102 cm' },
+          { name: 'Race Through New York Starring Jimmy Fallon', height: '40"/ 102 cm' },
+          { name: 'Marilyn & the Diamond Bellas', height: null },
+          { name: 'Revenge of the Mummy', height: '48"/ 122 cm' },
+          { name: 'The Blues Brothers® Show', height: null },
+          { name: 'Sing it!', height: null },
+          { name: '¡Vamos! – Báilalo', height: null },
+        ]
+      },
+      {
+        name: 'San Francisco',
+        attractions: [
+          { name: 'Beat Builders', height: null },
+          { name: 'Fast & Furious – Supercharged', height: '40"/ 102 cm' },
+        ]
+      },
+      {
+        name: 'The Wizarding World of Harry Potter – Diagon Alley',
+        attractions: [
+          { name: 'Hogwarts™ Express – King\'s Cross Station', height: null },
+          { name: 'Knight Bus™', height: null },
+          { name: 'Harry Potter and the Escape from Gringotts™', height: '42"/ 107 cm' },
+          { name: 'Ollivanders™', height: null },
+          { name: 'Gringotts™ Money Exchange', height: null },
+          { name: 'The Tales of Beedle the Bard™ / Celestina Warbeck and the Banshees', height: null },
+        ]
+      },
+      {
+        name: 'World Expo',
+        attractions: [
+          { name: 'MEN IN BLACK™ Alien Attack™', height: '42"/ 107 cm' },
+        ]
+      },
+      {
+        name: 'Springfield, U.S.A.: Home of the Simpsons',
+        attractions: [
+          { name: 'The Simpsons Ride™', height: '40"/ 102 cm' },
+          { name: "Kang & Kodos' Twirl 'n' Hurl", height: null },
+        ]
+      },
+      {
+        name: "Woody Woodpecker's KidZone",
+        attractions: [
+          { name: 'Animal Actors on Location!', height: null },
+          { name: 'E.T. Adventure', height: '34"/ 87 cm' },
+          { name: 'Meet SpongeBob SquarePants and Friends', height: null },
+        ]
+      },
+      {
+        name: 'Hollywood',
+        attractions: [
+          { name: 'NBC Media Center', height: null },
+          { name: 'Drive In and Dance', height: null },
+          { name: 'Character Party Zone', height: null },
+          { name: "Universal Orlando's Horror Make-Up Show", height: null },
+          { name: 'Hollywood Character Zone', height: null },
+          { name: 'The Bourne Stuntacular', height: null },
+        ]
+      },
+    ]
+  },
+  {
+    id: 'epic',
+    name: 'Epic Universe',
+    emoji: '✨',
+    label: 'Universal Orlando',
+    cssClass: 'park-epic',
+    zones: [
+      {
+        name: 'Celestial Park',
+        attractions: [
+          { name: 'Stardust Racers', height: '48"/ 122 cm' },
+          { name: 'Constellation Carousel', height: null },
+          { name: 'Astronomica', height: null },
+        ]
+      },
+      {
+        name: 'Super Nintendo World™',
+        attractions: [
+          { name: 'Mario Kart™: Bowser\'s Challenge', height: '40"/ 102 cm' },
+          { name: 'Mine-Cart Madness™', height: '40"/ 102 cm' },
+          { name: "Yoshi's Adventure™", height: '34"/ 87 cm' },
+          { name: 'Mario & Luigi Meet & Greet', height: null },
+          { name: 'Princess Peach Meet & Greet', height: null },
+          { name: 'Toad Meet & Greet', height: null },
+          { name: 'Donkey Kong Meet & Greet', height: null },
+        ]
+      },
+      {
+        name: 'Dark Universe',
+        attractions: [
+          { name: 'Monsters Unchained: The Frankenstein Experiment', height: '48"/ 122 cm' },
+          { name: 'Curse of the Werewolf', height: '40"/ 102 cm' },
+          { name: 'Dark Universe Character Meet & Greet', height: null },
+          { name: 'Darkmoor Monster Makeup Experience', height: null },
+        ]
+      },
+      {
+        name: 'The Wizarding World of Harry Potter – Ministry of Magic',
+        attractions: [
+          { name: 'Harry Potter and the Battle at the Ministry™', height: '40"/ 102 cm' },
+          { name: 'Le Cirque Arcanus™', height: null },
+          { name: 'Cosme Acajor Baguettes Magique™', height: null },
+        ]
+      },
+      {
+        name: 'How to Train Your Dragon – Isle of Berk',
+        attractions: [
+          { name: "Hiccup's Wing Gliders", height: '40"/ 102 cm' },
+          { name: "Dragon Racer's Rally", height: '48"/ 122 cm' },
+          { name: 'Fyre Drill', height: null },
+          { name: 'The Untrainable Dragon', height: null },
+          { name: 'Viking Training Camp', height: null },
+          { name: 'Meet Toothless and Friends', height: null },
+        ]
+      },
+    ]
+  },
+];
+
+// --- State ---
+let state = {};
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem('parkTracker_v1');
+    if (saved) state = JSON.parse(saved);
+  } catch(e) { state = {}; }
+}
+
+function saveState() {
+  try { localStorage.setItem('parkTracker_v1', JSON.stringify(state)); } catch(e) {}
+}
+
+function toggleAttraction(parkId, zoneIdx, attrIdx) {
+  const key = `${parkId}_${zoneIdx}_${attrIdx}`;
+  state[key] = !state[key];
+  saveState();
+  updateUI(parkId);
+  updateGlobalProgress();
+}
+
+function isDone(parkId, zoneIdx, attrIdx) {
+  return !!state[`${parkId}_${zoneIdx}_${attrIdx}`];
+}
+
+// --- Build UI ---
+function buildParks() {
+  const container = document.getElementById('pk-parksContainer');
+  if (!container) return;
+  container.innerHTML = '';
+
+  PARKS_DATA.forEach(park => {
+    const section = document.createElement('div');
+    section.className = `park-section ${park.cssClass}`;
+    section.id = `park-${park.id}`;
+
+    // Header
+    const header = document.createElement('div');
+    header.className = 'park-header';
+    header.onclick = () => section.classList.toggle('collapsed');
+
+    const total = park.zones.reduce((s, z) => s + z.attractions.length, 0);
+
+    header.innerHTML = `
+      <div class="park-header-left">
+        <span class="park-emoji">${park.emoji}</span>
+        <div>
+          <div class="park-name">${park.name}</div>
+          <div class="park-zone-label">${park.label}</div>
+        </div>
+      </div>
+      <div class="park-stats">
+        <span class="park-count" id="count-${park.id}">0/${total}</span>
+        <div class="mini-bar-outer">
+          <div class="mini-bar-inner" id="bar-${park.id}" style="width:0%"></div>
+        </div>
+        <span class="chevron">▾</span>
+      </div>
+    `;
+
+    // Body
+    const body = document.createElement('div');
+    body.className = 'park-body';
+
+    park.zones.forEach((zone, zoneIdx) => {
+      const zoneBlock = document.createElement('div');
+      zoneBlock.className = 'zone-block';
+
+      const zoneTitle = document.createElement('div');
+      zoneTitle.className = 'zone-title';
+      zoneTitle.textContent = zone.name;
+      zoneBlock.appendChild(zoneTitle);
+
+      const grid = document.createElement('div');
+      grid.className = 'attractions-grid';
+
+      zone.attractions.forEach((attr, attrIdx) => {
+        const card = document.createElement('div');
+        card.className = 'attraction-card' + (isDone(park.id, zoneIdx, attrIdx) ? ' done' : '');
+        card.id = `card-${park.id}-${zoneIdx}-${attrIdx}`;
+        card.innerHTML = `
+          <div class="check-circle" id="check-${park.id}-${zoneIdx}-${attrIdx}">${isDone(park.id, zoneIdx, attrIdx) ? '✓' : ''}</div>
+          <div class="attraction-info">
+            <div class="attraction-name">${attr.name}</div>
+            ${attr.height ? `<div class="attraction-height">↑ ${attr.height}</div>` : ''}
+          </div>
+        `;
+        card.onclick = () => {
+          toggleAttraction(park.id, zoneIdx, attrIdx);
+          const c = document.getElementById(`card-${park.id}-${zoneIdx}-${attrIdx}`);
+          const ch = document.getElementById(`check-${park.id}-${zoneIdx}-${attrIdx}`);
+          const done = isDone(park.id, zoneIdx, attrIdx);
+          c.classList.toggle('done', done);
+          ch.textContent = done ? '✓' : '';
+          ch.classList.add('popping');
+          setTimeout(() => ch.classList.remove('popping'), 250);
+        };
+        grid.appendChild(card);
+      });
+
+      zoneBlock.appendChild(grid);
+      body.appendChild(zoneBlock);
+    });
+
+    section.appendChild(header);
+    section.appendChild(body);
+    container.appendChild(section);
+
+    updateUI(park.id);
+  });
+
+  updateGlobalProgress();
+}
+
+function updateUI(parkId) {
+  const park = PARKS_DATA.find(p => p.id === parkId);
+  if (!park) return;
+  let done = 0, total = 0;
+  park.zones.forEach((zone, zi) => {
+    zone.attractions.forEach((_, ai) => {
+      total++;
+      if (isDone(parkId, zi, ai)) done++;
+    });
+  });
+  const countEl = document.getElementById(`count-${parkId}`);
+  const barEl = document.getElementById(`bar-${parkId}`);
+  if (countEl) countEl.textContent = `${done}/${total}`;
+  if (barEl) barEl.style.width = `${total ? (done/total)*100 : 0}%`;
+}
+
+function updateGlobalProgress() {
+  let done = 0, total = 0;
+  PARKS_DATA.forEach(park => {
+    park.zones.forEach((zone, zi) => {
+      zone.attractions.forEach((_, ai) => {
+        total++;
+        if (isDone(park.id, zi, ai)) done++;
+      });
+    });
+  });
+  document.getElementById('pk-globalDone').textContent = done;
+  document.getElementById('pk-globalTotal').textContent = total;
+  document.getElementById('pk-globalBar').style.width = `${total ? (done/total)*100 : 0}%`;
+}
+
+function pk_filterParks(id) {
+  if (!document.getElementById('pk-parksContainer')) return;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+
+  PARKS_DATA.forEach(park => {
+    const el = document.getElementById(`park-${park.id}`);
+    if (id === 'all' || park.id === id) {
+      el.classList.remove('hidden');
+    } else {
+      el.classList.add('hidden');
+    }
+  });
+}
+
+function pk_resetAll() {
+  if (!confirm('¿Reiniciar todo el progreso? Esto borrará todas tus atracciones tachadas.')) return;
+  state = {};
+  saveState();
+  buildParks();
+}
+
+// --- Init ---
+loadState();
+buildParks();
+
+window.pk_filterParks = pk_filterParks;
+window.pk_resetAll    = pk_resetAll;
+window.pk_initParques = function() {
+    // Wait for panel to be visible in DOM before rendering
+    requestAnimationFrame(function() {
+        var container = document.getElementById('pk-parksContainer');
+        if (!container) return;
+        render();
+        updateGlobal();
+    });
+};
+})();
+</script>
 </body>
 </html>
