@@ -59,6 +59,20 @@ input::placeholder,textarea::placeholder{color:var(--text-dim);font-weight:500;}
 .input-group{margin-bottom:12px;}
 textarea{resize:none;line-height:1.5;}
 
+/* ── AUTOCOMPLETE ── */
+.autocomplete-wrap{position:relative;margin-bottom:12px;}
+.autocomplete-list{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface);border:1.5px solid var(--primary);border-radius:var(--radius-sm);box-shadow:var(--shadow-lg);z-index:500;max-height:220px;overflow-y:auto;display:none;}
+.autocomplete-list.show{display:block;}
+.autocomplete-item{padding:11px 14px;font-size:.83rem;font-weight:600;color:var(--text);cursor:pointer;display:flex;align-items:flex-start;gap:10px;border-bottom:1px solid var(--border);transition:background .12s;}
+.autocomplete-item:last-child{border-bottom:none;}
+.autocomplete-item:hover,.autocomplete-item.focused{background:var(--primary-dim);}
+.autocomplete-item .ac-icon{font-size:1rem;flex-shrink:0;margin-top:1px;}
+.autocomplete-item .ac-body{}
+.autocomplete-item .ac-main{font-size:.83rem;font-weight:700;color:var(--text);}
+.autocomplete-item .ac-sub{font-size:.7rem;color:var(--text-sub);font-weight:500;margin-top:2px;}
+.autocomplete-spinner{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:16px;height:16px;border-radius:50%;border:2px solid var(--border);border-top-color:var(--primary);animation:spin .7s linear infinite;display:none;}
+@keyframes spin{to{transform:translateY(-50%) rotate(360deg)}}
+
 /* ── SECCIÓN TITLE ── */
 .section-title{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
 .section-title h2{font-size:1rem;font-weight:900;color:var(--text);}
@@ -101,8 +115,8 @@ textarea{resize:none;line-height:1.5;}
 .btn-generate:disabled{opacity:.5;cursor:not-allowed;transform:none;}
 
 /* ── SPINNER ── */
-.spinner{width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(255,255,255,.3);border-top-color:white;animation:spin .7s linear infinite;flex-shrink:0;}
-@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(255,255,255,.3);border-top-color:white;animation:spin2 .7s linear infinite;flex-shrink:0;}
+@keyframes spin2{to{transform:rotate(360deg)}}
 
 /* ── RESULT ── */
 #ruta-result{display:none;}
@@ -122,10 +136,8 @@ textarea{resize:none;line-height:1.5;}
 .day-stops{background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);overflow:hidden;}
 .day-hotel{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface-2);border-bottom:1px solid var(--border);}
 .day-hotel .h-icon{font-size:.9rem;}
-.day-hotel .h-text{font-size:.72rem;color:var(--text-sub);font-weight:600;}
 .day-hotel .h-addr{font-size:.72rem;color:var(--text-sub);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;}
 .day-hotel a{font-size:.7rem;color:var(--primary);text-decoration:none;white-space:nowrap;flex-shrink:0;}
-
 .ruta-stop{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;}
 .ruta-stop:last-child{border-bottom:none;}
 .ruta-stop:hover{background:var(--surface-2);}
@@ -138,9 +150,6 @@ textarea{resize:none;line-height:1.5;}
 .rs-desc{font-size:.72rem;color:var(--text-sub);font-weight:500;line-height:1.4;margin-bottom:6px;}
 .rs-footer{display:flex;align-items:center;justify-content:space-between;}
 .rs-badges{display:flex;gap:5px;}
-.rs-badge{font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:999px;}
-.rs-badge.star{background:rgba(245,158,11,.15);color:#92400e;}
-.rs-badge.rec{background:rgba(16,185,129,.12);color:#065f46;}
 .rs-maps{display:flex;align-items:center;gap:4px;font-size:.7rem;color:var(--primary);text-decoration:none;font-weight:600;}
 .rs-maps:hover{text-decoration:underline;}
 
@@ -156,8 +165,6 @@ textarea{resize:none;line-height:1.5;}
 .gp-bar-wrap{flex:2;}
 .gp-bar-bg{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
 .gp-bar-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:3px;transition:width .4s;}
-
-/* RESET */
 .btn-reset{background:none;border:none;color:var(--text-dim);font-size:.72rem;font-weight:700;cursor:pointer;padding:0;text-decoration:underline;font-family:inherit;}
 
 /* ── MENU OVERLAY + SETTINGS ── */
@@ -165,8 +172,14 @@ textarea{resize:none;line-height:1.5;}
 .settings-drawer{position:fixed;top:0;right:-300px;width:290px;height:100%;background:var(--surface);z-index:1001;transition:.3s ease;padding:28px 20px;display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(0,0,0,.15);border-left:1px solid var(--border);overflow-y:auto;}
 .settings-drawer.open{right:0;}
 .drawer-header{font-size:1.1rem;font-weight:900;color:var(--primary);margin-bottom:4px;}
+.drawer-email{font-size:.75rem;color:var(--text-dim);font-weight:600;margin-bottom:20px;}
+.drawer-section-label{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:8px;display:block;}
+.lang-selector{display:flex;background:var(--input-bg);border-radius:var(--radius-sm);padding:4px;gap:4px;margin-bottom:14px;border:1.5px solid var(--border);}
+.lang-opt{flex:1;padding:8px 4px;border-radius:8px;border:none;background:transparent;cursor:pointer;font-size:.75rem;font-weight:800;color:var(--text-sub);font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;transition:var(--tr);}
+.lang-opt.active{background:var(--primary);color:white;}
 .drawer-btn{width:100%;padding:12px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--input-bg);color:var(--text);cursor:pointer;font-weight:700;margin-bottom:8px;font-size:.85rem;text-align:left;font-family:inherit;transition:var(--tr);display:flex;align-items:center;gap:10px;}
 .drawer-btn:hover{background:var(--surface-2);border-color:var(--primary);}
+.btn-danger{color:var(--danger)!important;border-color:rgba(239,68,68,.3)!important;}
 
 /* ── CONFETTI ── */
 .confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden;}
@@ -184,6 +197,7 @@ textarea{resize:none;line-height:1.5;}
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);z-index:9998;padding:10px 18px;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);font-size:.82rem;font-weight:700;color:var(--text);opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
+@keyframes pinBoxIn{from{opacity:0;transform:scale(.88) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
 </style>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}</script>
 </head>
@@ -209,116 +223,120 @@ textarea{resize:none;line-height:1.5;}
 
   <!-- NAV -->
   <nav class="nav-bar">
-    <a href="index.html"      class="btn-nav"><span class="ni">🏠</span><span>INICIO</span></a>
-    <a href="compras.html"    class="btn-nav"><span class="ni">🛍️</span><span>GASTOS</span></a>
-    <a href="itinerario.html" class="btn-nav"><span class="ni">📍</span><span>ITINERARIO</span></a>
-    <a href="unidades.html"   class="btn-nav"><span class="ni">⚖️</span><span>UNIDADES</span></a>
-    <a href="tickets.html"    class="btn-nav"><span class="ni">📄</span><span>DOCUMENTOS</span></a>
-    <a href="grupo.html"      class="btn-nav"><span class="ni">👥</span><span>GRUPO</span></a>
-    <button class="btn-nav-set" id="btnSettings" onclick="toggleSettings()"></button>
+    <a href="index.html"      class="btn-nav"><span class="ni">🏠</span><span data-i18n="nav_home">INICIO</span></a>
+    <a href="compras.html"    class="btn-nav"><span class="ni">🛍️</span><span data-i18n="nav_shopping">GASTOS</span></a>
+    <a href="itinerario.html" class="btn-nav"><span class="ni">📍</span><span data-i18n="nav_itinerary">ITINERARIO</span></a>
+    <a href="unidades.html"   class="btn-nav"><span class="ni">⚖️</span><span data-i18n="nav_units">UNIDADES</span></a>
+    <a href="tickets.html"    class="btn-nav"><span class="ni">📄</span><span data-i18n="nav_tickets">DOCUMENTOS</span></a>
+    <a href="grupo.html"      class="btn-nav"><span class="ni">👥</span><span data-i18n="nav_group">GRUPO</span></a>
+    <button class="btn-nav-set" id="btnSettings" onclick="toggleSettings()">⚙️</button>
   </nav>
 
   <!-- ══ BUILDER ══ -->
   <div class="card" id="builder-card">
     <div class="section-title">
-      <h2>🗺️ Generador de Ruta</h2>
-      <span class="section-badge">Nuevo</span>
+      <h2 data-i18n="route_title">🗺️ Generador de Ruta</h2>
+      <span class="section-badge" data-i18n="badge_new">Nuevo</span>
     </div>
 
-    <!-- Punto de partida -->
-    <div class="input-group">
-      <span class="slabel">📍 Punto de partida (hotel / alojamiento)</span>
-      <input type="text" id="hotel-input" placeholder="Ej: 324 Newcastle Dr, Kissimmee FL">
+    <!-- Punto de partida con autocomplete -->
+    <span class="slabel" data-i18n="label_hotel">📍 Punto de partida (hotel / alojamiento)</span>
+    <div class="autocomplete-wrap">
+      <input type="text" id="hotel-input" placeholder="Ej: 324 Newcastle Dr, Kissimmee FL" autocomplete="off" oninput="onHotelInput(this.value)" onkeydown="onHotelKey(event)">
+      <div class="autocomplete-spinner" id="hotel-spinner"></div>
+      <div class="autocomplete-list" id="hotel-ac" role="listbox"></div>
     </div>
 
     <!-- Días -->
-    <span class="slabel">📅 Cantidad de días</span>
+    <span class="slabel" data-i18n="label_days">📅 Cantidad de días</span>
     <div class="days-row">
       <button class="days-btn" onclick="changeDays(-1)">−</button>
       <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
         <div class="days-count" id="days-count">3</div>
-        <div class="days-lbl">días</div>
+        <div class="days-lbl" data-i18n="lbl_days">días</div>
       </div>
       <button class="days-btn" onclick="changeDays(1)">+</button>
     </div>
 
     <!-- Fecha de inicio -->
     <div class="input-group">
-      <span class="slabel">🗓️ Fecha de inicio (opcional)</span>
+      <span class="slabel" data-i18n="label_start_date">🗓️ Fecha de inicio (opcional)</span>
       <input type="date" id="start-date">
     </div>
 
     <!-- Métodos -->
-    <span class="slabel">➕ Agregar paradas</span>
+    <span class="slabel" data-i18n="label_add_stops">➕ Agregar paradas</span>
     <div class="methods-grid">
-      <button class="method-btn" id="m-link" onclick="setMethod('link')"><span class="m-icon">🔗</span>Links</button>
-      <button class="method-btn" id="m-csv"  onclick="setMethod('csv')"><span class="m-icon">📂</span>CSV</button>
-      <button class="method-btn" id="m-text" onclick="setMethod('text')"><span class="m-icon">✏️</span>Manual</button>
+      <button class="method-btn" id="m-link" onclick="setMethod('link')"><span class="m-icon">🔗</span><span data-i18n="method_links">Links</span></button>
+      <button class="method-btn" id="m-csv"  onclick="setMethod('csv')"><span class="m-icon">📂</span><span data-i18n="method_csv">CSV</span></button>
+      <button class="method-btn" id="m-text" onclick="setMethod('text')"><span class="m-icon">✏️</span><span data-i18n="method_manual">Manual</span></button>
     </div>
 
     <!-- Links -->
     <div class="input-area" id="area-link">
       <div class="input-group">
-        <span class="slabel">Pegá links de Google Maps o Apple Maps (uno por línea)</span>
-        <textarea id="links-input" rows="4" placeholder="https://maps.app.goo.gl/...&#10;https://www.google.com/maps/place/...&#10;https://maps.apple.com/?..."></textarea>
+        <span class="slabel" data-i18n="label_paste_links">Pegá links de Google Maps o Apple Maps (uno por línea)</span>
+        <textarea id="links-input" rows="4" placeholder="https://maps.app.goo.gl/...&#10;https://www.google.com/maps/place/..."></textarea>
       </div>
-      <button onclick="parseLinks()" style="width:100%;padding:12px;border-radius:var(--radius-sm);border:1.5px solid var(--primary);background:var(--primary-dim);color:var(--primary);font-family:inherit;font-weight:800;font-size:.82rem;cursor:pointer;margin-bottom:12px;">Agregar links →</button>
+      <button onclick="parseLinks()" style="width:100%;padding:12px;border-radius:var(--radius-sm);border:1.5px solid var(--primary);background:var(--primary-dim);color:var(--primary);font-family:inherit;font-weight:800;font-size:.82rem;cursor:pointer;margin-bottom:12px;" data-i18n="btn_add_links">Agregar links →</button>
     </div>
 
     <!-- CSV -->
     <div class="input-area" id="area-csv">
       <div class="drop-zone" id="drop-zone" onclick="document.getElementById('csv-file').click()">
         <div class="dz-icon">📂</div>
-        <div class="dz-text">Tocá para subir un CSV</div>
-        <div class="dz-sub">Columnas: nombre, descripción (opcional), link (opcional)</div>
+        <div class="dz-text" data-i18n="dz_text">Tocá para subir un CSV</div>
+        <div class="dz-sub" data-i18n="dz_sub">Columnas: nombre, descripción (opcional), link (opcional)</div>
       </div>
       <input type="file" id="csv-file" accept=".csv,.txt" style="display:none" onchange="handleCSV(this)">
       <div class="input-group" style="margin-top:12px;">
-        <span class="slabel">O pegá el contenido CSV directo</span>
+        <span class="slabel" data-i18n="label_csv_paste">O pegá el contenido CSV directo</span>
         <textarea id="csv-text" rows="4" placeholder="Nike Outlet,Abre 10am,https://maps.google.com/...&#10;Ross Kissimmee,,https://maps.google.com/..."></textarea>
       </div>
-      <button onclick="parseCSV()" style="width:100%;padding:12px;border-radius:var(--radius-sm);border:1.5px solid var(--primary);background:var(--primary-dim);color:var(--primary);font-family:inherit;font-weight:800;font-size:.82rem;cursor:pointer;margin-bottom:12px;">Agregar desde CSV →</button>
+      <button onclick="parseCSV()" style="width:100%;padding:12px;border-radius:var(--radius-sm);border:1.5px solid var(--primary);background:var(--primary-dim);color:var(--primary);font-family:inherit;font-weight:800;font-size:.82rem;cursor:pointer;margin-bottom:12px;" data-i18n="btn_add_csv">Agregar desde CSV →</button>
     </div>
 
-    <!-- Manual -->
+    <!-- Manual con autocomplete en nombre/dirección -->
     <div class="input-area" id="area-text">
       <div style="display:flex;gap:8px;margin-bottom:8px;">
         <div style="flex:1">
-          <span class="slabel">Nombre</span>
-          <input type="text" id="manual-name" placeholder="Nike Clearance Store">
+          <span class="slabel" data-i18n="label_name">Nombre</span>
+          <input type="text" id="manual-name" data-i18n-ph="ph_name" placeholder="Nike Clearance Store">
         </div>
       </div>
       <div class="input-group">
-        <span class="slabel">Descripción (opcional)</span>
-        <input type="text" id="manual-desc" placeholder="Abre 10am, imperdible">
+        <span class="slabel" data-i18n="label_desc">Descripción (opcional)</span>
+        <input type="text" id="manual-desc" data-i18n-ph="ph_desc" placeholder="Abre 10am, imperdible">
       </div>
-      <div class="input-group">
-        <span class="slabel">Link de Maps (opcional)</span>
-        <input type="text" id="manual-url" placeholder="https://maps.google.com/...">
+      <span class="slabel" data-i18n="label_maps_link">Link o dirección de Maps (opcional)</span>
+      <div class="autocomplete-wrap">
+        <input type="text" id="manual-url" data-i18n-ph="ph_url" placeholder="Dirección o https://maps.google.com/..." autocomplete="off" oninput="onManualUrlInput(this.value)" onkeydown="onManualUrlKey(event)">
+        <div class="autocomplete-spinner" id="manual-spinner"></div>
+        <div class="autocomplete-list" id="manual-ac" role="listbox"></div>
       </div>
-      <button onclick="addManual()" style="width:100%;padding:12px;border-radius:var(--radius-sm);border:1.5px solid var(--primary);background:var(--primary-dim);color:var(--primary);font-family:inherit;font-weight:800;font-size:.82rem;cursor:pointer;margin-bottom:12px;">+ Agregar parada</button>
+      <button onclick="addManual()" style="width:100%;padding:12px;border-radius:var(--radius-sm);border:1.5px solid var(--primary);background:var(--primary-dim);color:var(--primary);font-family:inherit;font-weight:800;font-size:.82rem;cursor:pointer;margin-bottom:12px;" data-i18n="btn_add_stop">+ Agregar parada</button>
     </div>
 
     <!-- Lista de paradas -->
     <div id="stops-list" class="stops-list"></div>
-    <div id="stops-empty" class="empty-stops">📍 Todavía no agregaste paradas</div>
+    <div id="stops-empty" class="empty-stops" data-i18n="empty_stops">📍 Todavía no agregaste paradas</div>
 
-    <div style="display:flex;gap:8px;margin-bottom:14px;" id="stops-actions" style="display:none">
-      <button onclick="clearStops()" style="flex:1;padding:10px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface-2);color:var(--text-sub);font-family:inherit;font-weight:700;font-size:.8rem;cursor:pointer;">🗑️ Limpiar todo</button>
+    <div style="display:flex;gap:8px;margin-bottom:14px;" id="stops-actions">
+      <button onclick="clearStops()" style="flex:1;padding:10px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface-2);color:var(--text-sub);font-family:inherit;font-weight:700;font-size:.8rem;cursor:pointer;" data-i18n="btn_clear_all">🗑️ Limpiar todo</button>
     </div>
 
     <button class="btn-generate" id="btn-gen" onclick="generateRoute()" disabled>
-      <span>🗺️ Generar Ruta</span>
+      <span data-i18n="btn_generate">🗺️ Generar Ruta</span>
     </button>
   </div>
 
   <!-- ══ RESULTADO ══ -->
   <div id="ruta-result">
     <div class="result-header">
-      <div class="result-title">Tu ruta está lista ✅</div>
+      <div class="result-title" data-i18n="result_ready">Tu ruta está lista ✅</div>
       <div class="result-actions">
-        <button class="action-btn" onclick="downloadHTML()">⬇️ HTML</button>
-        <button class="action-btn" onclick="resetAll()">↺ Nueva</button>
+        <button class="action-btn" onclick="downloadHTML()" data-i18n="btn_download">⬇️ HTML</button>
+        <button class="action-btn" onclick="resetAll()" data-i18n="btn_new">↺ Nueva</button>
       </div>
     </div>
 
@@ -326,18 +344,18 @@ textarea{resize:none;line-height:1.5;}
     <div class="global-prog">
       <div class="gp-stat">
         <div class="gp-val" id="gp-done">0</div>
-        <div class="gp-lbl">visitadas</div>
+        <div class="gp-lbl" data-i18n="lbl_visited">visitadas</div>
       </div>
       <div class="gp-bar-wrap">
         <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
-          <span style="font-size:.65rem;font-weight:700;color:var(--text-dim);">PROGRESO TOTAL</span>
-          <button class="btn-reset" onclick="resetVisited()">reiniciar</button>
+          <span style="font-size:.65rem;font-weight:700;color:var(--text-dim);" data-i18n="lbl_total_progress">PROGRESO TOTAL</span>
+          <button class="btn-reset" onclick="resetVisited()" data-i18n="btn_restart">reiniciar</button>
         </div>
         <div class="gp-bar-bg"><div class="gp-bar-fill" id="gp-bar" style="width:0%"></div></div>
       </div>
       <div class="gp-stat">
         <div class="gp-val" id="gp-total">0</div>
-        <div class="gp-lbl">paradas</div>
+        <div class="gp-lbl" data-i18n="lbl_stops">paradas</div>
       </div>
     </div>
 
@@ -349,19 +367,230 @@ textarea{resize:none;line-height:1.5;}
 <!-- Settings drawer -->
 <div id="menuOverlay" class="menu-overlay" onclick="toggleSettings()"></div>
 <div id="settingsDrawer" class="settings-drawer">
-  <div class="drawer-header">Ajustes</div>
-  <button class="drawer-btn" onclick="toggleDarkMode()">🌓 Cambiar Tema</button>
-  <button class="drawer-btn" onclick="window.location.href='index.html'">🏠 Volver al inicio</button>
+  <div class="drawer-header"><span data-i18n="settings_title">Ajustes</span></div>
+  <p id="userEmail" class="drawer-email"></p>
+  <span class="drawer-section-label" data-i18n="label_language">Idioma</span>
+  <div class="lang-selector">
+    <button class="lang-opt" id="lang-es" onclick="window.changeLanguage('es')"><svg width="18" height="13" viewBox="0 0 18 13" xmlns="http://www.w3.org/2000/svg"><rect width="18" height="4.3" y="0" fill="#74acdf"/><rect width="18" height="4.4" y="4.3" fill="#fff"/><rect width="18" height="4.3" y="8.7" fill="#74acdf"/><circle cx="9" cy="6.5" r="1.5" fill="#f6b40e"/></svg> ES</button>
+    <button class="lang-opt" id="lang-en" onclick="window.changeLanguage('en')"><svg width="18" height="13" viewBox="0 0 18 13" xmlns="http://www.w3.org/2000/svg"><rect width="18" height="13" fill="#B22234"/><rect width="18" height="1" y="1" fill="#fff"/><rect width="18" height="1" y="3" fill="#fff"/><rect width="18" height="1" y="5" fill="#fff"/><rect width="18" height="1" y="7" fill="#fff"/><rect width="18" height="1" y="9" fill="#fff"/><rect width="18" height="1" y="11" fill="#fff"/><rect width="7" height="7" fill="#3C3B6E"/></svg> EN</button>
+    <button class="lang-opt" id="lang-pt" onclick="window.changeLanguage('pt')"><svg width="18" height="13" viewBox="0 0 18 13" xmlns="http://www.w3.org/2000/svg"><rect width="18" height="13" fill="#009c3b"/><polygon points="9,1 17,6.5 9,12 1,6.5" fill="#FEDF00"/><circle cx="9" cy="6.5" r="2.6" fill="#002776"/></svg> PT</button>
+  </div>
+  <button class="drawer-btn" onclick="changeProfile()">👤 <span data-i18n="btn_change_profile">Cambiar Perfil</span></button>
+  <button class="drawer-btn" onclick="toggleDarkMode()">🌓 <span data-i18n="btn_theme">Cambiar Tema</span></button>
+  <button class="drawer-btn" onclick="location.reload()">🔄 <span data-i18n="btn_update">Actualizar App</span></button>
+  <button class="drawer-btn" onclick="doChangeEmail()">📧 <span data-i18n="btn_email">Cambiar Correo</span></button>
+  <button class="drawer-btn" onclick="doChangePassword()">🔑 <span data-i18n="btn_password">Cambiar Contraseña</span></button>
+  <button class="drawer-btn" onclick="gestionarPIN()">🔢 <span data-i18n="btn_pin">Cambiar PIN Offline</span></button>
+  <button class="drawer-btn" onclick="openSwitchApp()">🌍 <span data-i18n="btn_switch_app">Cambiar Aplicación</span></button>
+  <button class="drawer-btn" onclick="doLogout()">🚪 <span data-i18n="btn_logout">Cerrar Sesión</span></button>
+  <div style="margin-top:auto;padding-top:16px;"><button class="drawer-btn btn-danger" onclick="doDeleteAccount()">🗑️ <span data-i18n="btn_delete">Eliminar Cuenta</span></button></div>
 </div>
 
+<!-- PIN Modal -->
+<div id="pinModalOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:9999;align-items:center;justify-content:center;" onclick="if(event.target===this)closePinModal()">
+  <div id="pinModalBox" style="background:var(--surface);border-radius:var(--radius);padding:28px 24px;width:calc(100% - 40px);max-width:360px;box-shadow:var(--shadow-lg);border:1px solid var(--border);position:relative;animation:pinBoxIn .28s cubic-bezier(0.34,1.56,0.64,1);">
+    <button onclick="closePinModal()" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--text-dim);line-height:1;">✕</button>
+    <div style="font-size:1.4rem;margin-bottom:6px;">🔢</div>
+    <div style="font-size:1rem;font-weight:900;color:var(--text);margin-bottom:4px;" id="pinModalTitle">Cambiar PIN Offline</div>
+    <div style="font-size:.75rem;font-weight:600;color:var(--text-sub);margin-bottom:20px;" id="pinModalSub">Este PIN se usa para acceder sin conexión</div>
+    <div id="pinStep1">
+      <label style="font-size:.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:6px;" id="pinLabel1">PIN Nuevo (4–6 dígitos)</label>
+      <input id="pinInput1" type="password" inputmode="numeric" maxlength="6" pattern="[0-9]*" style="width:100%;padding:14px 16px;background:var(--input-bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:1.5rem;font-weight:900;text-align:center;letter-spacing:6px;outline:none;margin-bottom:12px;transition:all .2s;" oninput="this.value=this.value.replace(/[^0-9]/g,'');pinInputFocus(this)" onfocus="this.style.borderColor='var(--primary)';this.style.boxShadow='0 0 0 3px var(--primary-dim)'" onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'" placeholder="••••">
+      <label style="font-size:.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:6px;" id="pinLabel2">Confirmar PIN</label>
+      <input id="pinInput2" type="password" inputmode="numeric" maxlength="6" pattern="[0-9]*" style="width:100%;padding:14px 16px;background:var(--input-bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:1.5rem;font-weight:900;text-align:center;letter-spacing:6px;outline:none;margin-bottom:16px;transition:all .2s;" oninput="this.value=this.value.replace(/[^0-9]/g,'')" onfocus="this.style.borderColor='var(--primary)';this.style.boxShadow='0 0 0 3px var(--primary-dim)'" onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'" placeholder="••••">
+      <div id="pinError" style="display:none;background:rgba(239,68,68,.1);border:1.5px solid var(--danger);border-radius:10px;padding:10px 12px;font-size:.78rem;font-weight:700;color:var(--danger);margin-bottom:12px;text-align:center;"></div>
+      <button onclick="confirmarPIN()" style="width:100%;padding:15px;border:none;border-radius:var(--radius-sm);background:var(--primary);color:white;font-family:inherit;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.3);transition:.2s;" id="pinConfirmBtn">Guardar PIN</button>
+    </div>
+    <div id="pinStep2" style="display:none;text-align:center;padding:8px 0;">
+      <div style="font-size:2.8rem;margin-bottom:10px;">✅</div>
+      <div style="font-size:1rem;font-weight:900;color:var(--success);margin-bottom:6px;" id="pinSuccessMsg">¡PIN actualizado!</div>
+      <div style="font-size:.8rem;font-weight:600;color:var(--text-sub);" id="pinSuccessSub">Podés usarlo para entrar sin conexión</div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser, verifyBeforeUpdateEmail } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+const FB = { apiKey:"AIzaSyA-eeKl8guVDmTa_NpYvkB0O7-RMbPrkP0", authDomain:"viajes-db538.firebaseapp.com", projectId:"viajes-db538", storageBucket:"viajes-db538.firebasestorage.app", messagingSenderId:"237311739178", appId:"1:237311739178:web:333e468b184c0402a98a53" };
+const app  = initializeApp(FB);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+let currentUser = null;
+
+onAuthStateChanged(auth, (user) => {
+  if (!user) { window.location.replace('login.html'); return; }
+  currentUser = user;
+  const perfilNombre = localStorage.getItem('perfilActivoNombre');
+  const el = document.getElementById('userEmail');
+  if (el) el.innerText = perfilNombre || user.email;
+  const foto = localStorage.getItem('perfilActivoFoto') || user.photoURL;
+  if (foto) {
+    const btn = document.getElementById('btnSettings');
+    if (btn) { btn.style.backgroundImage = `url('${foto}')`; btn.innerText = ''; }
+  }
+  const lang = localStorage.getItem('appLang') || 'es';
+  window.changeLanguage(lang);
+});
+
+window.doLogout = () => signOut(auth).then(() => window.location.replace('login.html'));
+
+window.doChangeEmail = async () => {
+  if (!currentUser) return;
+  const l = localStorage.getItem('appLang') || 'es';
+  const m = { es:{p:"Ingresá tu nuevo correo:",s:"Verificación enviada.",e:"Error: "}, en:{p:"Enter your new email:",s:"Verification sent.",e:"Error: "}, pt:{p:"Digite seu novo e-mail:",s:"Verificação enviada.",e:"Erro: "} };
+  const t = m[l] || m.es;
+  const e = prompt(t.p);
+  if (e) { try { await verifyBeforeUpdateEmail(currentUser, e); alert(t.s); } catch(er) { alert(t.e + er.message); } }
+};
+
+window.doChangePassword = async () => {
+  if (!currentUser) return;
+  const l = localStorage.getItem('appLang') || 'es';
+  const m = { es:{s:"Correo de recuperación enviado.",e:"Error: "}, en:{s:"Recovery email sent.",e:"Error: "}, pt:{s:"E-mail de recuperação enviado.",e:"Erro: "} };
+  const t = m[l] || m.es;
+  try { await sendPasswordResetEmail(auth, currentUser.email); alert(t.s); } catch(er) { alert(t.e + er.message); }
+};
+
+window.doDeleteAccount = async () => {
+  const l = localStorage.getItem('appLang') || 'es';
+  const m = { es:{c:"¿Eliminar cuenta permanentemente?",e:"Reautenticación requerida. Cerrá sesión y volvé a entrar."}, en:{c:"Permanently delete account?",e:"Re-authentication required. Please log out and back in."}, pt:{c:"Excluir conta permanentemente?",e:"Reautenticação necessária. Saia e entre novamente."} };
+  const t = m[l] || m.es;
+  if (!confirm(t.c)) return;
+  try { await deleteUser(currentUser); window.location.replace('login.html'); } catch(e) { alert(t.e); }
+};
+
+window.confirmarPIN = async () => {
+  const lang = localStorage.getItem('appLang') || 'es';
+  const errMsgs = { es:'Los PINs no coinciden o son muy cortos (mín. 4 dígitos).', en:'PINs don\'t match or are too short (min. 4 digits).', pt:'Os PINs não coincidem ou são curtos demais (mín. 4 dígitos).' };
+  const p1 = document.getElementById('pinInput1').value.trim();
+  const p2 = document.getElementById('pinInput2').value.trim();
+  const errEl = document.getElementById('pinError');
+  if (p1.length < 4 || p1 !== p2) {
+    errEl.textContent = errMsgs[lang] || errMsgs.es;
+    errEl.style.display = 'block';
+    document.getElementById('pinInput1').style.borderColor = 'var(--danger)';
+    document.getElementById('pinInput2').style.borderColor = 'var(--danger)';
+    return;
+  }
+  errEl.style.display = 'none';
+  const pinHash = btoa(p1);
+  localStorage.setItem('taxusa_offline_pin', pinHash);
+  if (currentUser) {
+    try { await setDoc(doc(db,'usuarios',currentUser.uid), { offlinePin: pinHash }, { merge: true }); } catch(e) {}
+  }
+  document.getElementById('pinStep1').style.display = 'none';
+  document.getElementById('pinStep2').style.display = 'block';
+  setTimeout(() => window.closePinModal(), 2200);
+};
+</script>
+
 <script>
+// ── i18n ──
+const i18n = {
+  es:{
+    nav_home:"INICIO", nav_shopping:"GASTOS", nav_itinerary:"ITINERARIO", nav_units:"UNIDADES", nav_tickets:"DOCUMENTOS", nav_group:"GRUPO",
+    route_title:"🗺️ Generador de Ruta", badge_new:"Nuevo",
+    label_hotel:"📍 Punto de partida (hotel / alojamiento)",
+    label_days:"📅 Cantidad de días", lbl_days:"días",
+    label_start_date:"🗓️ Fecha de inicio (opcional)",
+    label_add_stops:"➕ Agregar paradas",
+    method_links:"Links", method_csv:"CSV", method_manual:"Manual",
+    label_paste_links:"Pegá links de Google Maps o Apple Maps (uno por línea)",
+    btn_add_links:"Agregar links →",
+    dz_text:"Tocá para subir un CSV", dz_sub:"Columnas: nombre, descripción (opcional), link (opcional)",
+    label_csv_paste:"O pegá el contenido CSV directo",
+    btn_add_csv:"Agregar desde CSV →",
+    label_name:"Nombre", label_desc:"Descripción (opcional)", label_maps_link:"Link o dirección de Maps (opcional)",
+    ph_name:"Nike Clearance Store", ph_desc:"Abre 10am, imperdible", ph_url:"Dirección o https://maps.google.com/...",
+    btn_add_stop:"+ Agregar parada", btn_clear_all:"🗑️ Limpiar todo",
+    btn_generate:"🗺️ Generar Ruta", empty_stops:"📍 Todavía no agregaste paradas",
+    result_ready:"Tu ruta está lista ✅", btn_download:"⬇️ HTML", btn_new:"↺ Nueva",
+    lbl_visited:"visitadas", lbl_total_progress:"PROGRESO TOTAL", btn_restart:"reiniciar", lbl_stops:"paradas",
+    settings_title:"Ajustes", label_language:"Idioma",
+    btn_change_profile:"Cambiar Perfil", btn_theme:"Cambiar Tema", btn_update:"Actualizar App",
+    btn_email:"Cambiar Correo", btn_password:"Cambiar Contraseña", btn_pin:"Cambiar PIN Offline",
+    btn_switch_app:"Cambiar Aplicación", btn_logout:"Cerrar Sesión", btn_delete:"Eliminar Cuenta",
+    ac_searching:"Buscando...", ac_no_results:"Sin resultados para esta búsqueda",
+  },
+  en:{
+    nav_home:"HOME", nav_shopping:"EXPENSES", nav_itinerary:"ITINERARY", nav_units:"UNITS", nav_tickets:"DOCUMENTS", nav_group:"GROUP",
+    route_title:"🗺️ Route Generator", badge_new:"New",
+    label_hotel:"📍 Starting point (hotel / accommodation)",
+    label_days:"📅 Number of days", lbl_days:"days",
+    label_start_date:"🗓️ Start date (optional)",
+    label_add_stops:"➕ Add stops",
+    method_links:"Links", method_csv:"CSV", method_manual:"Manual",
+    label_paste_links:"Paste Google Maps or Apple Maps links (one per line)",
+    btn_add_links:"Add links →",
+    dz_text:"Tap to upload a CSV", dz_sub:"Columns: name, description (optional), link (optional)",
+    label_csv_paste:"Or paste CSV content directly",
+    btn_add_csv:"Add from CSV →",
+    label_name:"Name", label_desc:"Description (optional)", label_maps_link:"Maps link or address (optional)",
+    ph_name:"Nike Clearance Store", ph_desc:"Opens 10am, must visit", ph_url:"Address or https://maps.google.com/...",
+    btn_add_stop:"+ Add stop", btn_clear_all:"🗑️ Clear all",
+    btn_generate:"🗺️ Generate Route", empty_stops:"📍 No stops added yet",
+    result_ready:"Your route is ready ✅", btn_download:"⬇️ HTML", btn_new:"↺ New",
+    lbl_visited:"visited", lbl_total_progress:"TOTAL PROGRESS", btn_restart:"reset", lbl_stops:"stops",
+    settings_title:"Settings", label_language:"Language",
+    btn_change_profile:"Change Profile", btn_theme:"Toggle Theme", btn_update:"Update App",
+    btn_email:"Change Email", btn_password:"Change Password", btn_pin:"Change Offline PIN",
+    btn_switch_app:"Switch App", btn_logout:"Sign Out", btn_delete:"Delete Account",
+    ac_searching:"Searching...", ac_no_results:"No results found",
+  },
+  pt:{
+    nav_home:"INÍCIO", nav_shopping:"GASTOS", nav_itinerary:"ITINERÁRIO", nav_units:"UNIDADES", nav_tickets:"DOCUMENTOS", nav_group:"GRUPO",
+    route_title:"🗺️ Gerador de Rota", badge_new:"Novo",
+    label_hotel:"📍 Ponto de partida (hotel / hospedagem)",
+    label_days:"📅 Quantidade de dias", lbl_days:"dias",
+    label_start_date:"🗓️ Data de início (opcional)",
+    label_add_stops:"➕ Adicionar paradas",
+    method_links:"Links", method_csv:"CSV", method_manual:"Manual",
+    label_paste_links:"Cole links do Google Maps ou Apple Maps (um por linha)",
+    btn_add_links:"Adicionar links →",
+    dz_text:"Toque para enviar um CSV", dz_sub:"Colunas: nome, descrição (opcional), link (opcional)",
+    label_csv_paste:"Ou cole o conteúdo CSV diretamente",
+    btn_add_csv:"Adicionar do CSV →",
+    label_name:"Nome", label_desc:"Descrição (opcional)", label_maps_link:"Link ou endereço do Maps (opcional)",
+    ph_name:"Nike Clearance Store", ph_desc:"Abre 10h, imperdível", ph_url:"Endereço ou https://maps.google.com/...",
+    btn_add_stop:"+ Adicionar parada", btn_clear_all:"🗑️ Limpar tudo",
+    btn_generate:"🗺️ Gerar Rota", empty_stops:"📍 Nenhuma parada adicionada ainda",
+    result_ready:"Sua rota está pronta ✅", btn_download:"⬇️ HTML", btn_new:"↺ Nova",
+    lbl_visited:"visitadas", lbl_total_progress:"PROGRESSO TOTAL", btn_restart:"reiniciar", lbl_stops:"paradas",
+    settings_title:"Configurações", label_language:"Idioma",
+    btn_change_profile:"Trocar Perfil", btn_theme:"Alternar Tema", btn_update:"Atualizar App",
+    btn_email:"Alterar E-mail", btn_password:"Alterar Senha", btn_pin:"Alterar PIN Offline",
+    btn_switch_app:"Trocar Aplicativo", btn_logout:"Sair", btn_delete:"Excluir Conta",
+    ac_searching:"Buscando...", ac_no_results:"Sem resultados para esta busca",
+  }
+};
+
+window.changeLanguage = (lang) => {
+  localStorage.setItem('appLang', lang);
+  document.documentElement.setAttribute('lang', lang);
+  document.querySelectorAll('.lang-opt').forEach(o => o.classList.remove('active'));
+  document.getElementById('lang-' + lang)?.classList.add('active');
+  const t = i18n[lang] || i18n.es;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (t[k]) el.innerText = t[k];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const k = el.getAttribute('data-i18n-ph');
+    if (t[k]) el.placeholder = t[k];
+  });
+  if (window.taxieUpdateLang) window.taxieUpdateLang(lang);
+};
+
 // ── STATE ──
 let stops = [];
 let days  = 3;
 let routeData = null;
 const VISITED_KEY = 'rutas_visited_v1';
 let visited = {};
-
 try { visited = JSON.parse(localStorage.getItem(VISITED_KEY) || '{}'); } catch(e) { visited = {}; }
 
 // ── SETTINGS ──
@@ -376,15 +605,45 @@ window.toggleDarkMode = () => {
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('theme', next);
 };
+window.changeProfile = () => { localStorage.removeItem('perfilActivoId'); window.location.href = 'profiles.html'; };
+window.pinInputFocus = () => {};
+window.closePinModal = () => { document.getElementById('pinModalOverlay').style.display = 'none'; };
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.getElementById('pinModalOverlay').style.display === 'flex') window.closePinModal(); });
 
-// Profile photo
-document.addEventListener('DOMContentLoaded', () => {
-  const foto = localStorage.getItem('perfilActivoFoto');
-  if (foto) {
-    const btn = document.getElementById('btnSettings');
-    if (btn) { btn.style.backgroundImage = `url('${foto}')`; btn.innerText = ''; }
-  }
-});
+window.gestionarPIN = () => {
+  document.getElementById('settingsDrawer').classList.remove('open');
+  document.getElementById('menuOverlay').style.display = 'none';
+  const lang = localStorage.getItem('appLang') || 'es';
+  const texts = {
+    es:{ title:'Cambiar PIN Offline', sub:'Este PIN se usa para acceder sin conexión', l1:'PIN Nuevo (4–6 dígitos)', l2:'Confirmar PIN', btn:'Guardar PIN', ok:'¡PIN actualizado!', okSub:'Podés usarlo para entrar sin conexión' },
+    en:{ title:'Change Offline PIN', sub:'This PIN is used to access without internet', l1:'New PIN (4–6 digits)', l2:'Confirm PIN', btn:'Save PIN', ok:'PIN updated!', okSub:'You can use it to sign in offline' },
+    pt:{ title:'Alterar PIN Offline', sub:'Este PIN é usado para acessar sem internet', l1:'Novo PIN (4–6 dígitos)', l2:'Confirmar PIN', btn:'Salvar PIN', ok:'PIN atualizado!', okSub:'Você pode usá-lo para entrar sem conexão' }
+  };
+  const t = texts[lang] || texts.es;
+  document.getElementById('pinModalTitle').textContent = t.title;
+  document.getElementById('pinModalSub').textContent = t.sub;
+  document.getElementById('pinLabel1').textContent = t.l1;
+  document.getElementById('pinLabel2').textContent = t.l2;
+  document.getElementById('pinConfirmBtn').textContent = t.btn;
+  document.getElementById('pinSuccessMsg').textContent = t.ok;
+  document.getElementById('pinSuccessSub').textContent = t.okSub;
+  document.getElementById('pinInput1').value = '';
+  document.getElementById('pinInput2').value = '';
+  document.getElementById('pinError').style.display = 'none';
+  document.getElementById('pinStep1').style.display = 'block';
+  document.getElementById('pinStep2').style.display = 'none';
+  document.getElementById('pinModalOverlay').style.display = 'flex';
+  setTimeout(() => document.getElementById('pinInput1').focus(), 100);
+};
+
+window.openSwitchApp = () => {
+  const lang = localStorage.getItem('appLang') || 'es';
+  const dest = { es:'¿A qué destino querés ir?\nEscriba "usa" para TaxUSA o "europe" para TaxEurope:', en:'Which destination?\nType "usa" for TaxUSA or "europe" for TaxEurope:', pt:'Qual destino?\nDigite "usa" para TaxUSA ou "europe" para TaxEurope:' };
+  const r = prompt(dest[lang] || dest.es);
+  if (!r) return;
+  if (r.toLowerCase().includes('europe')) window.location.href = 'europe.html';
+  else window.location.href = 'index.html';
+};
 
 // ── DAYS ──
 function changeDays(d) {
@@ -402,6 +661,164 @@ function setMethod(m) {
   document.getElementById('area-' + m).classList.add('show');
 }
 
+// ══════════════════════════════════════════
+// ── AUTOCOMPLETE (Nominatim / OpenStreetMap) ──
+// Búsqueda de direcciones estilo Uber, sin API key, gratis
+// ══════════════════════════════════════════
+let hotelAcTimer = null;
+let manualAcTimer = null;
+let hotelFocusedIdx = -1;
+let manualFocusedIdx = -1;
+
+async function searchAddress(query) {
+  if (!query || query.length < 3) return [];
+  try {
+    // Buscamos priorizando EEUU (countrycodes=us) para resultados más relevantes al viaje
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=6&countrycodes=us&addressdetails=1&accept-language=${localStorage.getItem('appLang')||'es'}`;
+    const res = await fetch(url, { headers: { 'Accept-Language': localStorage.getItem('appLang')||'es' } });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.map(item => ({
+      name: item.display_name.split(',')[0],
+      address: item.display_name,
+      lat: item.lat,
+      lon: item.lon,
+      type: item.type,
+      mapsUrl: `https://www.google.com/maps/search/?api=1&query=${item.lat},${item.lon}`
+    }));
+  } catch(e) { return []; }
+}
+
+function renderAcList(listEl, items, onSelect, focusedIdx) {
+  listEl.innerHTML = '';
+  if (!items.length) { listEl.classList.remove('show'); return; }
+  items.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'autocomplete-item' + (i === focusedIdx ? ' focused' : '');
+    div.setAttribute('role', 'option');
+    const icon = getAddressIcon(item.type);
+    div.innerHTML = `<span class="ac-icon">${icon}</span><div class="ac-body"><div class="ac-main">${escHtml(item.name)}</div><div class="ac-sub">${escHtml(item.address)}</div></div>`;
+    div.addEventListener('mousedown', e => { e.preventDefault(); onSelect(item); });
+    listEl.appendChild(div);
+  });
+  listEl.classList.add('show');
+}
+
+function getAddressIcon(type) {
+  if (['hotel','motel','hostel','guest_house'].includes(type)) return '🏨';
+  if (['restaurant','fast_food','cafe','bar'].includes(type)) return '🍽️';
+  if (['shop','mall','supermarket','department_store'].includes(type)) return '🛍️';
+  if (['attraction','theme_park','museum','zoo'].includes(type)) return '🎡';
+  if (['airport','aerodrome'].includes(type)) return '✈️';
+  if (['house','residential','apartments'].includes(type)) return '🏠';
+  return '📍';
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// HOTEL autocomplete
+let hotelAcItems = [];
+function onHotelInput(val) {
+  clearTimeout(hotelAcTimer);
+  hotelFocusedIdx = -1;
+  const spinner = document.getElementById('hotel-spinner');
+  const listEl  = document.getElementById('hotel-ac');
+  if (!val || val.length < 3) { listEl.classList.remove('show'); hotelAcItems = []; return; }
+  spinner.style.display = 'block';
+  hotelAcTimer = setTimeout(async () => {
+    hotelAcItems = await searchAddress(val);
+    spinner.style.display = 'none';
+    renderAcList(listEl, hotelAcItems, (item) => {
+      document.getElementById('hotel-input').value = item.address;
+      listEl.classList.remove('show');
+    }, hotelFocusedIdx);
+  }, 350);
+}
+
+function onHotelKey(e) {
+  const listEl = document.getElementById('hotel-ac');
+  const items  = listEl.querySelectorAll('.autocomplete-item');
+  if (!listEl.classList.contains('show') || !items.length) return;
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    hotelFocusedIdx = Math.min(hotelFocusedIdx + 1, items.length - 1);
+    items.forEach((el, i) => el.classList.toggle('focused', i === hotelFocusedIdx));
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    hotelFocusedIdx = Math.max(hotelFocusedIdx - 1, 0);
+    items.forEach((el, i) => el.classList.toggle('focused', i === hotelFocusedIdx));
+  } else if (e.key === 'Enter' && hotelFocusedIdx >= 0) {
+    e.preventDefault();
+    if (hotelAcItems[hotelFocusedIdx]) {
+      document.getElementById('hotel-input').value = hotelAcItems[hotelFocusedIdx].address;
+      listEl.classList.remove('show');
+    }
+  } else if (e.key === 'Escape') {
+    listEl.classList.remove('show');
+  }
+}
+
+// MANUAL URL autocomplete (para cuando escriben una dirección en lugar de link)
+let manualAcItems = [];
+function onManualUrlInput(val) {
+  clearTimeout(manualAcTimer);
+  manualFocusedIdx = -1;
+  const spinner = document.getElementById('manual-spinner');
+  const listEl  = document.getElementById('manual-ac');
+  // Si parece una URL, no buscar
+  if (!val || val.length < 3 || val.startsWith('http')) { listEl.classList.remove('show'); manualAcItems = []; return; }
+  spinner.style.display = 'block';
+  manualAcTimer = setTimeout(async () => {
+    manualAcItems = await searchAddress(val);
+    spinner.style.display = 'none';
+    renderAcList(listEl, manualAcItems, (item) => {
+      document.getElementById('manual-url').value = item.mapsUrl;
+      // Si no pusieron nombre, autocompletar
+      const nameEl = document.getElementById('manual-name');
+      if (!nameEl.value) nameEl.value = item.name;
+      listEl.classList.remove('show');
+    }, manualFocusedIdx);
+  }, 350);
+}
+
+function onManualUrlKey(e) {
+  const listEl = document.getElementById('manual-ac');
+  const items  = listEl.querySelectorAll('.autocomplete-item');
+  if (!listEl.classList.contains('show') || !items.length) return;
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    manualFocusedIdx = Math.min(manualFocusedIdx + 1, items.length - 1);
+    items.forEach((el, i) => el.classList.toggle('focused', i === manualFocusedIdx));
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    manualFocusedIdx = Math.max(manualFocusedIdx - 1, 0);
+    items.forEach((el, i) => el.classList.toggle('focused', i === manualFocusedIdx));
+  } else if (e.key === 'Enter' && manualFocusedIdx >= 0) {
+    e.preventDefault();
+    if (manualAcItems[manualFocusedIdx]) {
+      const item = manualAcItems[manualFocusedIdx];
+      document.getElementById('manual-url').value = item.mapsUrl;
+      const nameEl = document.getElementById('manual-name');
+      if (!nameEl.value) nameEl.value = item.name;
+      listEl.classList.remove('show');
+    }
+  } else if (e.key === 'Escape') {
+    listEl.classList.remove('show');
+  }
+}
+
+// Cerrar autocomplete al hacer click fuera
+document.addEventListener('click', (e) => {
+  if (!document.getElementById('hotel-ac').contains(e.target) && e.target !== document.getElementById('hotel-input')) {
+    document.getElementById('hotel-ac').classList.remove('show');
+  }
+  if (!document.getElementById('manual-ac').contains(e.target) && e.target !== document.getElementById('manual-url')) {
+    document.getElementById('manual-ac').classList.remove('show');
+  }
+});
+
 // ── PARSE LINKS ──
 function parseLinks() {
   const raw = document.getElementById('links-input').value.trim();
@@ -410,12 +827,10 @@ function parseLinks() {
   let added = 0;
   lines.forEach(url => {
     if (!url.startsWith('http')) return;
-    // Extract place name from URL if possible
     let name = 'Parada ' + (stops.length + 1);
     const placeMatch = url.match(/place\/([^/]+)/);
     if (placeMatch) name = decodeURIComponent(placeMatch[1].replace(/\+/g,' '));
-    const mapsUrl = url.includes('place_id:') ? url : url;
-    stops.push({ name, desc: '', url: mapsUrl });
+    stops.push({ name, desc: '', url });
     added++;
   });
   document.getElementById('links-input').value = '';
@@ -428,10 +843,7 @@ function handleCSV(input) {
   const file = input.files[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = e => {
-    document.getElementById('csv-text').value = e.target.result;
-    parseCSV();
-  };
+  reader.onload = e => { document.getElementById('csv-text').value = e.target.result; parseCSV(); };
   reader.readAsText(file);
 }
 
@@ -441,7 +853,6 @@ function parseCSV() {
   const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
   let added = 0;
   lines.forEach(line => {
-    // Skip header
     if (line.toLowerCase().startsWith('nombre') || line.toLowerCase().startsWith('name')) return;
     const cols = line.split(',').map(c => c.trim().replace(/^"|"$/g,''));
     const name = cols[0] || 'Parada ' + (stops.length + 1);
@@ -464,6 +875,7 @@ function addManual() {
   document.getElementById('manual-name').value = '';
   document.getElementById('manual-desc').value = '';
   document.getElementById('manual-url').value  = '';
+  document.getElementById('manual-ac').classList.remove('show');
   renderStops();
   showToast('✅ Parada agregada');
 }
@@ -487,22 +899,15 @@ function renderStops() {
       <div class="stop-row-body">
         <div class="stop-row-name">${s.name}</div>
         ${s.desc ? `<div class="stop-row-addr">${s.desc}</div>` : ''}
-        ${s.url  ? `<div class="stop-row-addr" style="color:var(--primary)">${s.url.slice(0,40)}…</div>` : ''}
+        ${s.url  ? `<div class="stop-row-addr" style="color:var(--primary)">${s.url.slice(0,45)}…</div>` : ''}
       </div>
       <button class="stop-row-del" onclick="removeStop(${i})">✕</button>`;
     list.appendChild(row);
   });
 }
 
-function removeStop(i) {
-  stops.splice(i, 1);
-  renderStops();
-}
-
-function clearStops() {
-  stops = [];
-  renderStops();
-}
+function removeStop(i) { stops.splice(i, 1); renderStops(); }
+function clearStops()  { stops = []; renderStops(); }
 
 // ── CSV DRAG ──
 const dz = document.getElementById('drop-zone');
@@ -522,39 +927,37 @@ function generateRoute() {
   if (!stops.length) return;
   const hotel   = document.getElementById('hotel-input').value.trim() || 'Tu alojamiento';
   const dateVal = document.getElementById('start-date').value;
-
-  // Distribute stops across days
-  const perDay = Math.ceil(stops.length / days);
+  const perDay  = Math.ceil(stops.length / days);
   const dayData = [];
+  const lang    = localStorage.getItem('appLang') || 'es';
+  const dayWord = { es:'Día', en:'Day', pt:'Dia' }[lang] || 'Día';
+
   for (let d = 0; d < days; d++) {
     const chunk = stops.slice(d * perDay, (d+1) * perDay);
     if (!chunk.length) continue;
-    let label = `Día ${d+1}`;
+    let label = `${dayWord} ${d+1}`;
     if (dateVal) {
       const date = new Date(dateVal + 'T12:00:00');
       date.setDate(date.getDate() + d);
       const opts = { weekday:'short', day:'2-digit', month:'2-digit' };
-      label = `Día ${d+1} — ${date.toLocaleDateString('es-AR', opts)}`;
+      const locale = lang === 'pt' ? 'pt-BR' : lang === 'en' ? 'en-US' : 'es-AR';
+      label = `${dayWord} ${d+1} — ${date.toLocaleDateString(locale, opts)}`;
     }
     dayData.push({ label, stops: chunk });
   }
 
   routeData = { hotel, dayData };
-  visited = {};
+  visited   = {};
   saveVisited();
-
-  // Hide builder, show result
   document.getElementById('builder-card').style.display = 'none';
   document.getElementById('ruta-result').style.display  = 'block';
-
   renderResult();
 }
 
 function renderResult() {
   const out = document.getElementById('days-output');
   out.innerHTML = '';
-  let total = 0;
-  let done  = 0;
+  let total = 0, done = 0;
 
   routeData.dayData.forEach((day, di) => {
     total += day.stops.length;
@@ -594,7 +997,6 @@ function renderResult() {
     out.appendChild(block);
   });
 
-  // Global progress
   const pct = total ? Math.round(done/total*100) : 0;
   document.getElementById('gp-done').textContent  = done;
   document.getElementById('gp-total').textContent = total;
@@ -607,35 +1009,22 @@ function toggleVisit(di, si) {
   else visited[key] = 1;
   saveVisited();
   renderResult();
-
-  // Confetti when day is complete
   const day = routeData.dayData[di];
   const allDone = day.stops.every((_, s) => visited[`${di}-${s}`]);
   if (allDone) launchConfetti();
 }
 
-function saveVisited() {
-  try { localStorage.setItem(VISITED_KEY, JSON.stringify(visited)); } catch(e) {}
-}
-
-function resetVisited() {
-  visited = {};
-  saveVisited();
-  renderResult();
-}
+function saveVisited()  { try { localStorage.setItem(VISITED_KEY, JSON.stringify(visited)); } catch(e) {} }
+function resetVisited() { visited = {}; saveVisited(); renderResult(); }
 
 function resetAll() {
-  stops = [];
-  routeData = null;
-  visited = {};
-  saveVisited();
-  renderStops();
+  stops = []; routeData = null; visited = {};
+  saveVisited(); renderStops();
   document.getElementById('builder-card').style.display = 'block';
   document.getElementById('ruta-result').style.display  = 'none';
   document.getElementById('hotel-input').value = '';
   document.getElementById('start-date').value  = '';
-  days = 3;
-  document.getElementById('days-count').textContent = '3';
+  days = 3; document.getElementById('days-count').textContent = '3';
 }
 
 // ── DOWNLOAD HTML ──
@@ -643,8 +1032,7 @@ function downloadHTML() {
   if (!routeData) return;
   const HOTEL_VAR = JSON.stringify(routeData.hotel);
   const DAYS_VAR  = JSON.stringify(routeData.dayData);
-  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>Mi Ruta TaxUSA</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}body{font-family:'DM Sans',system-ui,sans-serif;background:#0f172a;color:#f1f5f9;min-height:100vh;padding:20px 16px 80px}.wrap{max-width:460px;margin:0 auto}.header{margin-bottom:20px}.title{font-size:1.3rem;font-weight:900;color:#2563eb}.subtitle{font-size:.75rem;color:#64748b;margin-top:2px}.prog-card{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:14px;margin-bottom:14px;display:flex;align-items:center;gap:14px}.gp-stat{text-align:center;flex:1}.gp-val{font-size:1.4rem;font-weight:900;color:#2563eb}.gp-lbl{font-size:.6rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px}.gp-bar-wrap{flex:2}.gp-bar-bg{height:6px;background:#334155;border-radius:3px;overflow:hidden}.gp-bar-fill{height:100%;background:linear-gradient(90deg,#2563eb,#7c3aed);border-radius:3px;transition:width .4s}.day-block{margin-bottom:12px}.day-hdr{display:flex;align-items:center;padding:10px 14px;background:#2563eb;border-radius:10px 10px 0 0;color:white}.d-title{font-size:.85rem;font-weight:900;flex:1}.d-count{font-size:.7rem;opacity:.8}.day-prog{height:3px;background:#334155}.day-prog-fill{height:100%;background:#10b981;transition:width .3s}.day-stops{background:#1e293b;border:1px solid #334155;border-top:none;border-radius:0 0 10px 10px;overflow:hidden}.hotel-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#273549;border-bottom:1px solid #334155}.h-addr{font-size:.72rem;color:#94a3b8;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.h-link{font-size:.7rem;color:#2563eb;text-decoration:none;flex-shrink:0}.stop-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-bottom:1px solid #1e293b;cursor:pointer;transition:background .15s}.stop-item:last-child{border-bottom:none}.stop-item:hover{background:#273549}.stop-item.v{background:rgba(16,185,129,.05)}.stop-item.v .sn{text-decoration:line-through;color:#475569}.s-num{width:22px;height:22px;border-radius:50%;border:1.5px solid #334155;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#64748b;flex-shrink:0;margin-top:1px;transition:all .15s}.stop-item.v .s-num{background:rgba(16,185,129,.12);border-color:#10b981;color:#10b981}.s-body{flex:1;min-width:0}.sn{font-size:.85rem;font-weight:700;color:#f1f5f9;margin-bottom:2px}.sd{font-size:.72rem;color:#64748b;line-height:1.4;margin-bottom:5px}.sf{display:flex;align-items:center;justify-content:flex-end}.s-maps{font-size:.7rem;color:#60a5fa;text-decoration:none}.reset-btn{background:none;border:none;color:#475569;font-size:.72rem;cursor:pointer;text-decoration:underline;font-family:inherit;padding:0}.confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}.cp{position:absolute;top:-20px;animation:cf linear forwards}@keyframes cf{to{transform:translateY(110vh) rotate(720deg);opacity:0}}</style></head><body><div class="confetti-wrap" id="cw"></div><div class="wrap"><div class="header"><div class="title">🗺️ Mi Ruta TaxUSA</div><div class="subtitle">Tocá cada parada para marcarla como visitada</div></div><div class="prog-card"><div class="gp-stat"><div class="gp-val" id="gd">0</div><div class="gp-lbl">visitadas</div></div><div class="gp-bar-wrap"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:.6rem;font-weight:700;color:#475569">PROGRESO</span><button class="reset-btn" onclick="resetAll()">reiniciar</button></div><div class="gp-bar-bg"><div class="gp-bar-fill" id="gb" style="width:0%"></div></div></div><div class="gp-stat"><div class="gp-val" id="gt">0</div><div class="gp-lbl">paradas</div></div></div><div id="out"></div></div><script>var H=${HOTEL_VAR};var D=${DAYS_VAR};var V={};try{V=JSON.parse(localStorage.getItem('rt_v')||'{}')}catch(e){}function save(){try{localStorage.setItem('rt_v',JSON.stringify(V))}catch(e){}}function confetti(){var w=document.getElementById('cw');var c=['#2563eb','#f59e0b','#10b981','#f1f5f9','#ef4444'];for(var i=0;i<50;i++){var el=document.createElement('div');el.className='cp';el.style.cssText='left:'+Math.random()*100+'%;width:'+(5+Math.random()*8)+'px;height:'+(5+Math.random()*8)+'px;background:'+c[Math.floor(Math.random()*c.length)]+';border-radius:'+(Math.random()>.5?'50%':'2px')+';animation-duration:'+(1.5+Math.random()*2)+'s;animation-delay:'+(Math.random()*.5)+'s';w.appendChild(el);setTimeout(function(x){return function(){x.remove()}}(el),4000)}}function toggle(di,si){var k=di+'-'+si;if(V[k])delete V[k];else V[k]=1;save();render();var day=D[di];if(day.stops.every(function(_,s){return V[di+'-'+s]})){setTimeout(confetti,200)}}function resetAll(){V={};save();render()}function render(){var out=document.getElementById('out');out.innerHTML='';var total=0,done=0;D.forEach(function(day,di){total+=day.stops.length;var dd=day.stops.filter(function(_,si){return V[di+'-'+si]}).length;done+=dd;var pct=Math.round(dd/day.stops.length*100);var b=document.createElement('div');b.className='day-block';b.innerHTML='<div class="day-hdr"><div class="d-title">'+day.label+'</div><div class="d-count">'+dd+'/'+day.stops.length+'</div></div><div class="day-prog"><div class="day-prog-fill" style="width:'+pct+'%"></div></div><div class="day-stops"><div class="hotel-bar"><span>🏠</span><span class="h-addr">'+H+'</span><a class="h-link" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(H)+'" target="_blank">Maps ↗</a></div>'+day.stops.map(function(s,si){var v=!!V[di+'-'+si];return'<div class="stop-item'+(v?' v':'')+'" onclick="toggle('+di+','+si+')"><div class="s-num">'+(v?'✓':si+1)+'</div><div class="s-body"><div class="sn">'+s.name+'</div>'+(s.desc?'<div class="sd">'+s.desc+'</div>':'')+'<div class="sf">'+(s.url?'<a class="s-maps" href="'+s.url+'" onclick="event.stopPropagation()" target="_blank">📍 Maps</a>':'')+'</div></div></div>'}).join('')+'</div>';out.appendChild(b)});var pct=total?Math.round(done/total*100):0;document.getElementById('gd').textContent=done;document.getElementById('gt').textContent=total;document.getElementById('gb').style.width=pct+'%'}render();<\/script></body></html>`;
-
+  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>Mi Ruta TaxUSA</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}body{font-family:'DM Sans',system-ui,sans-serif;background:#0f172a;color:#f1f5f9;min-height:100vh;padding:20px 16px 80px}.wrap{max-width:460px;margin:0 auto}.header{margin-bottom:20px}.title{font-size:1.3rem;font-weight:900;color:#2563eb}.subtitle{font-size:.75rem;color:#64748b;margin-top:2px}.prog-card{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:14px;margin-bottom:14px;display:flex;align-items:center;gap:14px}.gp-stat{text-align:center;flex:1}.gp-val{font-size:1.4rem;font-weight:900;color:#2563eb}.gp-lbl{font-size:.6rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px}.gp-bar-wrap{flex:2}.gp-bar-bg{height:6px;background:#334155;border-radius:3px;overflow:hidden}.gp-bar-fill{height:100%;background:linear-gradient(90deg,#2563eb,#7c3aed);border-radius:3px;transition:width .4s}.day-block{margin-bottom:12px}.day-hdr{display:flex;align-items:center;padding:10px 14px;background:#2563eb;border-radius:10px 10px 0 0;color:white}.d-title{font-size:.85rem;font-weight:900;flex:1}.d-count{font-size:.7rem;opacity:.8}.day-prog{height:3px;background:#334155}.day-prog-fill{height:100%;background:#10b981;transition:width .3s}.day-stops{background:#1e293b;border:1px solid #334155;border-top:none;border-radius:0 0 10px 10px;overflow:hidden}.hotel-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#273549;border-bottom:1px solid #334155}.h-addr{font-size:.72rem;color:#94a3b8;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.h-link{font-size:.7rem;color:#2563eb;text-decoration:none;flex-shrink:0}.stop-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-bottom:1px solid #1e293b;cursor:pointer;transition:background .15s}.stop-item:last-child{border-bottom:none}.stop-item:hover{background:#273549}.stop-item.v{background:rgba(16,185,129,.05)}.stop-item.v .sn{text-decoration:line-through;color:#475569}.s-num{width:22px;height:22px;border-radius:50%;border:1.5px solid #334155;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#64748b;flex-shrink:0;margin-top:1px;transition:all .15s}.stop-item.v .s-num{background:rgba(16,185,129,.12);border-color:#10b981;color:#10b981}.s-body{flex:1;min-width:0}.sn{font-size:.85rem;font-weight:700;color:#f1f5f9;margin-bottom:2px}.sd{font-size:.72rem;color:#64748b;line-height:1.4;margin-bottom:5px}.sf{display:flex;align-items:center;justify-content:flex-end}.s-maps{font-size:.7rem;color:#60a5fa;text-decoration:none}.reset-btn{background:none;border:none;color:#475569;font-size:.72rem;cursor:pointer;text-decoration:underline;font-family:inherit;padding:0}.confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}.cp{position:absolute;top:-20px;animation:cf linear forwards}@keyframes cf{to{transform:translateY(110vh) rotate(720deg);opacity:0}}</style></head><body><div class="confetti-wrap" id="cw"></div><div class="wrap"><div class="header"><div class="title">🗺️ Mi Ruta TaxUSA</div><div class="subtitle">Tocá cada parada para marcarla como visitada</div></div><div class="prog-card"><div class="gp-stat"><div class="gp-val" id="gd">0</div><div class="gp-lbl">visitadas</div></div><div class="gp-bar-wrap"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:.6rem;font-weight:700;color:#475569">PROGRESO</span><button class="reset-btn" onclick="resetAll()">reiniciar</button></div><div class="gp-bar-bg"><div class="gp-bar-fill" id="gb" style="width:0%"></div></div></div><div class="gp-stat"><div class="gp-val" id="gt">0</div><div class="gp-lbl">paradas</div></div></div><div id="out"></div></div><script>var H=${HOTEL_VAR};var D=${DAYS_VAR};var V={};try{V=JSON.parse(localStorage.getItem('rt_v')||'{}')}catch(e){}function save(){try{localStorage.setItem('rt_v',JSON.stringify(V))}catch(e){}}function confetti(){var w=document.getElementById('cw');var c=['#2563eb','#f59e0b','#10b981','#f1f5f9','#ef4444'];for(var i=0;i<50;i++){var el=document.createElement('div');el.className='cp';el.style.cssText='left:'+Math.random()*100+'%;width:'+(5+Math.random()*8)+'px;height:'+(5+Math.random()*8)+'px;background:'+c[Math.floor(Math.random()*c.length)]+';border-radius:'+(Math.random()>.5?'50%':'2px')+';animation-duration:'+(1.5+Math.random()*2)+'s;animation-delay:'+(Math.random()*.5)+'s';w.appendChild(el);setTimeout(function(x){return function(){x.remove()}}(el),4000)}}function toggle(di,si){var k=di+'-'+si;if(V[k])delete V[k];else V[k]=1;save();render();var day=D[di];if(day.stops.every(function(_,s){return V[di+'-'+s]})){setTimeout(confetti,200)}}function resetAll(){V={};save();render()}function render(){var out=document.getElementById('out');out.innerHTML='';var total=0,done=0;D.forEach(function(day,di){total+=day.stops.length;var dd=day.stops.filter(function(_,si){return V[di+'-'+si]}).length;done+=dd;var pct=Math.round(dd/day.stops.length*100);var b=document.createElement('div');b.className='day-block';b.innerHTML='<div class="day-hdr"><div class="d-title">'+day.label+'</div><div class="d-count">'+dd+'/'+day.stops.length+'</div></div><div class="day-prog"><div class="day-prog-fill" style="width:'+pct+'%"></div></div><div class="day-stops"><div class="hotel-bar"><span>🏠</span><span class="h-addr">'+H+'</span><a class="h-link" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(H)+'" target="_blank">Maps ↗</a></div>'+day.stops.map(function(s,si){var v=!!V[di+'-'+si];return'<div class="stop-item'+(v?' v':'')+'\" onclick="toggle('+di+','+si+')"><div class="s-num">'+(v?'✓':si+1)+'</div><div class="s-body"><div class="sn">'+s.name+'</div>'+(s.desc?'<div class="sd">'+s.desc+'</div>':'')+'<div class="sf">'+(s.url?'<a class="s-maps" href="'+s.url+'" onclick="event.stopPropagation()" target="_blank">📍 Maps</a>':'')+'</div></div></div>'}).join('')+'</div>';out.appendChild(b)});var pct=total?Math.round(done/total*100):0;document.getElementById('gd').textContent=done;document.getElementById('gt').textContent=total;document.getElementById('gb').style.width=pct+'%'}render();<\/script></body></html>`;
   const blob = new Blob([html], { type: 'text/html' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -655,7 +1043,7 @@ function downloadHTML() {
 
 // ── CONFETTI ──
 function launchConfetti() {
-  const wrap = document.getElementById('confetti-wrap');
+  const wrap   = document.getElementById('confetti-wrap');
   const colors = ['#2563eb','#f59e0b','#10b981','#ef4444','#7c3aed','#f1f5f9'];
   for (let i = 0; i < 55; i++) {
     const el = document.createElement('div');
@@ -676,6 +1064,301 @@ function showToast(msg) {
 
 // ── INIT ──
 renderStops();
+document.addEventListener('DOMContentLoaded', () => {
+  const foto = localStorage.getItem('perfilActivoFoto');
+  if (foto) {
+    const btn = document.getElementById('btnSettings');
+    if (btn) { btn.style.backgroundImage = `url('${foto}')`; btn.innerText = ''; }
+  }
+  const lang = localStorage.getItem('appLang') || 'es';
+  window.changeLanguage(lang);
+});
 </script>
+
+<!-- ═══════════════ TAXUSA AI CHAT ═══════════════ -->
+<style>
+#ai-bubble {
+    position: fixed; bottom: 24px; left: 20px; z-index: 3000;
+    width: 56px; height: 56px; border-radius: 50%; border: none; cursor: pointer;
+    background: linear-gradient(135deg,#2563eb,#1d4ed8);
+    box-shadow: 0 4px 20px rgba(37,99,235,0.45);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .2s, box-shadow .2s;
+}
+#ai-bubble:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(37,99,235,0.55); }
+#ai-bubble:active { transform: scale(0.95); }
+#ai-bubble svg { width: 26px; height: 26px; }
+#ai-badge { position:absolute; top:6px; right:6px; width:10px; height:10px; background:#22c55e; border-radius:50%; border:2px solid #1e3a8a; display:none; }
+#ai-chat {
+    position: fixed; bottom: 88px; left: 16px; z-index: 2999;
+    width: 340px; max-height: 520px; border-radius: 16px; overflow: hidden;
+    display: none; flex-direction: column;
+    background: var(--surface, #1e293b);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.45);
+    border: 1px solid var(--border, #334155);
+    animation: chatIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+#ai-chat.open { display: flex; }
+@keyframes chatIn { from{opacity:0;transform:translateY(16px) scale(0.96)} to{opacity:1;transform:translateY(0) scale(1)} }
+#ai-header { display:flex; align-items:center; gap:10px; padding:12px 14px; background:linear-gradient(135deg,#2563eb,#1d4ed8); flex-shrink:0; }
+#ai-header svg { width:22px; height:22px; flex-shrink:0; }
+.ai-header-text { flex:1; }
+.ai-header-title { font-size:0.9rem; font-weight:800; color:white; line-height:1; }
+.ai-header-sub   { font-size:0.65rem; color:rgba(255,255,255,0.75); font-weight:600; margin-top:2px; }
+#ai-close { background:rgba(255,255,255,0.15); border:none; color:white; cursor:pointer; width:24px; height:24px; border-radius:50%; font-size:0.75rem; display:flex; align-items:center; justify-content:center; transition:background .15s; }
+#ai-close:hover { background:rgba(255,255,255,0.3); }
+#ai-messages { flex:1; overflow-y:auto; padding:12px 12px 4px; display:flex; flex-direction:column; gap:8px; scroll-behavior:smooth; }
+#ai-messages::-webkit-scrollbar { width:4px; }
+#ai-messages::-webkit-scrollbar-thumb { background:var(--border,#334155); border-radius:4px; }
+.ai-msg { max-width:88%; padding:9px 12px; border-radius:12px; font-size:0.82rem; line-height:1.5; word-break:break-word; animation:msgIn .18s ease; }
+@keyframes msgIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+.ai-msg.user { align-self:flex-end; background:#2563eb; color:white; border-bottom-right-radius:4px; }
+.ai-msg.bot  { align-self:flex-start; background:var(--surface-2,#273548); color:var(--text,#e2e8f0); border-bottom-left-radius:4px; }
+.ai-msg.bot ul { margin:4px 0; padding-left:18px; }
+.ai-msg.bot li { margin:2px 0; }
+.ai-msg.bot p  { margin:4px 0; }
+.ai-msg.bot strong { color:#93c5fd; }
+.ai-msg.bot.typing { display:flex; gap:5px; align-items:center; padding:10px 14px; }
+.ai-dot { width:7px; height:7px; background:var(--text-dim,#64748b); border-radius:50%; animation:dot .9s infinite ease-in-out; }
+.ai-dot:nth-child(2){animation-delay:.18s} .ai-dot:nth-child(3){animation-delay:.36s}
+@keyframes dot { 0%,80%,100%{transform:scale(0.7);opacity:.5} 40%{transform:scale(1);opacity:1} }
+#ai-suggestions { display:flex; gap:6px; flex-wrap:wrap; padding:6px 10px 2px; flex-shrink:0; }
+.ai-chip { background:var(--surface-2,#273548); border:1px solid var(--border,#334155); color:var(--text,#e2e8f0); border-radius:20px; padding:4px 10px; font-size:0.72rem; cursor:pointer; transition:background .15s, transform .1s; white-space:nowrap; }
+.ai-chip:hover { background:var(--border,#334155); transform:scale(1.04); }
+#ai-input-area { display:flex; gap:6px; padding:10px; border-top:1px solid var(--border,#334155); flex-shrink:0; background:var(--surface,#1e293b); }
+#ai-input { flex:1; background:var(--surface-2,#273548); border:1px solid var(--border,#334155); border-radius:10px; padding:8px 12px; color:var(--text,#e2e8f0); font-size:0.83rem; resize:none; outline:none; line-height:1.4; max-height:80px; overflow-y:auto; font-family:inherit; }
+#ai-input:focus { border-color:#2563eb; }
+#ai-send { width:36px; height:36px; border-radius:10px; border:none; background:#2563eb; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .15s, transform .1s; flex-shrink:0; align-self:flex-end; }
+#ai-send:hover { background:#1d4ed8; transform:scale(1.05); }
+#ai-send:disabled { background:var(--border,#334155); cursor:not-allowed; transform:none; }
+#ai-send svg { width:16px; fill:white; }
+</style>
+
+<button id="ai-bubble" aria-label="Taxie — Asistente de viaje">
+    <span id="ai-badge"></span>
+    <svg viewBox="0 0 32 32" fill="none">
+        <rect width="32" height="32" rx="8" fill="white" fill-opacity="0.15"/>
+        <rect x="0" y="10" width="32" height="4" fill="#ef4444" opacity="0.9"/>
+        <rect x="0" y="18" width="32" height="4" fill="#ef4444" opacity="0.9"/>
+        <polygon points="16,4 18.4,11 26,11 20,15.5 22.4,22.5 16,18 9.6,22.5 12,15.5 6,11 13.6,11" fill="#ffffff"/>
+    </svg>
+</button>
+
+<div id="ai-chat">
+    <div id="ai-header">
+        <svg viewBox="0 0 32 32" fill="none">
+            <rect x="0" y="10" width="32" height="4" fill="#ef4444" opacity="0.9"/>
+            <rect x="0" y="18" width="32" height="4" fill="#ef4444" opacity="0.9"/>
+            <polygon points="16,4 18.4,11 26,11 20,15.5 22.4,22.5 16,18 9.6,22.5 12,15.5 6,11 13.6,11" fill="#ffffff"/>
+        </svg>
+        <div class="ai-header-text">
+            <div class="ai-header-title">Taxie ✈️</div>
+            <div class="ai-header-sub" id="ai-header-sub">Tu guia de viaje a USA</div>
+        </div>
+        <button id="ai-close">✕</button>
+    </div>
+    <div id="ai-messages"></div>
+    <div id="ai-suggestions"></div>
+    <div id="ai-input-area">
+        <textarea id="ai-input" rows="1"></textarea>
+        <button id="ai-send">
+            <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+        </button>
+    </div>
+</div>
+
+<script>
+(function() {
+    var GROQ_URL = 'https://taxusa.juanbria18.workers.dev';
+    var MODEL = 'llama-3.3-70b-versatile';
+    var lang = localStorage.getItem('appLang') || 'es';
+    var perfilId   = localStorage.getItem('perfilActivoId') || 'default';
+    var HISTORY_KEY = 'taxie_history_' + perfilId;
+
+    var chatHistory = [];
+    try { var saved = localStorage.getItem(HISTORY_KEY); if (saved) chatHistory = JSON.parse(saved); } catch(e) { chatHistory = []; }
+
+    var isOpen = false, isLoading = false, hasShownWelcome = false;
+
+    var WELCOME_ES = '¡Hola! Soy **Taxie** 🗽✈️\n\nTu asistente para planificar rutas en USA. Puedo ayudarte con:\n\n• 🗺️ Planificar recorridos por día\n• 🛍️ Outlets y tiendas que no podés perderte\n• 📍 Qué ver cerca de tu hotel\n• 🚗 Distancias y tiempos estimados\n• 🎡 Parques y atracciones\n\n¿En qué puedo ayudarte hoy?';
+    var WELCOME_EN = 'Hi! I am **Taxie** 🗽✈️\n\nYour assistant for planning routes in the USA. I can help you with:\n\n• 🗺️ Plan day-by-day itineraries\n• 🛍️ Outlets and stores you can\'t miss\n• 📍 What to see near your hotel\n• 🚗 Distances and estimated times\n• 🎡 Parks and attractions\n\nWhat can I help you with today?';
+    var WELCOME_PT = 'Olá! Sou o **Taxie** 🗽✈️\n\nSeu assistente para planejar rotas nos EUA. Posso te ajudar com:\n\n• 🗺️ Planejar roteiros por dia\n• 🛍️ Outlets e lojas imperdíveis\n• 📍 O que ver perto do seu hotel\n• 🚗 Distâncias e tempos estimados\n• 🎡 Parques e atrações\n\nComo posso te ajudar hoje?';
+
+    var CHIPS_ES = ['🗺️ Ruta por Orlando', '🛍️ Mejores outlets', '📍 Qué ver en Miami', '🎡 Disney vs Universal', '🚗 Alquilar auto'];
+    var CHIPS_EN = ['🗺️ Route through Orlando', '🛍️ Best outlets', '📍 What to see in Miami', '🎡 Disney vs Universal', '🚗 Rent a car'];
+    var CHIPS_PT = ['🗺️ Roteiro em Orlando', '🛍️ Melhores outlets', '📍 O que ver em Miami', '🎡 Disney vs Universal', '🚗 Alugar carro'];
+
+    var SUB_ES = 'Tu guia de rutas en USA 🗺️';
+    var SUB_EN = 'Your USA Route Guide 🗺️';
+    var SUB_PT = 'Seu guia de rotas nos EUA 🗺️';
+    var PH_ES  = 'Preguntale a Taxie sobre tu ruta...';
+    var PH_EN  = 'Ask Taxie about your route...';
+    var PH_PT  = 'Pergunte ao Taxie sobre sua rota...';
+    var ERR_ES = 'Ups, algo falló. Verificá tu conexión e intentá de nuevo.';
+    var ERR_EN = 'Oops, something went wrong. Check your connection and try again.';
+    var ERR_PT = 'Ops, algo deu errado. Verifique sua conexão e tente novamente.';
+
+    var isPt = (lang === 'pt');
+    var isEs = (lang !== 'en' && lang !== 'pt');
+    var chips  = isPt ? CHIPS_PT  : isEs ? CHIPS_ES  : CHIPS_EN;
+    var sub    = isPt ? SUB_PT    : isEs ? SUB_ES    : SUB_EN;
+    var ph     = isPt ? PH_PT     : isEs ? PH_ES     : PH_EN;
+    var errMsg = isPt ? ERR_PT    : isEs ? ERR_ES    : ERR_EN;
+
+    var SYSTEM = isEs
+        ? 'Eres Taxie, asistente de rutas y viajes a USA. Tu tono es claro, directo y amable. Cuando alguien pregunta por info en tiempo real (distancias, horarios, precios actuales), buscás la información antes de responder. Usás viñetas y **negritas** solo cuando realmente ayudan. Nunca empezás con "¡Claro!" ni frases de relleno. Solo respondés sobre viajes y rutas en USA. Fecha actual: ' + new Date().toLocaleDateString('es-AR') + '.'
+        : isPt
+        ? 'Você é o Taxie, assistente de rotas e viagens aos EUA. Seu tom é claro, direto e amigável. Use marcadores e **negritos** só quando realmente ajudam. Nunca comece com "Claro!" ou frases de preenchimento. Responda apenas sobre viagens e rotas nos EUA. Data atual: ' + new Date().toLocaleDateString('pt-BR') + '.'
+        : 'You are Taxie, a USA travel and route planning assistant. Your tone is clear, direct and warm. Use bullet points and **bold** only when they genuinely help. Never open with "Of course!" or filler phrases. Only answer about USA travel and routes. Today\'s date: ' + new Date().toLocaleDateString('en-US') + '.';
+
+    function saveHistory() { try { localStorage.setItem(HISTORY_KEY, JSON.stringify(chatHistory.slice(-40))); } catch(e) {} }
+
+    function formatBotText(text) {
+        var html = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        var lines = html.split('\n'), result = [], inList = false;
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i].trim();
+            var isBullet = /^[•\-\*]\s/.test(line);
+            if (isBullet) {
+                if (!inList) { result.push('<ul>'); inList = true; }
+                result.push('<li>' + line.replace(/^[•\-\*]\s+/,'') + '</li>');
+            } else {
+                if (inList) { result.push('</ul>'); inList = false; }
+                if (line !== '') result.push('<p>' + line + '</p>');
+            }
+        }
+        if (inList) result.push('</ul>');
+        return result.join('');
+    }
+
+    function init() {
+        var bubble = document.getElementById('ai-bubble');
+        var chatEl = document.getElementById('ai-chat');
+        var messagesEl = document.getElementById('ai-messages');
+        var inputEl = document.getElementById('ai-input');
+        var sendBtn = document.getElementById('ai-send');
+        var suggestEl = document.getElementById('ai-suggestions');
+        var headerSub = document.getElementById('ai-header-sub');
+        var closeBtn = document.getElementById('ai-close');
+        if (!bubble || !chatEl) return;
+        if (headerSub) headerSub.textContent = sub;
+        if (inputEl) inputEl.placeholder = ph;
+        if (suggestEl) {
+            suggestEl.innerHTML = chips.map(function(c){ return '<button class="ai-chip">' + c + '</button>'; }).join('');
+            suggestEl.querySelectorAll('.ai-chip').forEach(function(btn){
+                btn.addEventListener('click', function(){ if (inputEl) inputEl.value = btn.textContent; sendMessage(); suggestEl.style.display = 'none'; });
+            });
+        }
+        function toggleChat() {
+            isOpen = !isOpen;
+            if (isOpen) {
+                chatEl.style.display = 'flex'; chatEl.offsetHeight; chatEl.classList.add('open');
+                if (!hasShownWelcome) {
+                    hasShownWelcome = true;
+                    if (chatHistory.length > 0) {
+                        chatHistory.forEach(function(m){ addMessage(m.role === 'user' ? 'user' : 'bot', m.content, true); });
+                        if (suggestEl) suggestEl.style.display = 'none';
+                    } else {
+                        var welcome = isPt ? WELCOME_PT : isEs ? WELCOME_ES : WELCOME_EN;
+                        setTimeout(function(){ addMessage('bot', welcome); }, 200);
+                    }
+                }
+                setTimeout(function(){ if (inputEl) inputEl.focus(); }, 300);
+            } else {
+                chatEl.classList.remove('open');
+                setTimeout(function(){ chatEl.style.display = 'none'; }, 250);
+            }
+        }
+        bubble.addEventListener('click', function(e){ e.stopPropagation(); toggleChat(); });
+        if (closeBtn) closeBtn.addEventListener('click', function(e){ e.stopPropagation(); toggleChat(); });
+        document.addEventListener('click', function(e){
+            if (isOpen && !chatEl.contains(e.target) && !bubble.contains(e.target)) {
+                isOpen = false; chatEl.classList.remove('open');
+                setTimeout(function(){ chatEl.style.display = 'none'; }, 250);
+            }
+        });
+        function addMessage(role, text, silent) {
+            if (!messagesEl) return;
+            var div = document.createElement('div');
+            div.className = 'ai-msg ' + (role === 'user' ? 'user' : 'bot');
+            if (role === 'user') div.textContent = text;
+            else div.innerHTML = formatBotText(text);
+            if (silent) div.style.animation = 'none';
+            messagesEl.appendChild(div);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+        function showTyping() {
+            var div = document.createElement('div');
+            div.className = 'ai-msg bot typing'; div.id = 'ai-typing';
+            div.innerHTML = '<div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div>';
+            messagesEl.appendChild(div); messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+        function hideTyping() { var el = document.getElementById('ai-typing'); if (el) el.remove(); }
+        function sendMessage() {
+            window._taxieSend = sendMessage;
+            if (!inputEl) return;
+            var text = inputEl.value.trim();
+            if (!text || isLoading) return;
+            inputEl.value = ''; inputEl.style.height = 'auto';
+            addMessage('user', text);
+            if (suggestEl) suggestEl.style.display = 'none';
+            isLoading = true; if (sendBtn) sendBtn.disabled = true;
+            showTyping();
+            chatHistory.push({ role: 'user', content: text });
+            fetch(GROQ_URL, {
+                method: 'POST',
+                body: JSON.stringify({ model: MODEL, messages: [{ role: 'system', content: SYSTEM }].concat(chatHistory.slice(-14)), max_tokens: 800, temperature: 0.7, stream: false })
+            }).then(function(res){ return res.json().then(function(d){ return { ok: res.ok, data: d }; }); })
+            .then(function(r){
+                if (!r.ok) throw new Error(r.data.error && r.data.error.message || 'API error');
+                var reply = r.data.choices && r.data.choices[0] && r.data.choices[0].message && r.data.choices[0].message.content || errMsg;
+                chatHistory.push({ role: 'assistant', content: reply });
+                saveHistory(); hideTyping(); addMessage('bot', reply);
+            }).catch(function(e){ hideTyping(); addMessage('bot', errMsg); })
+            .finally(function(){ isLoading = false; if (sendBtn) sendBtn.disabled = false; if (inputEl) inputEl.focus(); });
+        }
+        if (sendBtn) sendBtn.addEventListener('click', sendMessage);
+        if (inputEl) {
+            inputEl.addEventListener('keydown', function(e){ if (e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendMessage(); } });
+            inputEl.addEventListener('input', function(){ this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 80) + 'px'; });
+        }
+    }
+
+    window.taxieUpdateLang = function(newLang) {
+        isEs = (newLang !== 'en' && newLang !== 'pt');
+        isPt = (newLang === 'pt');
+        lang = newLang;
+        SYSTEM = isEs
+            ? 'Eres Taxie, asistente de rutas y viajes a USA. Tu tono es claro, directo y amable. Solo respondés sobre viajes y rutas en USA. Fecha actual: ' + new Date().toLocaleDateString('es-AR') + '.'
+            : isPt
+            ? 'Você é o Taxie, assistente de rotas e viagens aos EUA. Seu tom é claro, direto e amigável. Responda apenas sobre viagens e rotas nos EUA. Data atual: ' + new Date().toLocaleDateString('pt-BR') + '.'
+            : 'You are Taxie, a USA travel and route planning assistant. Only answer about USA travel and routes. Today\'s date: ' + new Date().toLocaleDateString('en-US') + '.';
+        errMsg = isPt ? ERR_PT : isEs ? ERR_ES : ERR_EN;
+        var inputEl   = document.getElementById('ai-input');
+        var headerSub = document.getElementById('ai-header-sub');
+        var suggestEl = document.getElementById('ai-suggestions');
+        if (inputEl)   inputEl.placeholder = isPt ? PH_PT : isEs ? PH_ES : PH_EN;
+        if (headerSub) headerSub.textContent = isPt ? SUB_PT : isEs ? SUB_ES : SUB_EN;
+        if (suggestEl) {
+            var newChips = isPt ? CHIPS_PT : isEs ? CHIPS_ES : CHIPS_EN;
+            suggestEl.innerHTML = newChips.map(function(c){ return '<button class="ai-chip">' + c + '</button>'; }).join('');
+            suggestEl.querySelectorAll('.ai-chip').forEach(function(btn){
+                btn.addEventListener('click', function(){
+                    var inp = document.getElementById('ai-input');
+                    if (inp) inp.value = btn.textContent;
+                    if (window._taxieSend) window._taxieSend();
+                    suggestEl.style.display = 'none';
+                });
+            });
+        }
+    };
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+})();
+</script>
+<!-- ═══════════════ FIN TAXUSA AI CHAT ═══════════════ -->
+
 </body>
 </html>
