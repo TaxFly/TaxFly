@@ -10,6 +10,7 @@ const PRECACHE = [
     './unidades.html',
     './tickets.html',
     './grupo.html',
+    './rutas.html',
     './style/style.css', 
     './manifest.json',
     './assets/icon-512.png',
