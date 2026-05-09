@@ -110,11 +110,17 @@
         .w-badge{display:inline-flex;align-items:center;gap:4px;border-radius:6px;padding:2px 7px;font-size:.58rem;font-weight:800;margin-top:5px;}
         .w-badge.warn{background:rgba(245,158,11,.1);color:var(--warn);}
         .w-divider{height:1px;background:var(--border);margin:10px 0;}
-        .fx-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);}
+        /* FX widget */
+        .fx-flags{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap;}
+        .fx-flag-btn{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 2px;border-radius:8px;border:1.5px solid transparent;background:var(--surface-2);cursor:pointer;transition:var(--tr);font-size:.5rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.3px;}
+        .fx-flag-btn img{width:20px;height:14px;border-radius:2px;display:block;}
+        .fx-flag-btn:hover{border-color:var(--primary);background:var(--primary-dim);}
+        .fx-flag-btn.active{border-color:var(--primary);background:var(--primary-dim);color:var(--primary);}
+        .fx-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid var(--border);}
         .fx-row:last-child{border-bottom:none;padding-bottom:0;}
         .fx-row:first-child{padding-top:0;}
-        .fx-name{font-size:.62rem;font-weight:700;color:var(--text-sub);}
-        .fx-val{font-size:.85rem;font-weight:900;color:var(--text);}
+        .fx-name{font-size:.6rem;font-weight:700;color:var(--text-sub);display:flex;align-items:center;gap:4px;}
+        .fx-val{font-size:.82rem;font-weight:900;color:var(--text);}
 
         /* Weather */
         .weather-widget{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px 20px;box-shadow:var(--shadow);margin-bottom:14px;position:relative;overflow:hidden;}
@@ -245,14 +251,28 @@
 
     <!-- Widgets 2-col -->
     <div class="widgets-grid">
-        <!-- Dólar -->
-        <div class="widget clickable" onclick="location.href='compras.html'">
-            <div class="w-label"><span class="w-icon">💵</span><span data-i18n="widget_fx">Dólar hoy</span></div>
-            <div id="fx-loading" style="font-size:.7rem;color:var(--text-dim);font-weight:600;">Cargando...</div>
-            <div id="fx-content" style="display:none;">
-                <div class="fx-row"><span class="fx-name" data-i18n="fx_oficial">Oficial</span><span class="fx-val" id="fx-oficial">—</span></div>
-                <div class="fx-row"><span class="fx-name" data-i18n="fx_card">Tarjeta</span><span class="fx-val" id="fx-tarjeta">—</span></div>
+        <!-- Divisas -->
+        <div class="widget" style="cursor:default;">
+            <div class="w-label"><span class="w-icon">💱</span><span id="fx-widget-title">Dólar hoy</span></div>
+            <div class="fx-flags" id="fx-flags">
+                <button class="fx-flag-btn active" onclick="fxSelect('ars')" id="fx-btn-ars">
+                    <img src="https://flagcdn.com/20x15/ar.png" onerror="this.outerHTML='🇦🇷'"> ARS
+                </button>
+                <button class="fx-flag-btn" onclick="fxSelect('eur')" id="fx-btn-eur">
+                    <img src="https://flagcdn.com/20x15/eu.png" onerror="this.outerHTML='🇪🇺'"> EUR
+                </button>
+                <button class="fx-flag-btn" onclick="fxSelect('uyu')" id="fx-btn-uyu">
+                    <img src="https://flagcdn.com/20x15/uy.png" onerror="this.outerHTML='🇺🇾'"> UYU
+                </button>
+                <button class="fx-flag-btn" onclick="fxSelect('clp')" id="fx-btn-clp">
+                    <img src="https://flagcdn.com/20x15/cl.png" onerror="this.outerHTML='🇨🇱'"> CLP
+                </button>
+                <button class="fx-flag-btn" onclick="fxSelect('pen')" id="fx-btn-pen">
+                    <img src="https://flagcdn.com/20x15/pe.png" onerror="this.outerHTML='🇵🇪'"> PEN
+                </button>
             </div>
+            <div id="fx-loading" style="font-size:.7rem;color:var(--text-dim);font-weight:600;">Cargando...</div>
+            <div id="fx-content" style="display:none;"></div>
         </div>
         <!-- Último gasto + total -->
         <div class="widget clickable" onclick="location.href='compras.html'">
@@ -363,7 +383,7 @@ const I18N = {
         greeting_sub:'Bienvenido de vuelta',
         q_tax:'Calculadora', q_gastos:'Gastos', q_itin:'Itinerario', q_units:'Unidades', q_docs:'Docs', q_grupo:'Grupo', q_rutas:'Rutas', q_perfil:'Perfil',
         label_budget:'Presupuesto Restante', budget_hint:'Tocá para ver tus gastos →', budget_no_data:'Sin presupuesto configurado',
-        widget_fx:'Dólar hoy', fx_oficial:'Oficial', fx_blue:'Blue', fx_card:'Tarjeta',
+        widget_fx:'Dólar hoy', fx_oficial:'Oficial', fx_card:'Tarjeta',
         widget_last_expense:'Último gasto', widget_total:'Total gastado', no_gastos:'Sin gastos aún',
         widget_weather:'Clima en destino', next_event_label:'Próximo evento', next_event_empty:'Sin eventos próximos',
         tip_label:'Tip de viaje', tip_hint:'Tocá para ver otro tip →',
@@ -394,7 +414,7 @@ const I18N = {
         greeting_sub:'Welcome back',
         q_tax:'Calculator', q_gastos:'Expenses', q_itin:'Itinerary', q_units:'Units', q_docs:'Docs', q_grupo:'Group', q_rutas:'Routes', q_perfil:'Profile',
         label_budget:'Remaining Budget', budget_hint:'Tap to view your expenses →', budget_no_data:'No budget configured',
-        widget_fx:'Dollar today', fx_oficial:'Official', fx_blue:'Blue', fx_card:'Card rate',
+        widget_fx:'Dollar today', fx_oficial:'Official', fx_card:'Card rate',
         widget_last_expense:'Last expense', widget_total:'Total spent', no_gastos:'No expenses yet',
         widget_weather:'Weather at destination', next_event_label:'Next event', next_event_empty:'No upcoming events',
         tip_label:'Travel tip', tip_hint:'Tap to see another tip →',
@@ -425,7 +445,7 @@ const I18N = {
         greeting_sub:'Bem-vindo de volta',
         q_tax:'Calculadora', q_gastos:'Gastos', q_itin:'Itinerário', q_units:'Unidades', q_docs:'Docs', q_grupo:'Grupo', q_rutas:'Rotas', q_perfil:'Perfil',
         label_budget:'Orçamento Restante', budget_hint:'Toque para ver seus gastos →', budget_no_data:'Sem orçamento configurado',
-        widget_fx:'Dólar hoje', fx_oficial:'Oficial', fx_blue:'Blue', fx_card:'Cartão',
+        widget_fx:'Dólar hoje', fx_oficial:'Oficial', fx_card:'Cartão',
         widget_last_expense:'Último gasto', widget_total:'Total gasto', no_gastos:'Sem gastos ainda',
         widget_weather:'Clima no destino', next_event_label:'Próximo evento', next_event_empty:'Sem eventos próximos',
         tip_label:'Dica de viagem', tip_hint:'Toque para ver outra dica →',
@@ -540,19 +560,102 @@ function loadBudget() {
     }, ()=>{});
 }
 
+// ── FX Multi-moneda ───────────────────────────────────────
+let fxData = { ars:{}, er:{} };
+let fxCurrent = 'ars';
+
+const FX_META = {
+    ars: { title:'Dólar hoy', titleEn:'Dollar today', titlePt:'Dólar hoje' },
+    eur: { title:'Euro hoy',  titleEn:'Euro today',   titlePt:'Euro hoje'  },
+    uyu: { title:'Peso uruguayo', titleEn:'Uruguayan Peso', titlePt:'Peso uruguaio' },
+    clp: { title:'Peso chileno',  titleEn:'Chilean Peso',   titlePt:'Peso chileno'  },
+    pen: { title:'Sol peruano',   titleEn:'Peruvian Sol',   titlePt:'Sol peruano'   },
+};
+
+function fxFmt(n, decimals=2) {
+    if(!n) return '—';
+    return n.toLocaleString('es-AR', {minimumFractionDigits:decimals, maximumFractionDigits:decimals});
+}
+
+function fxRenderARS() {
+    const d = fxData.ars;
+    if(!d.oficial) return '<div class="fx-row"><span class="fx-name">—</span><span class="fx-val">—</span></div>';
+    return [
+        `<div class="fx-row"><span class="fx-name">🏦 Oficial</span><span class="fx-val">$${fxFmt(d.oficial,0)}</span></div>`,
+        `<div class="fx-row"><span class="fx-name">🔵 Blue</span><span class="fx-val">$${fxFmt(d.blue,0)}</span></div>`,
+        `<div class="fx-row"><span class="fx-name">💳 Tarjeta</span><span class="fx-val">$${fxFmt(d.tarjeta,0)}</span></div>`,
+    ].join('');
+}
+
+function fxRenderER(code, symbol, flag, decimals=2) {
+    const rate = fxData.er[code];
+    if(!rate) return '<div class="fx-row"><span class="fx-name">—</span><span class="fx-val">—</span></div>';
+    const arsOficial = fxData.ars.oficial || 0;
+    const arsBlue    = fxData.ars.blue    || 0;
+    const rows = [
+        `<div class="fx-row"><span class="fx-name">${flag} 1 USD</span><span class="fx-val">${symbol}${fxFmt(rate, decimals)}</span></div>`,
+    ];
+    if(arsOficial) rows.push(`<div class="fx-row"><span class="fx-name">🏦 vs Oficial</span><span class="fx-val">$${fxFmt(arsOficial/rate,2)}</span></div>`);
+    if(arsBlue)    rows.push(`<div class="fx-row"><span class="fx-name">🔵 vs Blue</span><span class="fx-val">$${fxFmt(arsBlue/rate,2)}</span></div>`);
+    return rows.join('');
+}
+
+function fxRenderUYU() { return fxRenderER('UYU', '$U', '🇺🇾', 0); }
+function fxRenderCLP() { return fxRenderER('CLP', '$', '🇨🇱', 0); }
+function fxRenderPEN() { return fxRenderER('PEN', 'S/', '🇵🇪', 2); }
+function fxRenderEUR() {
+    const rate = fxData.er['EUR'];
+    if(!rate) return '<div class="fx-row"><span class="fx-name">—</span><span class="fx-val">—</span></div>';
+    const arsOficial = fxData.ars.oficial || 0;
+    const arsBlue    = fxData.ars.blue    || 0;
+    const usdPerEur  = 1/rate;
+    const rows = [
+        `<div class="fx-row"><span class="fx-name">🇪🇺 1 EUR</span><span class="fx-val">$${fxFmt(usdPerEur,2)} USD</span></div>`,
+    ];
+    if(arsOficial) rows.push(`<div class="fx-row"><span class="fx-name">🏦 vs Oficial</span><span class="fx-val">$${fxFmt(arsOficial*usdPerEur,0)}</span></div>`);
+    if(arsBlue)    rows.push(`<div class="fx-row"><span class="fx-name">🔵 vs Blue</span><span class="fx-val">$${fxFmt(arsBlue*usdPerEur,0)}</span></div>`);
+    return rows.join('');
+}
+
+function fxRender() {
+    const content = document.getElementById('fx-content');
+    const title   = document.getElementById('fx-widget-title');
+    const l = lang || 'es';
+    const meta = FX_META[fxCurrent];
+    if(title) title.textContent = l==='en' ? meta.titleEn : l==='pt' ? meta.titlePt : meta.title;
+    let html = '';
+    if(fxCurrent==='ars') html = fxRenderARS();
+    else if(fxCurrent==='eur') html = fxRenderEUR();
+    else if(fxCurrent==='uyu') html = fxRenderUYU();
+    else if(fxCurrent==='clp') html = fxRenderCLP();
+    else if(fxCurrent==='pen') html = fxRenderPEN();
+    if(content) content.innerHTML = html;
+}
+
+window.fxSelect = function(code) {
+    fxCurrent = code;
+    document.querySelectorAll('.fx-flag-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.getElementById('fx-btn-'+code);
+    if(btn) btn.classList.add('active');
+    fxRender();
+};
+
 async function loadExchangeRate() {
-    if(!navigator.onLine) return;
+    if(!navigator.onLine) { document.getElementById('fx-loading').textContent='—'; return; }
     try {
-        const r=await fetch('https://dolarapi.com/v1/dolares',{signal:AbortSignal.timeout(5000)});
-        const data=await r.json();
-        const get=(casa)=>data.find(d=>d.casa===casa)?.venta||0;
-        const [of,bl,tar]=[get('oficial'),get('blue'),get('tarjeta')];
-        if(of) document.getElementById('fx-oficial').textContent=`$${of.toLocaleString('es-AR')}`;
-        if(bl) document.getElementById('fx-blue').textContent=`$${bl.toLocaleString('es-AR')}`;
-        if(tar) document.getElementById('fx-tarjeta').textContent=`$${tar.toLocaleString('es-AR')}`;
-        document.getElementById('fx-loading').style.display='none';
-        document.getElementById('fx-content').style.display='block';
-    } catch(e){ document.getElementById('fx-loading').textContent='—'; }
+        // 1) Cotizaciones ARS
+        const r1 = await fetch('https://dolarapi.com/v1/dolares', {signal:AbortSignal.timeout(5000)});
+        const d1 = await r1.json();
+        const get = (casa) => d1.find(d=>d.casa===casa)?.venta || 0;
+        fxData.ars = { oficial: get('oficial'), blue: get('blue'), tarjeta: get('tarjeta') };
+        // 2) Tipos de cambio internacionales (base USD)
+        const r2 = await fetch('https://open.er-api.com/v6/latest/USD', {signal:AbortSignal.timeout(5000)});
+        const d2 = await r2.json();
+        fxData.er = d2.rates || {};
+        document.getElementById('fx-loading').style.display = 'none';
+        document.getElementById('fx-content').style.display = 'block';
+        fxRender();
+    } catch(e) { document.getElementById('fx-loading').textContent = '—'; }
 }
 
 const WMO = {
