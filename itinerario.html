@@ -697,7 +697,51 @@
                 </div>
             </div>
         </div>
+
+        <!-- ═══ TRACKER DE PARQUES (solo Orlando) ═══ -->
+        <div id="inline-parques-card" style="display:none;">
+            <div class="card" style="padding:0;overflow:hidden;border:1.5px solid rgba(124,58,237,.35);">
+                <!-- Header colapsable -->
+                <div onclick="toggleInlineParques()" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;user-select:none;background:var(--primary-dim);">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <span style="font-size:1.3rem;">🎢</span>
+                        <div>
+                            <div style="font-size:.85rem;font-weight:900;color:var(--primary);">Tracker de Parques</div>
+                            <div style="font-size:.62rem;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;">Tachá cada atracción que hagas</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div style="text-align:right;">
+                            <div id="ip-globalDone" style="font-size:1.1rem;font-weight:900;color:var(--primary);">0</div>
+                            <div style="font-size:.58rem;color:var(--text-dim);font-weight:700;">de <span id="ip-globalTotal">0</span></div>
+                        </div>
+                        <span id="ip-chevron" style="font-size:1rem;color:var(--text-dim);transition:transform .3s;">▾</span>
+                    </div>
+                </div>
+                <!-- Barra de progreso global -->
+                <div style="height:4px;background:var(--border);">
+                    <div id="ip-globalBar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--primary),#a855f7);transition:width .5s ease;"></div>
+                </div>
+                <!-- Cuerpo colapsable -->
+                <div id="inline-parques-body" style="display:none;padding:14px 16px;">
+                    <!-- Filtros -->
+                    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
+                        <button onclick="ipFilter('all',this)" style="border:none;border-radius:99px;padding:5px 12px;font-size:.7rem;font-weight:800;cursor:pointer;background:var(--primary);color:white;font-family:inherit;">🎡 Todos</button>
+                        <button onclick="ipFilter('mk',this)" style="border:1.5px solid var(--border);border-radius:99px;padding:5px 10px;font-size:.7rem;font-weight:800;cursor:pointer;background:var(--surface-2);color:var(--text-sub);font-family:inherit;">🏰 MK</button>
+                        <button onclick="ipFilter('epcot',this)" style="border:1.5px solid var(--border);border-radius:99px;padding:5px 10px;font-size:.7rem;font-weight:800;cursor:pointer;background:var(--surface-2);color:var(--text-sub);font-family:inherit;">🌍 EPCOT</button>
+                        <button onclick="ipFilter('hs',this)" style="border:1.5px solid var(--border);border-radius:99px;padding:5px 10px;font-size:.7rem;font-weight:800;cursor:pointer;background:var(--surface-2);color:var(--text-sub);font-family:inherit;">🎬 HS</button>
+                        <button onclick="ipFilter('ak',this)" style="border:1.5px solid var(--border);border-radius:99px;padding:5px 10px;font-size:.7rem;font-weight:800;cursor:pointer;background:var(--surface-2);color:var(--text-sub);font-family:inherit;">🦁 AK</button>
+                        <button onclick="ipFilter('ioa',this)" style="border:1.5px solid var(--border);border-radius:99px;padding:5px 10px;font-size:.7rem;font-weight:800;cursor:pointer;background:var(--surface-2);color:var(--text-sub);font-family:inherit;">🦖 IoA</button>
+                        <button onclick="ipFilter('usf',this)" style="border:1.5px solid var(--border);border-radius:99px;padding:5px 10px;font-size:.7rem;font-weight:800;cursor:pointer;background:var(--surface-2);color:var(--text-sub);font-family:inherit;">🎭 USF</button>
+                        <button onclick="ipFilter('epic',this)" style="border:1.5px solid var(--border);border-radius:99px;padding:5px 10px;font-size:.7rem;font-weight:800;cursor:pointer;background:var(--surface-2);color:var(--text-sub);font-family:inherit;">✨ Epic</button>
+                    </div>
+                    <div id="ip-parksContainer"></div>
+                    <button onclick="ipResetAll()" style="width:100%;margin-top:8px;padding:8px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface-2);color:var(--text-dim);font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;">↺ Reiniciar progreso</button>
+                </div>
+            </div>
+        </div>
     </div>
+
 
     <!-- ═══════ TAB TRANSPORTE ═══════ -->
     <div class="tab-panel" id="panel-transporte">
@@ -1287,6 +1331,9 @@ const PARKS_DATA = [
   },
 ];
 
+
+// Exponer globalmente para el tracker inline del panel-lugares
+window.PARKS_DATA = PARKS_DATA;
 // --- State ---
 let state = {};
 
@@ -1800,13 +1847,23 @@ buildParks();
     window._updateParquesTab = () => {
         const city = document.getElementById('citySelector')?.value;
         const tab  = document.getElementById('tab-parques');
-        if (!tab) return;
-        if (city === 'orlando') {
-            tab.classList.add('visible');
-        } else {
-            tab.classList.remove('visible');
-            if (document.getElementById('panel-parques')?.classList.contains('active'))
-                window.switchTab('lugares');
+        if (tab) {
+            if (city === 'orlando') {
+                tab.classList.add('visible');
+            } else {
+                tab.classList.remove('visible');
+                if (document.getElementById('panel-parques')?.classList.contains('active'))
+                    window.switchTab('lugares');
+            }
+        }
+        // Mostrar/ocultar card inline en panel-lugares
+        const inlineCard = document.getElementById('inline-parques-card');
+        if (inlineCard) {
+            inlineCard.style.display = (city === 'orlando') ? 'block' : 'none';
+            if (city === 'orlando' && !window._ipInited) {
+                window._ipInited = true;
+                ipBuildParks();
+            }
         }
     };
     window._i18n = i18n;
@@ -3017,6 +3074,185 @@ document.addEventListener('DOMContentLoaded', renderCityGrid);
 })();
 </script>
 <!-- ═══════════════ FIN TAXUSA AI CHAT ═══════════════ -->
+
+<!-- ══ INLINE PARK TRACKER (panel-lugares) ══ -->
+<script>
+(function(){
+// Reutiliza PARKS_DATA del tracker principal (declarado más abajo en el HTML)
+// pero lo referenciamos dinámicamente para no duplicar datos.
+
+const IP_KEY = 'parkTracker_v1'; // misma clave → progreso compartido con el tab de parques
+
+function ipGetState() { try { return JSON.parse(localStorage.getItem(IP_KEY) || '{}'); } catch(e) { return {}; } }
+function ipSaveState(s) { try { localStorage.setItem(IP_KEY, JSON.stringify(s)); } catch(e) {} }
+
+function ipIsDone(parkId, zi, ai) { return !!ipGetState()[`${parkId}_${zi}_${ai}`]; }
+function ipToggle(parkId, zi, ai) {
+    const s = ipGetState();
+    s[`${parkId}_${zi}_${ai}`] = !s[`${parkId}_${zi}_${ai}`];
+    ipSaveState(s);
+    ipUpdateParkUI(parkId);
+    ipUpdateGlobal();
+}
+
+window.toggleInlineParques = function() {
+    const body = document.getElementById('inline-parques-body');
+    const chev = document.getElementById('ip-chevron');
+    const open = body.style.display === 'none';
+    body.style.display = open ? 'block' : 'none';
+    if (chev) chev.style.transform = open ? 'rotate(180deg)' : '';
+};
+
+window.ipFilter = function(id, btn) {
+    document.querySelectorAll('#inline-parques-body button[onclick^="ipFilter"]').forEach(b => {
+        b.style.background = 'var(--surface-2)';
+        b.style.color = 'var(--text-sub)';
+        b.style.border = '1.5px solid var(--border)';
+    });
+    btn.style.background = 'var(--primary)';
+    btn.style.color = 'white';
+    btn.style.border = '1.5px solid var(--primary)';
+
+    if (!window.PARKS_DATA) return;
+    window.PARKS_DATA.forEach(park => {
+        const el = document.getElementById(`ip-park-${park.id}`);
+        if (el) el.style.display = (id === 'all' || park.id === id) ? 'block' : 'none';
+    });
+};
+
+window.ipResetAll = function() {
+    if (!confirm('¿Reiniciar todo el progreso de parques?')) return;
+    ipSaveState({});
+    ipBuildParks();
+};
+
+window.ipBuildParks = function() {
+    const container = document.getElementById('ip-parksContainer');
+    if (!container || !window.PARKS_DATA) return;
+    container.innerHTML = '';
+
+    window.PARKS_DATA.forEach(park => {
+        const total = park.zones.reduce((s, z) => s + z.attractions.length, 0);
+        const section = document.createElement('div');
+        section.id = `ip-park-${park.id}`;
+        section.style.cssText = 'margin-bottom:12px;border:1px solid var(--border);border-radius:14px;overflow:hidden;';
+
+        // Park header
+        const hdr = document.createElement('div');
+        hdr.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface-2);cursor:pointer;user-select:none;';
+        hdr.innerHTML = `
+            <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:1.2rem;">${park.emoji}</span>
+                <div>
+                    <div style="font-size:.82rem;font-weight:900;color:var(--text);">${park.name}</div>
+                    <div style="font-size:.6rem;font-weight:700;color:var(--text-dim);">${park.label}</div>
+                </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+                <span id="ip-count-${park.id}" style="font-size:.78rem;font-weight:900;color:var(--primary);">0/${total}</span>
+                <span class="ip-park-chev" style="font-size:.85rem;color:var(--text-dim);transition:transform .3s;">▾</span>
+            </div>`;
+
+        const body = document.createElement('div');
+        body.style.display = 'none';
+        body.style.padding = '10px 14px';
+
+        hdr.onclick = () => {
+            const open = body.style.display === 'none';
+            body.style.display = open ? 'block' : 'none';
+            const chev = hdr.querySelector('.ip-park-chev');
+            if (chev) chev.style.transform = open ? 'rotate(180deg)' : '';
+        };
+
+        // Progress bar
+        const barWrap = document.createElement('div');
+        barWrap.style.cssText = 'height:3px;background:var(--border);';
+        const bar = document.createElement('div');
+        bar.id = `ip-bar-${park.id}`;
+        bar.style.cssText = 'height:100%;width:0%;background:var(--primary);transition:width .4s ease;';
+        barWrap.appendChild(bar);
+
+        // Zones
+        park.zones.forEach((zone, zi) => {
+            const zTitle = document.createElement('div');
+            zTitle.style.cssText = 'font-size:.62rem;font-weight:900;color:var(--text-dim);text-transform:uppercase;letter-spacing:.7px;margin:10px 0 6px;';
+            zTitle.textContent = zone.name;
+            body.appendChild(zTitle);
+
+            const grid = document.createElement('div');
+            grid.style.cssText = 'display:flex;flex-direction:column;gap:4px;';
+
+            zone.attractions.forEach((attr, ai) => {
+                const done = ipIsDone(park.id, zi, ai);
+                const row = document.createElement('div');
+                row.id = `ip-row-${park.id}-${zi}-${ai}`;
+                row.style.cssText = `display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:9px;background:var(--surface-2);border:1px solid var(--border);cursor:pointer;transition:all .2s;${done ? 'opacity:.5;' : ''}`;
+                row.innerHTML = `
+                    <div id="ip-chk-${park.id}-${zi}-${ai}" style="width:18px;height:18px;border-radius:5px;border:2px solid var(--border);background:${done ? 'var(--success)' : 'var(--surface)'};flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:900;color:white;">${done ? '✓' : ''}</div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-size:.78rem;font-weight:700;color:var(--text);${done ? 'text-decoration:line-through;color:var(--text-dim);' : ''}">${attr.name}</div>
+                        ${attr.height ? `<div style="font-size:.6rem;color:var(--text-dim);font-weight:600;">↑ ${attr.height}</div>` : ''}
+                    </div>`;
+
+                row.onclick = () => {
+                    ipToggle(park.id, zi, ai);
+                    const isDone = ipIsDone(park.id, zi, ai);
+                    const chk = document.getElementById(`ip-chk-${park.id}-${zi}-${ai}`);
+                    if (chk) {
+                        chk.textContent = isDone ? '✓' : '';
+                        chk.style.background = isDone ? 'var(--success)' : 'var(--surface)';
+                        chk.style.borderColor = isDone ? 'var(--success)' : 'var(--border)';
+                    }
+                    row.style.opacity = isDone ? '.5' : '1';
+                    const nameEl = row.querySelector('div > div:first-child');
+                    if (nameEl) nameEl.style.textDecoration = isDone ? 'line-through' : 'none';
+                };
+                grid.appendChild(row);
+            });
+
+            body.appendChild(grid);
+        });
+
+        section.appendChild(hdr);
+        section.appendChild(barWrap);
+        section.appendChild(body);
+        container.appendChild(section);
+        ipUpdateParkUI(park.id);
+    });
+
+    ipUpdateGlobal();
+};
+
+function ipUpdateParkUI(parkId) {
+    if (!window.PARKS_DATA) return;
+    const park = window.PARKS_DATA.find(p => p.id === parkId);
+    if (!park) return;
+    let done = 0, total = 0;
+    park.zones.forEach((z, zi) => z.attractions.forEach((_, ai) => { total++; if (ipIsDone(parkId, zi, ai)) done++; }));
+    const cntEl = document.getElementById(`ip-count-${parkId}`);
+    const barEl = document.getElementById(`ip-bar-${parkId}`);
+    if (cntEl) cntEl.textContent = `${done}/${total}`;
+    if (barEl) barEl.style.width = `${total ? (done/total)*100 : 0}%`;
+}
+
+function ipUpdateGlobal() {
+    if (!window.PARKS_DATA) return;
+    let done = 0, total = 0;
+    window.PARKS_DATA.forEach(park => {
+        park.zones.forEach((z, zi) => z.attractions.forEach((_, ai) => { total++; if (ipIsDone(park.id, zi, ai)) done++; }));
+    });
+    const dEl = document.getElementById('ip-globalDone');
+    const tEl = document.getElementById('ip-globalTotal');
+    const bEl = document.getElementById('ip-globalBar');
+    if (dEl) dEl.textContent = done;
+    if (tEl) tEl.textContent = total;
+    if (bEl) bEl.style.width = `${total ? (done/total)*100 : 0}%`;
+}
+
+window.ipBuildParks = window.ipBuildParks;
+window.ipUpdateGlobal = ipUpdateGlobal;
+})();
+</script>
 
 <!-- ── Offline Toast + Auto-sync ── -->
 <script>
