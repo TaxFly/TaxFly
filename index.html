@@ -117,22 +117,29 @@
         .fx-val{font-size:.85rem;font-weight:900;color:var(--text);}
 
         /* Weather */
-        .weather-widget{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;box-shadow:var(--shadow);margin-bottom:14px;position:relative;overflow:hidden;}
-        .weather-widget::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(14,165,233,.05),rgba(37,99,235,.04));pointer-events:none;}
+        .weather-widget{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px 20px;box-shadow:var(--shadow);margin-bottom:14px;position:relative;overflow:hidden;}
+        .weather-widget::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(37,99,235,0.06),rgba(14,165,233,0.06));pointer-events:none;}
         .ww-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-        .ww-label{font-size:.55rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--text-dim);display:flex;align-items:center;gap:5px;}
-        .ww-refresh{background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:.85rem;padding:4px 6px;border-radius:8px;transition:var(--tr);}
+        .ww-label{font-size:.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;}
+        .ww-refresh{background:none;border:none;cursor:pointer;color:var(--text-dim);padding:6px;border-radius:8px;transition:var(--tr);display:flex;align-items:center;justify-content:center;}
+        .ww-refresh svg{transition:transform 0.3s ease;}
         .ww-refresh:hover{color:var(--primary);background:var(--primary-dim);}
-        .ww-main{display:flex;align-items:center;gap:12px;}
-        .ww-icon{font-size:2.4rem;line-height:1;flex-shrink:0;}
+        .ww-refresh:hover svg{transform:rotate(45deg);}
+        .ww-refresh.spinning svg{animation:ww-spin 0.7s linear infinite;}
+        @keyframes ww-spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+        .ww-main{display:flex;align-items:center;gap:14px;}
+        .ww-icon{font-size:2.8rem;line-height:1;flex-shrink:0;}
+        .ww-info{flex:1;}
         .ww-temp{font-size:2rem;font-weight:900;color:var(--text);line-height:1;}
-        .ww-city{font-size:.75rem;font-weight:700;color:var(--text-sub);margin-top:1px;}
-        .ww-desc{font-size:.68rem;font-weight:600;color:var(--primary);margin-top:2px;text-transform:capitalize;}
-        .ww-extras{display:flex;gap:12px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
-        .ww-extra{display:flex;align-items:center;gap:4px;font-size:.68rem;font-weight:700;color:var(--text-sub);}
-        .ww-loading{font-size:.78rem;color:var(--text-dim);font-weight:600;padding:6px 0;display:flex;align-items:center;gap:8px;}
-        .ww-spinner{width:14px;height:14px;border-radius:50%;border:2px solid var(--border);border-top-color:var(--primary);animation:spin .75s linear infinite;flex-shrink:0;}
-        @keyframes spin{to{transform:rotate(360deg);}}
+        .ww-temp span{font-size:1rem;font-weight:600;color:var(--text-sub);}
+        .ww-city{font-size:.8rem;font-weight:700;color:var(--text-sub);margin-top:2px;}
+        .ww-desc{font-size:.72rem;font-weight:600;color:var(--primary);margin-top:3px;text-transform:capitalize;}
+        .ww-extras{display:flex;gap:16px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
+        .ww-extra{display:flex;align-items:center;gap:5px;font-size:.72rem;font-weight:700;color:var(--text-sub);}
+        .ww-extra span:first-child{font-size:.95rem;}
+        .ww-loading{text-align:center;padding:14px 0;font-size:.8rem;color:var(--text-dim);font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;}
+        .ww-spinner{width:18px;height:18px;border-radius:50%;border:2.5px solid var(--border);border-top-color:var(--primary);animation:ww-spin .75s linear infinite;flex-shrink:0;}
+        .ww-error{font-size:.75rem;color:var(--text-dim);font-weight:600;text-align:center;padding:8px 0;}
 
         /* Next event */
         .next-event-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;box-shadow:var(--shadow);margin-bottom:14px;cursor:pointer;transition:var(--tr);display:flex;align-items:center;gap:14px;}
@@ -208,13 +215,13 @@
 
     <header class="app-header">
         <div class="logo">
-            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="32" height="32" rx="8" fill="#2563eb"/>
-                <text x="5" y="23" font-family="Arial Black" font-weight="900" font-size="18" fill="white">T</text>
-                <circle cx="24" cy="10" r="5" fill="#ef4444"/>
-                <text x="21.5" y="13.5" font-family="Arial" font-weight="900" font-size="7" fill="white">$</text>
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="32" height="32" rx="8" fill="#1e3a8a"/>
+                <rect x="0" y="10" width="32" height="4" fill="#ef4444"/>
+                <rect x="0" y="18" width="32" height="4" fill="#ef4444"/>
+                <polygon points="16,4 18.4,11 26,11 20,15.5 22.4,22.5 16,18 9.6,22.5 12,15.5 6,11 13.6,11" fill="#ffffff"/>
             </svg>
-            <span>Tax<span style="color:var(--primary)">USA</span></span>
+            <span>Tax<span style="color:#ef4444;">USA</span></span>
         </div>
         <button class="btn-nav-set" id="btnSettings" onclick="toggleSettings()" title="Ajustes">⚙️</button>
     </header>
@@ -261,28 +268,14 @@
     </div>
 
     <!-- Weather -->
-    <div class="weather-widget">
+    <div class="weather-widget" id="weatherCard">
         <div class="ww-top">
-            <div class="ww-label">🌤️ &nbsp;<span data-i18n="widget_weather">Clima en destino</span></div>
-            <button class="ww-refresh" onclick="loadWeather(true)">🔄</button>
+            <span class="ww-label" id="ww-label">🌤️ &nbsp;<span data-i18n="widget_weather">Clima en destino</span></span>
+            <button class="ww-refresh" onclick="loadWeather(true)" title="Actualizar">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>
+            </button>
         </div>
-        <div id="ww-loading" class="ww-loading"><div class="ww-spinner"></div><span data-i18n="loading">Cargando...</span></div>
-        <div id="ww-body" style="display:none;">
-            <div class="ww-main">
-                <div class="ww-icon" id="ww-icon">🌤️</div>
-                <div>
-                    <div class="ww-temp"><span id="ww-temp">—</span><span style="font-size:1rem;font-weight:600;color:var(--text-sub);">°F</span> <span style="font-size:.75rem;font-weight:600;color:var(--text-dim);" id="ww-temp-c"></span></div>
-                    <div class="ww-city" id="ww-city">—</div>
-                    <div class="ww-desc" id="ww-desc">—</div>
-                </div>
-            </div>
-            <div class="ww-extras">
-                <div class="ww-extra">💧 <span id="ww-hum">—</span>%</div>
-                <div class="ww-extra">💨 <span id="ww-wind">—</span> mph</div>
-                <div class="ww-extra">🌡️ <span id="ww-feels">—</span>°F</div>
-            </div>
-        </div>
-        <div id="ww-error" style="display:none;font-size:.72rem;color:var(--text-dim);font-weight:600;padding:4px 0;" data-i18n="weather_error">No se pudo obtener el clima.</div>
+        <div id="ww-body"><div class="ww-loading"><div class="ww-spinner"></div><span data-i18n="loading">Cargando...</span></div></div>
     </div>
 
     <!-- Next event -->
@@ -316,26 +309,23 @@
 
 <div id="menuOverlay" class="menu-overlay" onclick="toggleSettings()"></div>
 <div id="settingsDrawer" class="settings-drawer">
-    <div class="drawer-header" data-i18n="settings_title">Ajustes</div>
+    <div class="drawer-header"><span data-i18n="settings_title">Ajustes</span></div>
     <p id="userEmail" class="drawer-email"></p>
     <span class="drawer-section-label" data-i18n="label_language">Idioma</span>
     <div class="lang-selector">
-        <button class="lang-opt" id="lang-es" onclick="window.changeLanguage('es')">
-            <svg width="18" height="13" viewBox="0 0 18 13"><rect width="18" height="4.3" fill="#74acdf"/><rect width="18" height="4.4" y="4.3" fill="#fff"/><rect width="18" height="4.3" y="8.7" fill="#74acdf"/><circle cx="9" cy="6.5" r="1.5" fill="#f6b40e"/></svg> ES
-        </button>
-        <button class="lang-opt" id="lang-en" onclick="window.changeLanguage('en')">
-            <svg width="18" height="13" viewBox="0 0 18 13"><rect width="18" height="13" fill="#B22234"/><rect width="18" height="1" y="1" fill="#fff"/><rect width="18" height="1" y="3" fill="#fff"/><rect width="18" height="1" y="5" fill="#fff"/><rect width="18" height="1" y="7" fill="#fff"/><rect width="18" height="1" y="9" fill="#fff"/><rect width="18" height="1" y="11" fill="#fff"/><rect width="7" height="7" fill="#3C3B6E"/></svg> EN
-        </button>
-        <button class="lang-opt" id="lang-pt" onclick="window.changeLanguage('pt')">
-            <svg width="18" height="13" viewBox="0 0 18 13"><rect width="18" height="13" fill="#009c3b"/><polygon points="9,1 17,6.5 9,12 1,6.5" fill="#FEDF00"/><circle cx="9" cy="6.5" r="2.6" fill="#002776"/></svg> PT
-        </button>
+        <button class="lang-opt" id="lang-es" onclick="window.changeLanguage('es')"><svg width="18" height="13" viewBox="0 0 18 13" xmlns="http://www.w3.org/2000/svg"><rect width="18" height="4.3" y="0" fill="#74acdf"/><rect width="18" height="4.4" y="4.3" fill="#fff"/><rect width="18" height="4.3" y="8.7" fill="#74acdf"/><circle cx="9" cy="6.5" r="1.5" fill="#f6b40e"/></svg> ES</button>
+        <button class="lang-opt" id="lang-en" onclick="window.changeLanguage('en')"><svg width="18" height="13" viewBox="0 0 18 13" xmlns="http://www.w3.org/2000/svg"><rect width="18" height="13" fill="#B22234"/><rect width="18" height="1" y="1" fill="#fff"/><rect width="18" height="1" y="3" fill="#fff"/><rect width="18" height="1" y="5" fill="#fff"/><rect width="18" height="1" y="7" fill="#fff"/><rect width="18" height="1" y="9" fill="#fff"/><rect width="18" height="1" y="11" fill="#fff"/><rect width="7" height="7" fill="#3C3B6E"/></svg> EN</button>
+        <button class="lang-opt" id="lang-pt" onclick="window.changeLanguage('pt')"><svg width="18" height="13" viewBox="0 0 18 13" xmlns="http://www.w3.org/2000/svg"><rect width="18" height="13" fill="#009c3b"/><polygon points="9,1 17,6.5 9,12 1,6.5" fill="#FEDF00"/><circle cx="9" cy="6.5" r="2.6" fill="#002776"/></svg> PT</button>
     </div>
     <button class="drawer-btn" onclick="changeProfile()">👤 <span data-i18n="btn_change_profile">Cambiar Perfil</span></button>
     <button class="drawer-btn" onclick="toggleDarkMode()">🌓 <span data-i18n="btn_theme">Cambiar Tema</span></button>
     <button class="drawer-btn" onclick="location.reload()">🔄 <span data-i18n="btn_update">Actualizar App</span></button>
+    <button class="drawer-btn" onclick="doChangeEmail()">📧 <span data-i18n="btn_email">Cambiar Correo</span></button>
+    <button class="drawer-btn" onclick="doChangePassword()">🔑 <span data-i18n="btn_password">Cambiar Contraseña</span></button>
+    <button class="drawer-btn" onclick="gestionarPIN()">🔢 <span data-i18n="btn_pin">Cambiar PIN Offline</span></button>
     <button class="drawer-btn" onclick="openSwitchApp()">🌍 <span data-i18n="btn_switch_app">Cambiar Aplicación</span></button>
-    <button class="drawer-btn btn-danger" onclick="doLogout()">🚪 <span data-i18n="btn_logout">Cerrar Sesión</span></button>
-    <div style="margin-top:auto;padding-top:16px;"></div>
+    <button class="drawer-btn" onclick="doLogout()">🚪 <span data-i18n="btn_logout">Cerrar Sesión</span></button>
+    <div style="margin-top:auto;padding-top:16px;"><button class="drawer-btn btn-danger" onclick="doDeleteAccount()">🗑️ <span data-i18n="btn_delete">Eliminar Cuenta</span></button></div>
 </div>
 
 <div id="switchAppModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(12px);z-index:9999;align-items:center;justify-content:center;padding:20px;">
@@ -358,12 +348,14 @@
 
 <script type="module">
 import { initializeApp }    from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser, verifyBeforeUpdateEmail } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
 import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app-check.js";
+import { getFirestore, collection, query, orderBy, limit, onSnapshot, getDoc, doc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
 const FB = { apiKey:"AIzaSyA-eeKl8guVDmTa_NpYvkB0O7-RMbPrkP0", authDomain:"viajes-db538.firebaseapp.com", projectId:"viajes-db538", storageBucket:"viajes-db538.firebasestorage.app", messagingSenderId:"237311739178", appId:"1:237311739178:web:333e468b184c0402a98a53" };
 const app  = initializeApp(FB);
 const auth = getAuth(app);
+const db   = getFirestore(app);
 if (navigator.onLine) { try { initializeAppCheck(app, { provider: new ReCaptchaV3Provider('6LeK6cssAAAAALxcJy-95R2nhVMmnuIyB78AQgvw'), isTokenAutoRefreshEnabled: true }); } catch(e) {} }
 
 const I18N = {
@@ -465,6 +457,7 @@ const I18N = {
 let lang = localStorage.getItem('appLang') || 'es';
 let t = I18N[lang] || I18N.es;
 const perfilId = localStorage.getItem('perfilActivoId') || 'default';
+let currentUser = null;
 let tipIndex = Math.floor(Math.random() * 8);
 
 function applyI18n() {
@@ -489,29 +482,63 @@ function updateGreeting() {
     ['btnSettings','btnSettings2'].forEach(id => { const b=document.getElementById(id); if(foto&&b){b.style.backgroundImage=`url('${foto}')`;b.textContent='';} });
 }
 
-function loadBudget() {
-    const base = parseFloat(localStorage.getItem('taxusa_budget_cache_'+perfilId))||0;
-    let gastado=0, gastos=[];
-    try { gastos=JSON.parse(localStorage.getItem('taxusa_gastos_cache_'+perfilId)||'[]'); gastado=gastos.reduce((s,g)=>s+(parseFloat(g.monto)||0),0); } catch(e){}
-    loadLastGasto(gastos, gastado);
-    if (base<=0) { document.getElementById('wb-value').textContent=t.budget_no_data||'—'; document.getElementById('wb-pct').textContent='—'; return; }
+function renderBudgetUI(base, gastos) {
+    const gastado = gastos.reduce((s,g)=>s+(parseFloat(g.valor||g.monto)||0),0);
+    // Último gasto
+    const totalEl=document.getElementById('total-gasto-val');
+    if(!gastos||gastos.length===0){
+        document.getElementById('last-gasto-val').textContent='—';
+        document.getElementById('last-gasto-name').textContent=t.no_gastos||'Sin gastos';
+        if(totalEl) totalEl.textContent='$0.00';
+    } else {
+        // gastos viene ordenado desc desde Firestore, el [0] es el último
+        const last=gastos[0];
+        document.getElementById('last-gasto-val').textContent=`$${parseFloat(last.valor||last.monto||0).toFixed(2)}`;
+        document.getElementById('last-gasto-name').textContent=last.descripcion||last.nombre||last.tienda||'—';
+        const catEl=document.getElementById('last-gasto-cat');
+        if(last.categoria){catEl.textContent=last.categoria;catEl.style.display='inline-flex';}
+        if(totalEl) totalEl.textContent=`$${gastado.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+    }
+    // Presupuesto restante
+    if(base<=0){ document.getElementById('wb-value').textContent=t.budget_no_data||'—'; document.getElementById('wb-pct').textContent='—'; return; }
     const restante=base-gastado, pct=Math.max(0,Math.min(100,Math.round((restante/base)*100)));
     document.getElementById('wb-value').textContent=`USD ${restante.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
     document.getElementById('wb-pct').textContent=pct+'%';
     document.getElementById('wb-bar').style.width=pct+'%';
     if(pct<20) document.getElementById('wb-pct').style.background='rgba(239,68,68,.35)';
     else if(pct<40) document.getElementById('wb-pct').style.background='rgba(245,158,11,.35)';
+    else document.getElementById('wb-pct').style.background='';
 }
 
-function loadLastGasto(gastos, total) {
-    const totalEl=document.getElementById('total-gasto-val');
-    if(!gastos||gastos.length===0){ document.getElementById('last-gasto-val').textContent='—'; document.getElementById('last-gasto-name').textContent=t.no_gastos; if(totalEl) totalEl.textContent='$0.00'; return; }
-    const last=gastos[gastos.length-1];
-    document.getElementById('last-gasto-val').textContent=`$${parseFloat(last.monto||0).toFixed(2)}`;
-    document.getElementById('last-gasto-name').textContent=last.nombre||last.tienda||'—';
-    const catEl=document.getElementById('last-gasto-cat');
-    if(last.categoria){catEl.textContent=last.categoria;catEl.style.display='inline-flex';}
-    if(totalEl) totalEl.textContent=`$${(total||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+function loadBudget() {
+    // Mostrar cache inmediatamente
+    const cachedBase = parseFloat(localStorage.getItem('taxusa_budget_cache_'+perfilId))||0;
+    let cachedGastos=[];
+    try { cachedGastos=JSON.parse(localStorage.getItem('taxusa_gastos_cache_'+perfilId)||'[]'); } catch(e){}
+    renderBudgetUI(cachedBase, cachedGastos);
+
+    // Escuchar Firestore en tiempo real
+    if(!currentUser||!perfilId) return;
+    // Presupuesto desde el perfil
+    getDoc(doc(db,'usuarios',currentUser.uid,'perfiles',perfilId)).then(snap=>{
+        if(snap.exists()&&snap.data().presupuesto!==undefined){
+            const base=parseFloat(snap.data().presupuesto)||0;
+            localStorage.setItem('taxusa_budget_cache_'+perfilId, String(base));
+            // Volver a renderizar con base actualizada y gastos ya cargados
+            let g=[];
+            try { g=JSON.parse(localStorage.getItem('taxusa_gastos_cache_'+perfilId)||'[]'); } catch(e){}
+            renderBudgetUI(base, g);
+        }
+    }).catch(()=>{});
+
+    // Gastos en tiempo real
+    const q=query(collection(db,'usuarios',currentUser.uid,'perfiles',perfilId,'gastos'),orderBy('fecha','desc'));
+    onSnapshot(q, snap=>{
+        const gastos=snap.docs.map(d=>({id:d.id,...d.data()}));
+        try { localStorage.setItem('taxusa_gastos_cache_'+perfilId, JSON.stringify(gastos)); } catch(e){}
+        const base=parseFloat(localStorage.getItem('taxusa_budget_cache_'+perfilId))||0;
+        renderBudgetUI(base, gastos);
+    }, ()=>{});
 }
 
 async function loadExchangeRate() {
@@ -529,69 +556,141 @@ async function loadExchangeRate() {
     } catch(e){ document.getElementById('fx-loading').textContent='—'; }
 }
 
-const W_ICONS={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',80:'🌦️',81:'🌧️',82:'⛈️',95:'⛈️',96:'⛈️',99:'⛈️'};
-const W_DESC={0:{es:'Despejado',en:'Clear sky',pt:'Céu limpo'},1:{es:'Mayormente despejado',en:'Mainly clear',pt:'Principalmente limpo'},2:{es:'Parcialmente nublado',en:'Partly cloudy',pt:'Parcialmente nublado'},3:{es:'Nublado',en:'Overcast',pt:'Nublado'},45:{es:'Niebla',en:'Foggy',pt:'Neblina'},48:{es:'Niebla',en:'Foggy',pt:'Neblina'},51:{es:'Llovizna leve',en:'Light drizzle',pt:'Garoa leve'},53:{es:'Llovizna',en:'Drizzle',pt:'Garoa'},55:{es:'Llovizna intensa',en:'Heavy drizzle',pt:'Garoa forte'},61:{es:'Lluvia leve',en:'Light rain',pt:'Chuva leve'},63:{es:'Lluvia',en:'Rain',pt:'Chuva'},65:{es:'Lluvia fuerte',en:'Heavy rain',pt:'Chuva forte'},71:{es:'Nieve leve',en:'Light snow',pt:'Neve leve'},73:{es:'Nieve',en:'Snow',pt:'Neve'},75:{es:'Nieve fuerte',en:'Heavy snow',pt:'Neve forte'},80:{es:'Chubascos',en:'Showers',pt:'Pancadas'},81:{es:'Chubascos',en:'Showers',pt:'Pancadas'},82:{es:'Chubascos fuertes',en:'Heavy showers',pt:'Pancadas fortes'},95:{es:'Tormenta',en:'Thunderstorm',pt:'Tempestade'}};
+const WMO = {
+    0:'Despejado',1:'Mayormente despejado',2:'Parcialmente nublado',3:'Nublado',
+    45:'Niebla',48:'Niebla con escarcha',
+    51:'Llovizna leve',53:'Llovizna',55:'Llovizna intensa',
+    61:'Lluvia leve',63:'Lluvia',65:'Lluvia intensa',
+    71:'Nieve leve',73:'Nieve',75:'Nieve intensa',
+    80:'Chubascos leves',81:'Chubascos',82:'Chubascos fuertes',
+    95:'Tormenta',96:'Tormenta con granizo',99:'Tormenta fuerte'
+};
+const WMO_EN = {
+    0:'Clear sky',1:'Mostly clear',2:'Partly cloudy',3:'Overcast',
+    45:'Foggy',48:'Icy fog',
+    51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',
+    61:'Light rain',63:'Rain',65:'Heavy rain',
+    71:'Light snow',73:'Snow',75:'Heavy snow',
+    80:'Light showers',81:'Showers',82:'Heavy showers',
+    95:'Thunderstorm',96:'Hail storm',99:'Severe storm'
+};
+const WMO_PT = {
+    0:'Céu limpo',1:'Principalmente limpo',2:'Parcialmente nublado',3:'Nublado',
+    45:'Neblina',48:'Neblina com geada',
+    51:'Garoa leve',53:'Garoa',55:'Garoa intensa',
+    61:'Chuva fraca',63:'Chuva',65:'Chuva forte',
+    71:'Neve fraca',73:'Neve',75:'Neve intensa',
+    80:'Pancadas leves',81:'Pancadas',82:'Pancadas fortes',
+    95:'Trovoada',96:'Trovoada com granizo',99:'Tempestade'
+};
+const WI = {
+    0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',
+    51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',
+    71:'🌨️',73:'❄️',75:'❄️',80:'🌦️',81:'🌧️',82:'⛈️',
+    95:'⛈️',96:'⛈️',99:'🌪️'
+};
+const WIND_DIR = ['N','NE','E','SE','S','SO','O','NO'];
+let weatherCache = { city:'', data:null, ts:0 };
+
+function renderWeather(r, lang) {
+    const body = document.getElementById('ww-body');
+    if(!body) return;
+    const wmoMap = lang==='en' ? WMO_EN : lang==='pt' ? WMO_PT : WMO;
+    const desc = wmoMap[r.code] || wmoMap[0];
+    const icon = WI[r.code] || '🌡️';
+    const feelsLbl = lang==='en' ? 'Feels like' : lang==='pt' ? 'Sensação' : 'Sensación';
+    const humLbl   = lang==='en' ? 'Humidity'   : lang==='pt' ? 'Umidade'  : 'Humedad';
+    const windLbl  = lang==='en' ? 'Wind'        : lang==='pt' ? 'Vento'    : 'Viento';
+    body.innerHTML =
+        '<div class="ww-main">' +
+            '<div class="ww-icon">' + icon + '</div>' +
+            '<div class="ww-info">' +
+                '<div class="ww-temp">' + r.tempF + '°<span>F / ' + r.tempC + '°C</span></div>' +
+                '<div class="ww-city">' + (r.displayName||'—') + '</div>' +
+                '<div class="ww-desc">' + desc + '</div>' +
+            '</div>' +
+        '</div>' +
+        '<div class="ww-extras">' +
+            '<div class="ww-extra"><span>🌡️</span><span>' + feelsLbl + ': ' + r.feelsF + '°F</span></div>' +
+            '<div class="ww-extra"><span>💧</span><span>' + humLbl + ': ' + r.humidity + '%</span></div>' +
+            '<div class="ww-extra"><span>💨</span><span>' + windLbl + ': ' + r.wind + ' mph</span></div>' +
+        '</div>';
+    const refreshBtn = document.querySelector('.ww-refresh');
+    if(refreshBtn) refreshBtn.classList.remove('spinning');
+}
 
 window.loadWeather = async function(force=false) {
-    const ck='taxusa_weather_cache_v2';
-    if(!force){ const c=localStorage.getItem(ck); if(c){ try{ const d=JSON.parse(c); if(Date.now()-d._ts<1800000){renderWeather(d);return;} }catch(e){} } }
-    if(!navigator.onLine){showWeatherErr();return;}
-    document.getElementById('ww-loading').style.display='flex';
-    document.getElementById('ww-body').style.display='none';
-    document.getElementById('ww-error').style.display='none';
-    try {
-        const lat=40.7128,lon=-74.0060,city='New York, NY';
-        const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,weathercode,windspeed_10m,relativehumidity_2m&temperature_unit=fahrenheit&windspeed_unit=mph&timezone=America/New_York`,{signal:AbortSignal.timeout(7000)});
-        const data=await r.json();
-        const cur=data.current;
-        const d={temp:Math.round(cur.temperature_2m),feels:Math.round(cur.apparent_temperature),code:cur.weathercode,wind:Math.round(cur.windspeed_10m),hum:cur.relativehumidity_2m,city,_ts:Date.now()};
-        localStorage.setItem(ck,JSON.stringify(d));
-        renderWeather(d);
-    } catch(e){showWeatherErr();}
-};
+    const l = lang || localStorage.getItem('appLang') || 'es';
+    const city = 'New York';
+    const body = document.getElementById('ww-body');
+    const refreshBtn = document.querySelector('.ww-refresh');
+    if(refreshBtn) refreshBtn.classList.add('spinning');
 
-function renderWeather(d) {
-    document.getElementById('ww-loading').style.display='none';
-    document.getElementById('ww-error').style.display='none';
-    document.getElementById('ww-body').style.display='block';
-    const code=d.code||0;
-    document.getElementById('ww-icon').textContent=W_ICONS[code]||'🌤️';
-    document.getElementById('ww-temp').textContent=d.temp;
-    document.getElementById('ww-temp-c').textContent=`(${Math.round((d.temp-32)*5/9)}°C)`;
-    document.getElementById('ww-city').textContent=d.city||'—';
-    const desc=W_DESC[code];
-    document.getElementById('ww-desc').textContent=desc?(desc[lang]||desc.es):'—';
-    document.getElementById('ww-hum').textContent=d.hum??'—';
-    document.getElementById('ww-wind').textContent=d.wind??'—';
-    document.getElementById('ww-feels').textContent=d.feels??'—';
-}
-function showWeatherErr(){ document.getElementById('ww-loading').style.display='none'; document.getElementById('ww-body').style.display='none'; document.getElementById('ww-error').style.display='block'; }
+    if(!force && weatherCache.data && weatherCache.city===city && (Date.now()-weatherCache.ts)<1800000) {
+        renderWeather(weatherCache.data, l);
+        return;
+    }
+    if(!navigator.onLine) {
+        if(refreshBtn) refreshBtn.classList.remove('spinning');
+        if(weatherCache.data){ renderWeather(weatherCache.data, l); return; }
+        if(body) body.innerHTML='<div class="ww-error">📵 Sin conexión — clima no disponible</div>';
+        return;
+    }
+    if(body) body.innerHTML='<div class="ww-loading"><div class="ww-spinner"></div><span>' + (l==='en'?'Fetching weather...':l==='pt'?'Obtendo clima...':'Obteniendo clima...') + '</span></div>';
+    try {
+        const geoRes = await fetch('https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(city)+'&count=1&language='+(l==='pt'?'pt':'es')+'&format=json');
+        const geoData = await geoRes.json();
+        if(!geoData.results||!geoData.results.length) throw new Error('Ciudad no encontrada');
+        const {latitude, longitude, name, country_code} = geoData.results[0];
+        const displayName = name + (country_code ? ', ' + country_code.toUpperCase() : '');
+        const wRes = await fetch(
+            'https://api.open-meteo.com/v1/forecast?latitude='+latitude+'&longitude='+longitude+
+            '&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m'+
+            '&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto'
+        );
+        const wData = await wRes.json();
+        const c = wData.current;
+        const result = {
+            tempF: Math.round(c.temperature_2m),
+            tempC: Math.round((c.temperature_2m-32)*5/9),
+            feelsF: Math.round(c.apparent_temperature),
+            humidity: c.relative_humidity_2m,
+            wind: Math.round(c.wind_speed_10m),
+            code: c.weather_code,
+            displayName
+        };
+        weatherCache = {city, data:result, ts:Date.now()};
+        renderWeather(result, l);
+    } catch(e) {
+        if(refreshBtn) refreshBtn.classList.remove('spinning');
+        const errTxt = l==='en' ? 'Could not load weather. Tap 🔄 to retry.' : l==='pt' ? 'Não foi possível carregar o clima.' : 'No se pudo cargar el clima. Tocá 🔄 para reintentar.';
+        if(body) body.innerHTML='<div class="ww-error">⚠️ '+errTxt+'</div>';
+    }
+};
 
 function loadNextEvent() {
     const emojis=['🎡','🛍️','🍔','🏨','✈️','🚗','🎭','🌅','🏊','⚽','🎵','🏰'];
-    let found=false;
-    for(let i=0;i<localStorage.length;i++){
-        const key=localStorage.key(i);
-        if(key&&(key.includes('itin')||key.includes('actividad'))&&key!=='taxusa_itin_pending'){
-            try{
-                const val=JSON.parse(localStorage.getItem(key));
-                if(Array.isArray(val)&&val.length>0){
-                    const now=new Date();
-                    const up=val.filter(v=>new Date(v.fecha||v.date||v.ts||0)>now).sort((a,b)=>new Date(a.fecha||a.date||0)-new Date(b.fecha||b.date||0));
-                    if(up.length>0){
-                        const ev=up[0];
-                        document.getElementById('ne-title').textContent=ev.titulo||ev.title||ev.nombre||'—';
-                        const d=new Date(ev.fecha||ev.date||ev.ts);
-                        const loc={es:'es-AR',en:'en-US',pt:'pt-BR'};
-                        document.getElementById('ne-time').textContent=d.toLocaleDateString(loc[lang],{weekday:'short',day:'numeric',month:'short'});
-                        document.getElementById('ne-dot').textContent=ev.emoji||emojis[Math.floor(Math.random()*emojis.length)];
-                        found=true; break;
-                    }
-                }
-            }catch(e){}
-        }
-    }
-    if(!found){ document.getElementById('ne-title').textContent=t.next_event_empty; document.getElementById('ne-time').textContent=''; document.getElementById('ne-dot').textContent='📅'; }
+    function renderNoEvent(){ document.getElementById('ne-title').textContent=t.next_event_empty||'Sin eventos próximos'; document.getElementById('ne-time').textContent=''; document.getElementById('ne-dot').textContent='📅'; }
+
+    if(!currentUser||!perfilId){ renderNoEvent(); return; }
+
+    const q=query(collection(db,'usuarios',currentUser.uid,'perfiles',perfilId,'actividades'),orderBy('date','asc'));
+    onSnapshot(q, snap=>{
+        const now=new Date();
+        const upcoming=snap.docs
+            .map(d=>({id:d.id,...d.data()}))
+            .filter(a=>!a.done && new Date(a.date+'T'+(a.time||'00:00'))>=now);
+        if(!upcoming.length){ renderNoEvent(); return; }
+        const ev=upcoming[0];
+        document.getElementById('ne-title').textContent=ev.name||ev.titulo||ev.title||ev.nombre||'—';
+        const d=new Date(ev.date+'T'+(ev.time||'00:00'));
+        const loc={es:'es-AR',en:'en-US',pt:'pt-BR'};
+        const dateStr=d.toLocaleDateString(loc[lang]||'es-AR',{weekday:'short',day:'numeric',month:'short'});
+        const timeStr=ev.time?` · ${ev.time}`:'';
+        document.getElementById('ne-time').textContent=dateStr+timeStr;
+        const typeEmoji={vuelo:'✈️',hotel:'🏨',parque:'🎡',comida:'🍔',otro:'📍'};
+        document.getElementById('ne-dot').textContent=typeEmoji[ev.type]||emojis[Math.floor(Math.random()*emojis.length)];
+    }, ()=>{ renderNoEvent(); });
 }
 
 function renderTip() {
@@ -610,6 +709,10 @@ function renderSections() {
     (t.sections||I18N.es.sections).forEach(sec=>{ const a=document.createElement('a'); a.href=sec.href; a.className='section-item'; a.innerHTML=`<div class="si-icon-wrap ${sec.color}">${sec.icon}</div><div class="si-text"><div class="si-name">${sec.name}</div><div class="si-desc">${sec.desc}</div></div><div class="si-arrow">›</div>`; list.appendChild(a); });
 }
 
+window.doChangeEmail=async()=>{if(!currentUser)return;const l=lang||'es',m={es:{p:"Ingresá tu nuevo correo:",s:"Verificación enviada.",e:"Error: "},en:{p:"Enter your new email:",s:"Verification sent.",e:"Error: "},pt:{p:"Insira seu novo e-mail:",s:"Verificação enviada.",e:"Erro: "}},tx=m[l]||m.es,e=prompt(tx.p);if(e){try{await verifyBeforeUpdateEmail(currentUser,e);alert(tx.s);}catch(er){alert(tx.e+er.message);}}};
+window.doChangePassword=async()=>{if(!currentUser)return;const l=lang||'es',m={es:{s:"Correo de recuperación enviado.",e:"Error: "},en:{s:"Recovery email sent.",e:"Error: "},pt:{s:"E-mail de recuperação enviado.",e:"Erro: "}},tx=m[l]||m.es;try{await sendPasswordResetEmail(auth,currentUser.email);alert(tx.s);}catch(er){alert(tx.e+er.message);}};
+window.doDeleteAccount=async()=>{const l=lang||'es',m={es:{c:"¿Eliminar cuenta permanentemente?",e:"Reautenticación requerida. Cerrá sesión y volvé a entrar."},en:{c:"Permanently delete account?",e:"Re-authentication required. Please log out and back in."},pt:{c:"Excluir conta permanentemente?",e:"Reautenticação necessária. Saia e entre novamente."}},tx=m[l]||m.es;if(!confirm(tx.c))return;try{await deleteUser(currentUser);window.location.replace('login.html');}catch(e){alert(tx.e);}};
+window.gestionarPIN=()=>{const l=lang||'es',m={es:"Función de PIN disponible en la app completa.",en:"PIN function available in the full app.",pt:"Função de PIN disponível no app completo."};alert(m[l]||m.es);};
 window.toggleSettings=function(){ const d=document.getElementById('settingsDrawer'),o=document.getElementById('menuOverlay'),isO=d.classList.contains('open'); d.classList.toggle('open',!isO); o.style.display=isO?'none':'block'; };
 window.toggleDarkMode=function(){ const cur=document.documentElement.getAttribute('data-theme'),next=cur==='dark'?'light':'dark'; document.documentElement.setAttribute('data-theme',next); localStorage.setItem('theme',next); };
 window.changeProfile=()=>{ localStorage.removeItem('perfilActivoId'); window.location.href='profiles.html'; };
@@ -617,14 +720,21 @@ window.doLogout=()=>signOut(auth).then(()=>window.location.replace('login.html')
 window.openSwitchApp=()=>{ document.getElementById('switchAppModal').style.display='flex'; };
 window.doSwitchApp=function(d){ localStorage.setItem('taxfly_destino',d); document.getElementById('switchAppModal').style.display='none'; window.location.href=d==='usa'?'tax.html':'europe.html'; };
 
-onAuthStateChanged(auth, user=>{ if(!user){window.location.replace('login.html');return;} document.getElementById('userEmail').textContent=user.email||''; });
+onAuthStateChanged(auth, user=>{
+    if(!user){window.location.replace('login.html');return;}
+    currentUser = user;
+    const perfilNombre = localStorage.getItem('perfilActivoNombre');
+    document.getElementById('userEmail').textContent = perfilNombre || user.email || '';
+    const img = localStorage.getItem('perfilActivoFoto') || user.photoURL;
+    if(img){ const b=document.getElementById('btnSettings'); b.style.backgroundImage=`url(${img})`; b.textContent=''; }
+    loadBudget();
+    loadNextEvent();
+});
 
 (function(){const toast=document.getElementById('offline-toast');function upd(){toast.classList.toggle('show',!navigator.onLine);}window.addEventListener('online',upd);window.addEventListener('offline',upd);upd();})();
 
 applyI18n();
 updateGreeting();
-loadBudget();
-loadNextEvent();
 loadExchangeRate();
 loadWeather();
 </script>
