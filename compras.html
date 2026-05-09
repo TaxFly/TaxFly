@@ -18,12 +18,29 @@
         .app-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
         .logo{display:flex;align-items:center;gap:10px;font-size:1.4rem;font-weight:900;color:var(--header-color);letter-spacing:-.5px;}
         .logo svg{width:28px;height:28px;flex-shrink:0;}
-        .nav-bar{display:flex;align-items:center;background:var(--surface);border-radius:16px;padding:6px;margin-bottom:16px;border:1px solid var(--border);box-shadow:var(--shadow);gap:2px;}
+        .nav-bar{display:flex;align-items:center;background:var(--surface);border-radius:16px;padding:6px;margin-bottom:16px;border:1px solid var(--border);box-shadow:var(--shadow);gap:2px;position:relative;}
         .btn-nav{flex:1;display:flex;flex-direction:column;align-items:center;text-decoration:none;color:var(--text-sub);font-size:8px;font-weight:700;gap:2px;padding:6px 2px;border-radius:10px;background:none;border:none;cursor:pointer;transition:var(--tr);text-transform:uppercase;letter-spacing:.3px;}
         .btn-nav .ni{font-size:17px;line-height:1;}
         .btn-nav:hover,.btn-nav.active{color:var(--primary);background:var(--primary-dim);}
         .btn-nav-set{width:34px;height:34px;border-radius:50%;background:var(--surface-2);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;overflow:hidden;transition:var(--tr);background-size:cover;background-position:center;}
         .btn-nav-set:hover{border-color:var(--primary);}
+        .btn-nav-more{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 2px;border-radius:10px;background:none;border:none;cursor:pointer;transition:var(--tr);position:relative;}
+        .btn-nav-more:hover,.btn-nav-more.open{background:var(--primary-dim);}
+        .more-dots{display:flex;gap:3px;align-items:center;height:17px;}
+        .more-dot{width:3.5px;height:3.5px;border-radius:50%;background:var(--text-dim);transition:var(--tr);}
+        .btn-nav-more:hover .more-dot,.btn-nav-more.open .more-dot{background:var(--primary);}
+        .more-lbl{font-size:8px;font-weight:700;color:var(--text-sub);text-transform:uppercase;letter-spacing:.3px;transition:var(--tr);}
+        .btn-nav-more:hover .more-lbl,.btn-nav-more.open .more-lbl{color:var(--primary);}
+        .nav-dropdown{position:absolute;top:calc(100% + 10px);right:-6px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:5px;width:210px;z-index:500;box-shadow:var(--shadow-lg);display:none;animation:ddIn .15s ease;}
+        .nav-dropdown.show{display:block;}
+        @keyframes ddIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+        .dd-arrow{position:absolute;top:-6px;right:22px;width:10px;height:10px;background:var(--surface);border-left:1.5px solid var(--border);border-top:1.5px solid var(--border);transform:rotate(45deg);}
+        .dd-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;text-decoration:none;color:inherit;transition:var(--tr);}
+        .dd-item:hover{background:var(--primary-dim);}
+        .dd-item:hover .dd-name{color:var(--primary);}
+        .dd-icon{font-size:16px;width:22px;text-align:center;flex-shrink:0;}
+        .dd-name{font-size:11px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.3px;}
+        .dd-desc{font-size:9px;color:var(--text-sub);margin-top:1px;font-weight:500;}
         .card{background:var(--surface);border-radius:var(--radius);padding:20px;width:100%;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:14px;position:relative;}
         .slabel{font-size:.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;display:block;}
         input,select,textarea{width:100%;padding:13px 15px;background:var(--input-bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:.9rem;font-weight:600;outline:none;transition:var(--tr);-webkit-appearance:none;}
