@@ -51,6 +51,23 @@ body{font-family:'DM Sans',-apple-system,system-ui,sans-serif;background:var(--b
 .btn-nav:hover,.btn-nav.active{color:var(--primary);background:var(--primary-dim);}
 .btn-nav-set{width:34px;height:34px;border-radius:50%;background:var(--surface-2);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;overflow:hidden;transition:var(--tr);background-size:cover;background-position:center;}
 .btn-nav-set:hover{border-color:var(--primary);}
+.btn-nav-more{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 2px;border-radius:10px;background:none;border:none;cursor:pointer;transition:var(--tr);position:relative;}
+.btn-nav-more:hover,.btn-nav-more.open{background:var(--primary-dim);}
+.more-dots{display:flex;gap:3px;align-items:center;height:17px;}
+.more-dot{width:3.5px;height:3.5px;border-radius:50%;background:var(--text-dim);transition:var(--tr);}
+.btn-nav-more:hover .more-dot,.btn-nav-more.open .more-dot{background:var(--primary);}
+.more-lbl{font-size:8px;font-weight:700;color:var(--text-sub);text-transform:uppercase;letter-spacing:.3px;transition:var(--tr);}
+.btn-nav-more:hover .more-lbl,.btn-nav-more.open .more-lbl{color:var(--primary);}
+.nav-dropdown{position:absolute;top:calc(100% + 10px);right:-6px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:5px;width:210px;z-index:500;box-shadow:var(--shadow-lg);display:none;animation:ddIn .15s ease;}
+.nav-dropdown.show{display:block;}
+@keyframes ddIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.dd-arrow{position:absolute;top:-6px;right:22px;width:10px;height:10px;background:var(--surface);border-left:1.5px solid var(--border);border-top:1.5px solid var(--border);transform:rotate(45deg);}
+.dd-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;text-decoration:none;color:inherit;transition:var(--tr);}
+.dd-item:hover{background:var(--primary-dim);}
+.dd-item:hover .dd-name{color:var(--primary);}
+.dd-icon{font-size:16px;width:22px;text-align:center;flex-shrink:0;}
+.dd-name{font-size:11px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.3px;}
+.dd-desc{font-size:9px;color:var(--text-sub);margin-top:1px;font-weight:500;}
 .card{background:var(--surface);border-radius:var(--radius);padding:20px;width:100%;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:14px;}
 .slabel{font-size:.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;display:block;}
 input,select,textarea{width:100%;padding:14px 16px;background:var(--input-bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:.9rem;font-weight:600;outline:none;transition:var(--tr);-webkit-appearance:none;}
@@ -261,12 +278,19 @@ textarea{resize:none;line-height:1.5;}
   <!-- NAV -->
   <nav class="nav-bar">
     <a href="index.html"      class="btn-nav"><span class="ni">🏠</span><span data-i18n="nav_home">INICIO</span></a>
-    <a href="tax.html"      class="btn-nav"><span class="ni">📊</span><span data-i18n="nav_tax">TAXES</span></a>
+    <a href="tax.html"        class="btn-nav"><span class="ni">📊</span><span data-i18n="nav_tax">TAXES</span></a>
     <a href="compras.html"    class="btn-nav"><span class="ni">🛍️</span><span data-i18n="nav_shopping">GASTOS</span></a>
     <a href="itinerario.html" class="btn-nav"><span class="ni">📍</span><span data-i18n="nav_itinerary">ITINERARIO</span></a>
-    <a href="unidades.html"   class="btn-nav"><span class="ni">⚖️</span><span data-i18n="nav_units">UNIDADES</span></a>
-    <a href="tickets.html"    class="btn-nav"><span class="ni">📄</span><span data-i18n="nav_tickets">DOCUMENTOS</span></a>
-    <a href="grupo.html"      class="btn-nav"><span class="ni">👥</span><span data-i18n="nav_group">GRUPO</span></a>
+    <button class="btn-nav-more" id="btnMore" onclick="toggleMoreMenu(event)">
+      <div class="more-dots"><div class="more-dot"></div><div class="more-dot"></div><div class="more-dot"></div></div>
+      <span class="more-lbl" data-i18n="nav_more">MÁS</span>
+      <div class="nav-dropdown" id="navDropdown">
+        <div class="dd-arrow"></div>
+        <a href="unidades.html" class="dd-item"><span class="dd-icon">⚖️</span><div><div class="dd-name" data-i18n="nav_units">UNIDADES</div><div class="dd-desc" data-i18n="nav_units_desc">Medidas, tallas y monedas</div></div></a>
+        <a href="tickets.html"  class="dd-item"><span class="dd-icon">📄</span><div><div class="dd-name" data-i18n="nav_tickets">DOCUMENTOS</div><div class="dd-desc" data-i18n="nav_tickets_desc">ESTA, seguros, check-in</div></div></a>
+        <a href="grupo.html"    class="dd-item"><span class="dd-icon">👥</span><div><div class="dd-name" data-i18n="nav_group">GRUPO</div><div class="dd-desc" data-i18n="nav_group_desc">Gastos compartidos</div></div></a>
+      </div>
+    </button>
     <button class="btn-nav-set" id="btnSettings" onclick="toggleSettings()">⚙️</button>
   </nav>
 
@@ -543,6 +567,7 @@ window.confirmarPIN = async () => {
 const i18n = {
   es:{
     nav_home:"INICIO", nav_tax: "TAXES", nav_shopping:"GASTOS", nav_itinerary:"ITINERARIO", nav_units:"UNIDADES", nav_tickets:"DOCUMENTOS", nav_group:"GRUPO",
+    nav_more:"MÁS", nav_units_desc:"Medidas, tallas y monedas", nav_tickets_desc:"ESTA, seguros, check-in", nav_group_desc:"Gastos compartidos",
     route_title:"🗺️ Generador de Ruta", badge_new:"Nuevo",
     label_hotel:"📍 Punto de partida (hotel / alojamiento)",
     label_days:"📅 Cantidad de días", lbl_days:"días",
@@ -568,6 +593,7 @@ const i18n = {
   },
   en:{
     nav_home:"HOME", nav_tax: "TAXES", nav_shopping:"EXPENSES", nav_itinerary:"ITINERARY", nav_units:"UNITS", nav_tickets:"DOCUMENTS", nav_group:"GROUP",
+    nav_more:"MORE", nav_units_desc:"Measurements, sizes and currencies", nav_tickets_desc:"ESTA, insurance, check-in", nav_group_desc:"Shared expenses",
     route_title:"🗺️ Route Generator", badge_new:"New",
     label_hotel:"📍 Starting point (hotel / accommodation)",
     label_days:"📅 Number of days", lbl_days:"days",
@@ -593,6 +619,7 @@ const i18n = {
   },
   pt:{
     nav_home:"INÍCIO", nav_tax: "TAXES", nav_shopping:"GASTOS", nav_itinerary:"ITINERÁRIO", nav_units:"UNIDADES", nav_tickets:"DOCUMENTOS", nav_group:"GRUPO",
+    nav_more:"MAIS", nav_units_desc:"Medidas, tamanhos e moedas", nav_tickets_desc:"ESTA, seguros, check-in", nav_group_desc:"Despesas compartilhadas",
     route_title:"🗺️ Gerador de Rota", badge_new:"Novo",
     label_hotel:"📍 Ponto de partida (hotel / hospedagem)",
     label_days:"📅 Quantidade de dias", lbl_days:"dias",
@@ -648,6 +675,18 @@ window.toggleSettings = () => {
   const d = document.getElementById('settingsDrawer');
   const open = d.classList.toggle('open');
   document.getElementById('menuOverlay').style.display = open ? 'block' : 'none';
+};
+window.toggleMoreMenu = (e) => {
+  e.stopPropagation();
+  const btn = document.getElementById('btnMore');
+  const dd  = document.getElementById('navDropdown');
+  const isOpen = dd.classList.contains('show');
+  dd.classList.toggle('show', !isOpen);
+  btn.classList.toggle('open', !isOpen);
+  if (!isOpen) {
+    const close = () => { dd.classList.remove('show'); btn.classList.remove('open'); document.removeEventListener('click', close); };
+    setTimeout(() => document.addEventListener('click', close), 0);
+  }
 };
 window.toggleDarkMode = () => {
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
