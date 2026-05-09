@@ -166,12 +166,16 @@
         .tip-hint{font-size:.6rem;font-weight:700;color:var(--text-dim);margin-top:6px;}
 
         /* Sections */
-        .section-list-title{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:10px;}
-        .section-list{display:flex;flex-direction:column;gap:8px;}
-        .section-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;transition:var(--tr);cursor:pointer;}
-        .section-item:hover{border-color:var(--primary);transform:translateX(3px);box-shadow:var(--shadow);}
-        .section-item:active{transform:scale(.98);}
-        .si-icon-wrap{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+        /* ── SECTION GRID (cards cuadradas) ── */
+        .section-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+        .section-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 6px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-decoration:none;color:inherit;transition:var(--tr);cursor:pointer;aspect-ratio:1;position:relative;overflow:hidden;}
+        .section-card::before{content:'';position:absolute;inset:0;background:transparent;border-radius:14px;transition:var(--tr);}
+        .section-card:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow:var(--shadow);}
+        .section-card:hover::before{background:var(--primary-dim);}
+        .section-card:active{transform:scale(.94);}
+        .sc-emoji{font-size:1.6rem;line-height:1;position:relative;z-index:1;}
+        .sc-name{font-size:.56rem;font-weight:800;color:var(--text-sub);text-transform:uppercase;letter-spacing:.4px;text-align:center;line-height:1.2;position:relative;z-index:1;}
+        .section-card:hover .sc-name{color:var(--primary);}
         .si-text{flex:1;min-width:0;}
         .si-name{font-size:.9rem;font-weight:800;color:var(--text);}
         .si-desc{font-size:.7rem;font-weight:600;color:var(--text-sub);margin-top:1px;}
@@ -207,13 +211,13 @@
         .weather-widget{animation:fadeIn .35s .18s ease both;}
         .next-event-card{animation:fadeIn .35s .2s ease both;}
         .tip-card{animation:fadeIn .35s .22s ease both;}
-        .section-item:nth-child(1){animation:fadeIn .35s .25s ease both;}
-        .section-item:nth-child(2){animation:fadeIn .35s .30s ease both;}
-        .section-item:nth-child(3){animation:fadeIn .35s .35s ease both;}
-        .section-item:nth-child(4){animation:fadeIn .35s .40s ease both;}
-        .section-item:nth-child(5){animation:fadeIn .35s .45s ease both;}
-        .section-item:nth-child(6){animation:fadeIn .35s .50s ease both;}
-        .section-item:nth-child(7){animation:fadeIn .35s .55s ease both;}
+        .section-card:nth-child(1){animation:fadeIn .3s .08s ease both;}
+        .section-card:nth-child(2){animation:fadeIn .3s .12s ease both;}
+        .section-card:nth-child(3){animation:fadeIn .3s .16s ease both;}
+        .section-card:nth-child(4){animation:fadeIn .3s .20s ease both;}
+        .section-card:nth-child(5){animation:fadeIn .3s .24s ease both;}
+        .section-card:nth-child(6){animation:fadeIn .3s .28s ease both;}
+        .section-card:nth-child(7){animation:fadeIn .3s .32s ease both;}
     </style>
 </head>
 <body>
@@ -237,6 +241,9 @@
         <div class="greeting-name" id="greetingName">—</div>
         <div class="greeting-date" id="greetingDate"></div>
     </div>
+
+    <!-- Section grid -->
+    <div class="section-grid" id="sectionList"></div>
 
     <!-- Budget -->
     <div class="widget-budget" onclick="location.href='compras.html'">
@@ -318,9 +325,7 @@
         </div>
     </div>
 
-    <!-- Sections -->
-    <div class="section-list-title" data-i18n="sections_title">Secciones</div>
-    <div class="section-list" id="sectionList"></div>
+
 
 </div>
 
@@ -810,7 +815,7 @@ setInterval(()=>{ tipIndex=(tipIndex+1)%((t.tips||I18N.es.tips).length); renderT
 
 function renderSections() {
     const list=document.getElementById('sectionList'); if(!list) return; list.innerHTML='';
-    (t.sections||I18N.es.sections).forEach(sec=>{ const a=document.createElement('a'); a.href=sec.href; a.className='section-item'; a.innerHTML=`<div class="si-icon-wrap ${sec.color}">${sec.icon}</div><div class="si-text"><div class="si-name">${sec.name}</div><div class="si-desc">${sec.desc}</div></div><div class="si-arrow">›</div>`; list.appendChild(a); });
+    (t.sections||I18N.es.sections).forEach(sec=>{ const a=document.createElement('a'); a.href=sec.href; a.className='section-card'; a.innerHTML=`<span class="sc-emoji">${sec.icon}</span><span class="sc-name">${sec.name}</span>`; list.appendChild(a); });
 }
 
 window.doChangeEmail=async()=>{if(!currentUser)return;const l=lang||'es',m={es:{p:"Ingresá tu nuevo correo:",s:"Verificación enviada.",e:"Error: "},en:{p:"Enter your new email:",s:"Verification sent.",e:"Error: "},pt:{p:"Insira seu novo e-mail:",s:"Verificação enviada.",e:"Erro: "}},tx=m[l]||m.es,e=prompt(tx.p);if(e){try{await verifyBeforeUpdateEmail(currentUser,e);alert(tx.s);}catch(er){alert(tx.e+er.message);}}};
