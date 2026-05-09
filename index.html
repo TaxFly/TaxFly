@@ -236,13 +236,15 @@
         <button class="btn-nav-set" id="btnSettings" onclick="toggleSettings()" title="Ajustes">⚙️</button>
     </header>
     <!-- Greeting -->
-    <div class="greeting-banner">
-        <div>
+    <div class="greeting-banner" style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="flex-shrink:0;">
             <div class="greeting-sub" data-i18n="greeting_sub">Bienvenido de vuelta</div>
             <div class="greeting-name" id="greetingName">—</div>
             <div class="greeting-date" id="greetingDate"></div>
         </div>
-        <div style="font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;opacity:.7;align-self:center;">Dashboard</div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;">
+            <span style="font-size:1.15rem;font-weight:900;text-transform:uppercase;letter-spacing:2px;opacity:.35;white-space:nowrap;">Dashboard</span>
+        </div>
     </div>
 
     <!-- Section grid -->
