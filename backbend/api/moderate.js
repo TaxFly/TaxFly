@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-  // Allow CORS from your frontend
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -13,23 +12,25 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing imageBase64' });
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
     return res.status(500).json({ error: 'API key not configured' });
   }
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
+        'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'meta-llama/llama-4-scout-17b-16e-instruct',
         max_tokens: 200,
-        system: `Eres un moderador de contenido para una app de perfiles. Analizá la imagen y respondé SOLO con un objeto JSON con esta estructura exacta:
+        messages: [
+          {
+            role: 'system',
+            content: `Eres un moderador de contenido para una app de perfiles. Analizá la imagen y respondé SOLO con un objeto JSON con esta estructura exacta:
 {"approved": true|false, "reason": "breve explicación en español"}
 
 Rechazá (approved: false) si la imagen contiene:
@@ -40,31 +41,35 @@ Rechazá (approved: false) si la imagen contiene:
 - Contenido de odio, símbolos nazis o extremistas
 
 Aprobá (approved: true) si es una foto de persona real, paisaje, mascota, ilustración genérica, o similar.
-No incluyas texto fuera del JSON.`,
-        messages: [{
-          role: 'user',
-          content: [
-            {
-              type: 'image',
-              source: { type: 'base64', media_type: mediaType, data: imageBase64 }
-            },
-            {
-              type: 'text',
-              text: '¿Esta imagen es apropiada para un avatar de perfil de usuario?'
-            }
-          ]
-        }]
+No incluyas texto fuera del JSON.`
+          },
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'image_url',
+                image_url: {
+                  url: `data:${mediaType};base64,${imageBase64}`
+                }
+              },
+              {
+                type: 'text',
+                text: '¿Esta imagen es apropiada para un avatar de perfil de usuario?'
+              }
+            ]
+          }
+        ]
       })
     });
 
     if (!response.ok) {
       const err = await response.json().catch(() => ({}));
-      console.error('Anthropic error:', err);
+      console.error('Groq error:', err);
       return res.status(502).json({ error: 'Upstream API error', detail: err });
     }
 
     const data = await response.json();
-    const text = (data.content || []).map(b => b.text || '').join('');
+    const text = data.choices?.[0]?.message?.content || '';
     const clean = text.replace(/```json|```/g, '').trim();
     const result = JSON.parse(clean);
 
