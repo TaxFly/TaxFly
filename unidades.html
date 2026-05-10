@@ -211,7 +211,7 @@
   <span class="ot-dot"></span>
   <span id="offline-toast-msg">Sin conexión — los conversores funcionan normalmente</span>
 </div>
-<div id="sync-ok-toast">✅ <span id="sync-ok-msg">Todo sincronizado</span></div>
+<div id="sync-ok-toast">✅ <span id="sync-ok-msg" data-i18n="sync_ok">Todo sincronizado</span></div>
 <div class="wrap">
 
     <div class="app-header">
@@ -249,7 +249,7 @@
         <span class="st-icon">💡</span>
         <div>
             <div class="st-label" data-i18n="tip_label">DATO ÚTIL</div>
-            <div id="tip-content">Cargando consejos...</div>
+            <div id="tip-content" data-i18n="tip_loading">Cargando consejos...</div>
         </div>
     </div>
 
@@ -425,11 +425,11 @@
         <div class="conv-group" id="grp-farma">
             <div class="group-header" onclick="toggleGroup('grp-farma')">
                 <span class="group-emoji">💊</span>
-                <span class="group-title" id="farma-label">Medicamentos ARG → US</span>
+                <span class="group-title" id="farma-label" data-i18n="grp_farma">Medicamentos ARG → US</span>
                 <span class="group-arrow">▼</span>
             </div>
             <div class="conv-body">
-                <p id="farma-sub" style="font-size:.75rem;font-weight:600;color:var(--text-sub);margin-bottom:14px;line-height:1.5;">Nombres argentinos → marcas US en Walgreens / CVS / Walmart</p>
+                <p id="farma-sub" data-i18n="farma_sub" style="font-size:.75rem;font-weight:600;color:var(--text-sub);margin-bottom:14px;line-height:1.5;">Nombres argentinos → marcas US en Walgreens / CVS / Walmart</p>
 
                 <!-- Buscador -->
                 <div style="position:relative;margin-bottom:14px;">
@@ -448,10 +448,10 @@
                 <!-- Grid de cards -->
                 <div id="farma-grid" style="display:flex;flex-direction:column;gap:10px;"></div>
 
-                <p id="farma-empty" style="display:none;text-align:center;color:var(--text-dim);font-size:.85rem;padding:20px 0;">Sin resultados. Probá otro nombre.</p>
+                <p id="farma-empty" data-i18n="farma_empty" style="display:none;text-align:center;color:var(--text-dim);font-size:.85rem;padding:20px 0;">Sin resultados. Probá otro nombre.</p>
 
                 <div style="margin-top:16px;padding:12px 14px;background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.2);border-radius:var(--radius-sm);">
-                    <p id="farma-disclaimer" style="font-size:.7rem;font-weight:600;color:var(--danger);line-height:1.5;margin:0;">⚠️ Esta información es orientativa. Consultá siempre con un farmacéutico o médico antes de automedicarte. Las dosis pueden variar según edad y peso.</p>
+                    <p id="farma-disclaimer" data-i18n="farma_disclaimer" style="font-size:.7rem;font-weight:600;color:var(--danger);line-height:1.5;margin:0;">⚠️ Esta información es orientativa. Consultá siempre con un farmacéutico o médico antes de automedicarte. Las dosis pueden variar según edad y peso.</p>
                 </div>
             </div>
         </div>
@@ -460,7 +460,7 @@
         <div class="conv-group" id="grp-frases">
             <div class="group-header" onclick="toggleGroup('grp-frases')">
                 <span class="group-emoji">💬</span>
-                <span class="group-title">Frases & Abreviaturas en inglés</span>
+                <span class="group-title" data-i18n="grp_frases">Frases & Abreviaturas en inglés</span>
                 <span class="group-arrow">▼</span>
             </div>
             <div class="conv-body" id="frases-body"></div>
@@ -533,6 +533,120 @@
   </div>
 </div>
 
+<script>
+/* ── i18n global — must be plain script so all other scripts can access it ── */
+window.i18n = {
+    es:{
+        nav_home:"INICIO", nav_tax:"TAXES", nav_expenses:"GASTOS", nav_itinerary:"ITINERARIO", nav_tickets:"DOCUMENTOS", nav_group:"GRUPO", nav_routes:"RUTAS", nav_more:"MÁS", nav_routes_desc:"Mapas y direcciones", nav_tickets_desc:"ESTA, seguros, check-in", nav_group_desc:"Gastos compartidos",
+        tip_label:"DATO ÚTIL",
+        label_converters:"Conversores",
+        grp_temp:"Clima / Temperatura", grp_speed:"Velocidad y Distancia",
+        grp_weight:"Peso — Valija / Supermercado", grp_oz:"Onzas — Comida / Paquetes",
+        grp_liquid:"Combustible y Bebidas", grp_length:"Estatura / Objetos", btn_pin:"Cambiar PIN Offline",
+        tip_temp:"🌞 Temperatura agradable: 68-77°F (20-25°C). Bajo 32°F (0°C) es congelamiento.",
+        tip_speed:"⚠️ Límites comunes: 25-35 mph (ciudad) | 65-70 mph (autopista)",
+        tip_weight:"✈️ El límite de equipaje suele ser 50 lbs = 23 kg.",
+        tip_oz:"🛒 1 oz ≈ 28 g. Los snacks y quesos en supermercados se venden por onza.",
+        tip_liquid:"🥤 La botella de agua común es 16.9 fl oz ≈ 500 ml.",
+        tip_length:"📐 6 ft = 182.9 cm. Las señales de tránsito usan millas.",
+        unit_lb:"LIBRA (LB)", unit_oz:"ONZA (OZ)", unit_gr:"GRAMOS",
+        unit_gal:"GALÓN", unit_lit:"LITROS",
+        unit_ft:"PIES (FT)", unit_in:"PULG (IN)",
+        offline_msg:"Sin conexión — los conversores funcionan normalmente",
+        settings_title:"Ajustes", label_language:"Idioma",
+        btn_change_profile:"Cambiar Perfil", btn_theme:"Cambiar Tema",
+        btn_update:"Actualizar App", btn_email:"Cambiar Correo",
+        btn_password:"Cambiar Contraseña", btn_switch_app:"Cambiar Aplicación", btn_logout:"Cerrar Sesión", btn_delete:"Eliminar Cuenta",
+        footer_by:"Creado por Juan Cruz Bria",
+        alert_upcoming:"🚀 El Comparador de Precios estará disponible próximamente.",
+        grp_frases:"Frases & Abreviaturas en inglés",
+        frases_tab_frases:"💬 Frases", frases_tab_abrev:"🔤 Abreviaturas",
+        frases_section_abrev:"🔤 Abreviaturas & Siglas",
+        frases_fonetica_label:"🔊", frases_ctx_label:"💡",
+        sync_ok:"Todo sincronizado",
+        tip_loading:"Cargando consejos...",
+        grp_farma:"Medicamentos ARG → US",
+        farma_sub:"Nombres argentinos → marcas US en Walgreens / CVS / Walmart",
+        farma_empty:"Sin resultados. Probá otro nombre.",
+        farma_disclaimer:"⚠️ Esta información es orientativa. Consultá siempre con un farmacéutico o médico antes de automedicarte. Las dosis pueden variar según edad y peso.",
+        farma_otc:"✅ Sin receta", farma_rx:"🔴 Con receta", farma_no_disp:"⛔ No disponible",
+        farma_aliases:"También:", farma_marcas:"Marcas:", farma_dosis_arg:"🇦🇷 Dosis ARG", farma_dosis_us:"🇺🇸 Dosis US"
+    },
+    en:{
+        nav_home:"HOME", nav_tax:"TAXES", nav_expenses:"EXPENSES", nav_itinerary:"ITINERARY", nav_tickets:"DOCUMENTS", nav_group:"GROUP", nav_routes:"ROUTES", nav_more:"MORE", nav_routes_desc:"Maps & directions", nav_tickets_desc:"ESTA, insurance, check-in", nav_group_desc:"Shared expenses",
+        tip_label:"USEFUL TIP",
+        label_converters:"Converters",
+        grp_temp:"Weather / Temperature", grp_speed:"Speed & Distance",
+        grp_weight:"Weight — Luggage / Grocery", grp_oz:"Ounces — Food / Packages",
+        grp_liquid:"Fuel & Drinks", grp_length:"Height / Objects", btn_pin:"Change Offline PIN",
+        tip_temp:"🌞 Comfortable: 68-77°F (20-25°C). Below 32°F (0°C) is freezing.",
+        tip_speed:"⚠️ Common limits: 25-35 mph (city) | 65-70 mph (highway)",
+        tip_weight:"✈️ Luggage limit is usually 50 lbs = 23 kg.",
+        tip_oz:"🛒 1 oz ≈ 28 g. Snacks and cheese at supermarkets are sold by the ounce.",
+        tip_liquid:"🥤 A common water bottle is 16.9 fl oz ≈ 500 ml.",
+        tip_length:"📐 6 ft = 182.9 cm. Traffic signs use miles.",
+        unit_lb:"POUND (LB)", unit_oz:"OUNCE (OZ)", unit_gr:"GRAMS",
+        unit_gal:"GALLON", unit_lit:"LITERS",
+        unit_ft:"FEET (FT)", unit_in:"INCH (IN)",
+        offline_msg:"No connection — converters work normally",
+        settings_title:"Settings", label_language:"Language",
+        btn_change_profile:"Change Profile", btn_theme:"Toggle Theme",
+        btn_update:"Update App", btn_email:"Change Email",
+        btn_password:"Change Password", btn_switch_app:"Switch App", btn_logout:"Sign Out", btn_delete:"Delete Account",
+        footer_by:"Created by Juan Cruz Bria",
+        alert_upcoming:"🚀 The Price Comparator will be available soon.",
+        grp_frases:"Phrases & Abbreviations in English",
+        frases_tab_frases:"💬 Phrases", frases_tab_abrev:"🔤 Abbreviations",
+        frases_section_abrev:"🔤 Abbreviations & Acronyms",
+        frases_fonetica_label:"🔊", frases_ctx_label:"💡",
+        sync_ok:"All synced",
+        tip_loading:"Loading tips...",
+        grp_farma:"Medications ARG → US",
+        farma_sub:"Argentine names → US brands at Walgreens / CVS / Walmart",
+        farma_empty:"No results. Try another name.",
+        farma_disclaimer:"⚠️ This information is for guidance only. Always consult a pharmacist or doctor before self-medicating. Dosages may vary by age and weight.",
+        farma_otc:"✅ No prescription", farma_rx:"🔴 Prescription needed", farma_no_disp:"⛔ Not available",
+        farma_aliases:"Also:", farma_marcas:"Brands:", farma_dosis_arg:"🇦🇷 ARG Dose", farma_dosis_us:"🇺🇸 US Dose"
+    },
+    pt:{
+        nav_home:"INÍCIO", nav_tax:"TAXES", nav_expenses:"GASTOS", nav_itinerary:"ITINERÁRIO", nav_tickets:"DOCUMENTOS", nav_group:"GRUPO", nav_routes:"ROTAS", nav_more:"MAIS", nav_routes_desc:"Mapas e direções", nav_tickets_desc:"ESTA, seguros, check-in", nav_group_desc:"Gastos compartilhados",
+        tip_label:"DICA ÚTIL",
+        label_converters:"Conversores",
+        grp_temp:"Clima / Temperatura", grp_speed:"Velocidade e Distância",
+        grp_weight:"Peso — Mala / Supermercado", grp_oz:"Onças — Comida / Pacotes",
+        grp_liquid:"Combustível e Bebidas", grp_length:"Altura / Objetos", btn_pin:"Alterar PIN Offline",
+        tip_temp:"🌞 Temperatura agradável: 68-77°F (20-25°C). Abaixo de 32°F (0°C) é congelamento.",
+        tip_speed:"⚠️ Limites comuns: 25-35 mph (cidade) | 65-70 mph (rodovia)",
+        tip_weight:"✈️ O limite de bagagem costuma ser 50 lbs = 23 kg.",
+        tip_oz:"🛒 1 oz ≈ 28 g. Snacks e queijos nos supermercados são vendidos por onça.",
+        tip_liquid:"🥤 A garrafa de água comum é de 16.9 fl oz ≈ 500 ml.",
+        tip_length:"📐 6 ft = 182.9 cm. As placas de trânsito usam milhas.",
+        unit_lb:"LIBRA (LB)", unit_oz:"ONÇA (OZ)", unit_gr:"GRAMAS",
+        unit_gal:"GALÃO", unit_lit:"LITROS",
+        unit_ft:"PÉS (FT)", unit_in:"POLEG (IN)",
+        offline_msg:"Sem conexão — os conversores funcionam normalmente",
+        settings_title:"Configurações", label_language:"Idioma",
+        btn_change_profile:"Trocar Perfil", btn_theme:"Alternar Tema",
+        btn_update:"Atualizar App", btn_email:"Alterar E-mail",
+        btn_password:"Alterar Senha", btn_switch_app:"Trocar Aplicativo", btn_logout:"Sair", btn_delete:"Excluir Conta",
+        footer_by:"Criado por Juan Cruz Bria",
+        alert_upcoming:"🚀 O Comparador de Preços estará disponível em breve.",
+        grp_frases:"Frases & Abreviações em inglês",
+        frases_tab_frases:"💬 Frases", frases_tab_abrev:"🔤 Abreviações",
+        frases_section_abrev:"🔤 Abreviações & Siglas",
+        frases_fonetica_label:"🔊", frases_ctx_label:"💡",
+        sync_ok:"Tudo sincronizado",
+        tip_loading:"Carregando dicas...",
+        grp_farma:"Medicamentos ARG → EUA",
+        farma_sub:"Nomes argentinos → marcas nos EUA em Walgreens / CVS / Walmart",
+        farma_empty:"Sem resultados. Tente outro nome.",
+        farma_disclaimer:"⚠️ Esta informação é orientativa. Consulte sempre um farmacêutico ou médico antes de se automedicar. As doses podem variar por idade e peso.",
+        farma_otc:"✅ Sem receita", farma_rx:"🔴 Receita necessária", farma_no_disp:"⛔ Não disponível",
+        farma_aliases:"Também:", farma_marcas:"Marcas:", farma_dosis_arg:"🇦🇷 Dose ARG", farma_dosis_us:"🇺🇸 Dose EUA"
+    }
+};
+</script>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser, verifyBeforeUpdateEmail } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
@@ -553,81 +667,8 @@ let currentUser = null;
 const perfilFoto = localStorage.getItem('perfilActivoFoto');
 let tipIndex = 0;
 
-/* ── i18n ── */
-const i18n = {
-    es:{
-        nav_home:"INICIO", nav_tax:"TAXES", nav_expenses:"GASTOS", nav_itinerary:"ITINERARIO", nav_tickets:"DOCUMENTOS", nav_group:"GRUPO", nav_routes:"RUTAS", nav_more:"MÁS", nav_routes_desc:"Mapas y direcciones", nav_tickets_desc:"ESTA, seguros, check-in", nav_group_desc:"Gastos compartidos",
-        tip_label:"DATO ÚTIL",
-        label_converters:"Conversores",
-        grp_temp:"Clima / Temperatura", grp_speed:"Velocidad y Distancia",
-        grp_weight:"Peso — Valija / Supermercado", grp_oz:"Onzas — Comida / Paquetes",
-        grp_liquid:"Combustible y Bebidas", grp_length:"Estatura / Objetos", btn_pin: "Cambiar PIN Offline",
-        tip_temp:"🌞 Temperatura agradable: 68-77°F (20-25°C). Bajo 32°F (0°C) es congelamiento.",
-        tip_speed:"⚠️ Límites comunes: 25-35 mph (ciudad) | 65-70 mph (autopista)",
-        tip_weight:"✈️ El límite de equipaje suele ser 50 lbs = 23 kg.",
-        tip_oz:"🛒 1 oz ≈ 28 g. Los snacks y quesos en supermercados se venden por onza.",
-        tip_liquid:"🥤 La botella de agua común es 16.9 fl oz ≈ 500 ml.",
-        tip_length:"📐 6 ft = 182.9 cm. Las señales de tránsito usan millas.",
-        unit_lb:"LIBRA (LB)", unit_oz:"ONZA (OZ)", unit_gr:"GRAMOS",
-        unit_gal:"GALÓN", unit_lit:"LITROS",
-        unit_ft:"PIES (FT)", unit_in:"PULG (IN)",
-        offline_msg:"Sin conexión — los conversores funcionan normalmente",
-        settings_title:"Ajustes", label_language:"Idioma",
-        btn_change_profile:"Cambiar Perfil", btn_theme:"Cambiar Tema",
-        btn_update:"Actualizar App", btn_email:"Cambiar Correo",
-        btn_password:"Cambiar Contraseña", btn_switch_app:"Cambiar Aplicación",btn_logout:"Cerrar Sesión", btn_delete:"Eliminar Cuenta",
-        footer_by:"Creado por Juan Cruz Bria",
-        alert_upcoming: "🚀 El Comparador de Precios estará disponible próximamente."
-    },
-    en:{
-        nav_home:"HOME", nav_tax:"TAXES", nav_expenses:"EXPENSES", nav_itinerary:"ITINERARY", nav_tickets:"DOCUMENTS", nav_group:"GROUP", nav_routes:"ROUTES", nav_more:"MORE", nav_routes_desc:"Maps & directions", nav_tickets_desc:"ESTA, insurance, check-in", nav_group_desc:"Shared expenses",
-        tip_label:"USEFUL TIP",
-        label_converters:"Converters",
-        grp_temp:"Weather / Temperature", grp_speed:"Speed & Distance",
-        grp_weight:"Weight — Luggage / Grocery", grp_oz:"Ounces — Food / Packages",
-        grp_liquid:"Fuel & Drinks", grp_length:"Height / Objects", btn_pin: "Change PIN Offline",
-        tip_temp:"🌞 Comfortable: 68-77°F (20-25°C). Below 32°F (0°C) is freezing.",
-        tip_speed:"⚠️ Common limits: 25-35 mph (city) | 65-70 mph (highway)",
-        tip_weight:"✈️ Luggage limit is usually 50 lbs = 23 kg.",
-        tip_oz:"🛒 1 oz ≈ 28 g. Snacks and cheese at supermarkets are sold by the ounce.",
-        tip_liquid:"🥤 A common water bottle is 16.9 fl oz ≈ 500 ml.",
-        tip_length:"📐 6 ft = 182.9 cm. Traffic signs use miles.",
-        unit_lb:"POUND (LB)", unit_oz:"OUNCE (OZ)", unit_gr:"GRAMS",
-        unit_gal:"GALLON", unit_lit:"LITERS",
-        unit_ft:"FEET (FT)", unit_in:"INCH (IN)",
-        offline_msg:"No connection — converters work normally",
-        settings_title:"Settings", label_language:"Language",
-        btn_change_profile:"Change Profile", btn_theme:"Toggle Theme",
-        btn_update:"Update App", btn_email:"Change Email",
-        btn_password:"Change Password", btn_switch_app:"Switch App",btn_logout:"Sign Out", btn_delete:"Delete Account",
-        footer_by:"Created by Juan Cruz Bria",
-        alert_upcoming: "🚀 The Price Comparator will be available soon."
-    },
-    pt:{
-        nav_home:"INÍCIO", nav_tax:"TAXES", nav_expenses:"GASTOS", nav_itinerary:"ITINERÁRIO", nav_tickets:"DOCUMENTOS", nav_group:"GRUPO", nav_routes:"ROTAS", nav_more:"MAIS", nav_routes_desc:"Mapas e direções", nav_tickets_desc:"ESTA, seguros, check-in", nav_group_desc:"Gastos compartilhados",
-        tip_label:"DICA ÚTIL",
-        label_converters:"Conversores",
-        grp_temp:"Clima / Temperatura", grp_speed:"Velocidade e Distância",
-        grp_weight:"Peso — Mala / Supermercado", grp_oz:"Onças — Comida / Pacotes",
-        grp_liquid:"Combustível e Bebidas", grp_length:"Altura / Objetos", btn_pin: "Alterar PIN Offline",
-        tip_temp:"🌞 Temperatura agradável: 68-77°F (20-25°C). Abaixo de 32°F (0°C) é congelamento.",
-        tip_speed:"⚠️ Limites comuns: 25-35 mph (cidade) | 65-70 mph (rodovia)",
-        tip_weight:"✈️ O limite de bagagem costuma ser 50 lbs = 23 kg.",
-        tip_oz:"🛒 1 oz ≈ 28 g. Snacks e queijos nos supermercados são vendidos por onça.",
-        tip_liquid:"🥤 A garrafa de água comum é de 16.9 fl oz ≈ 500 ml.",
-        tip_length:"📐 6 ft = 182.9 cm. As placas de trânsito usam milhas.",
-        unit_lb:"LIBRA (LB)", unit_oz:"ONÇA (OZ)", unit_gr:"GRAMAS",
-        unit_gal:"GALÃO", unit_lit:"LITROS",
-        unit_ft:"PÉS (FT)", unit_in:"POLEG (IN)",
-        offline_msg:"Sem conexão — os conversores funcionam normalmente",
-        settings_title:"Configurações", label_language:"Idioma",
-        btn_change_profile:"Trocar Perfil", btn_theme:"Alternar Tema",
-        btn_update:"Atualizar App", btn_email:"Alterar E-mail",
-        btn_password:"Alterar Senha", btn_switch_app:"Trocar Aplicativo",btn_logout:"Sair", btn_delete:"Excluir Conta",
-        footer_by:"Criado por Juan Cruz Bria",
-        alert_upcoming: "🚀 O Comparador de Preços estará disponível em breve."
-    }
-};
+/* ── i18n (defined globally in plain script above, referenced here) ── */
+const i18n = window.i18n;
 
 const unitTips = {
     es:[
@@ -706,6 +747,14 @@ window.changeLanguage = (lang) => {
     const offMsg = document.getElementById('offline-toast-msg');
     if (offMsg && i18n[lang]?.offline_msg) offMsg.textContent = i18n[lang].offline_msg;
     if (window.taxieUpdateLang) window.taxieUpdateLang(lang);
+    if (window.frasesRender) window.frasesRender();
+    // Re-render farma cards with new language labels
+    if (window.farmaRender && window.farmaGetFilteredCurrent) window.farmaRender(window.farmaGetFilteredCurrent());
+    // Re-init farma cats for "All/Todos" label
+    if (window.farmaInitCats) window.farmaInitCats();
+    // Update sync-ok-msg
+    const syncMsg = document.getElementById('sync-ok-msg');
+    if (syncMsg && window.i18n[lang]?.sync_ok) syncMsg.textContent = window.i18n[lang].sync_ok;
 };
 
 /* ── Converters logic ── */
@@ -1471,18 +1520,20 @@ function farmaRender(list) {
     const empty = document.getElementById('farma-empty');
     if (!list.length) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
     empty.style.display = 'none';
+    const lang = localStorage.getItem('appLang') || 'es';
+    const t = window.i18n[lang] || window.i18n.es;
     grid.innerHTML = list.map((m, i) => {
         const rxClass = (m.rx === 'OTC') ? 'otc' : 'rx';
-        const rxLabel = (m.rx === 'OTC') ? '✅ Sin receta' : (m.rx === 'RX' ? '🔴 Con receta' : '⛔ No disponible');
+        const rxLabel = (m.rx === 'OTC') ? t.farma_otc : (m.rx === 'RX' ? t.farma_rx : t.farma_no_disp);
         const stores = m.stores.map(s => `<span class="farma-store">${s}</span>`).join('');
-        const aliases = m.arg.slice(1).length ? `<div style="font-size:.68rem;color:var(--text-dim);margin-top:2px;">También: ${m.arg.slice(1).join(', ')}</div>` : '';
+        const aliases = m.arg.slice(1).length ? `<div style="font-size:.68rem;color:var(--text-dim);margin-top:2px;">${t.farma_aliases} ${m.arg.slice(1).join(', ')}</div>` : '';
         return `<div class="farma-card" style="animation-delay:${i*0.04}s">
             <div class="farma-header">
                 <div class="farma-names">
                     <div class="farma-arg">💊 ${m.arg[0]}</div>
                     ${aliases}
                     <div class="farma-us">🇺🇸 ${m.us}</div>
-                    <div style="font-size:.68rem;color:var(--text-dim);margin-top:2px;">Marcas: ${m.marcas}</div>
+                    <div style="font-size:.68rem;color:var(--text-dim);margin-top:2px;">${t.farma_marcas} ${m.marcas}</div>
                 </div>
                 <div class="farma-badges">
                     <span class="badge-rx ${rxClass}">${rxLabel}</span>
@@ -1492,11 +1543,11 @@ function farmaRender(list) {
             <div class="farma-divider"></div>
             <div class="farma-detail">
                 <div class="farma-detail-item">
-                    <span class="farma-detail-lbl">🇦🇷 Dosis ARG</span>
+                    <span class="farma-detail-lbl">${t.farma_dosis_arg}</span>
                     <span class="farma-detail-val">${m.dosis_arg}</span>
                 </div>
                 <div class="farma-detail-item">
-                    <span class="farma-detail-lbl">🇺🇸 Dosis US</span>
+                    <span class="farma-detail-lbl">${t.farma_dosis_us}</span>
                     <span class="farma-detail-val">${m.dosis_us}</span>
                 </div>
             </div>
@@ -1526,6 +1577,13 @@ window.farmaFilter = function(q) {
     if (clear) clear.style.display = q ? 'block' : 'none';
     farmaRender(farmaGetFiltered(q, farmaActiveCat));
 };
+
+window.farmaGetFilteredCurrent = function() {
+    const q = document.getElementById('farma-search')?.value || '';
+    return farmaGetFiltered(q, farmaActiveCat);
+};
+
+window.farmaInitCats = farmaInitCats;
 
 function farmaInitCats() {
     const cats = ['all', ...new Set(FARMA_DATA.map(m => m.cat))];
@@ -1710,11 +1768,13 @@ let frasesActiveSection = 'frases'; // 'frases' | 'abrev'
 function frasesRender() {
     const body = document.getElementById('frases-body');
     if (!body) return;
+    const lang = localStorage.getItem('appLang') || 'es';
+    const t = i18n[lang] || i18n.es;
 
     // Tabs de sección principal
     let html = `<div class="frases-cat-tabs" style="margin-bottom:12px;">
-        <button class="frases-tab${frasesActiveSection==='frases'?' active':''}" onclick="frasesSetSection('frases')">💬 Frases</button>
-        <button class="frases-tab${frasesActiveSection==='abrev'?' abrev-active':''}" onclick="frasesSetSection('abrev')">🔤 Abreviaturas</button>
+        <button class="frases-tab${frasesActiveSection==='frases'?' active':''}" onclick="frasesSetSection('frases')">${t.frases_tab_frases}</button>
+        <button class="frases-tab${frasesActiveSection==='abrev'?' abrev-active':''}" onclick="frasesSetSection('abrev')">${t.frases_tab_abrev}</button>
     </div>`;
 
     if (frasesActiveSection === 'frases') {
@@ -1732,13 +1792,13 @@ function frasesRender() {
             cat.frases.forEach(f => {
                 html += `<div class="frase-card">
                     <div class="frase-en">"${f.en}"</div>
-                    <div class="frase-fonetica">🔊 ${f.fon}</div>
-                    <div class="frase-ctx">💡 ${f.ctx}</div>
+                    <div class="frase-fonetica">${t.frases_fonetica_label} ${f.fon}</div>
+                    <div class="frase-ctx">${t.frases_ctx_label} ${f.ctx}</div>
                 </div>`;
             });
         }
     } else {
-        html += `<div class="frases-section-label">🔤 Abreviaturas & Siglas</div>`;
+        html += `<div class="frases-section-label">${t.frases_section_abrev}</div>`;
         ABREVIATURAS.forEach(a => {
             html += `<div class="abrev-card">
                 <div class="abrev-tag">${a.abbr}</div>
@@ -1753,6 +1813,7 @@ function frasesRender() {
     body.innerHTML = html;
 }
 
+window.frasesRender = frasesRender;
 window.frasesSetSection = function(sec) {
     frasesActiveSection = sec;
     frasesRender();
