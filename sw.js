@@ -1,5 +1,5 @@
-// TaxFly Service Worker — v7
-const CACHE = 'taxfly-v10';
+// TaxFly Service Worker — v8  (+ alertas de presupuesto)
+const CACHE = 'taxfly-v11';
 const PRECACHE = [
     './login.html',
     './selector.html',
@@ -162,3 +162,84 @@ function fetchWithTimeout(request, ms) {
             .catch(e => { clearTimeout(timer); reject(e); });
     });
 }
+
+
+// ══════════════════════════════════════════════════════
+// ── PUSH NOTIFICATIONS — alertas de presupuesto ───────
+// ══════════════════════════════════════════════════════
+
+// Textos por idioma para notificaciones disparadas desde el servidor
+const BUDGET_NOTIF_TEXTS = {
+    es: {
+        70:  { title: '⚠️ Presupuesto al 70%',   body: 'Llevás gastado el 70% de tu presupuesto de viaje.' },
+        90:  { title: '🚨 Presupuesto al 90%',   body: '¡Cuidado! Solo te queda el 10% del presupuesto.' },
+        100: { title: '🔴 Presupuesto agotado',  body: 'Superaste tu presupuesto total de viaje.' },
+    },
+    en: {
+        70:  { title: '⚠️ Budget at 70%',    body: "You've used 70% of your travel budget." },
+        90:  { title: '🚨 Budget at 90%',    body: 'Almost there! Only 10% of your budget left.' },
+        100: { title: '🔴 Budget exceeded',  body: "You've gone over your travel budget." },
+    },
+    pt: {
+        70:  { title: '⚠️ Orçamento em 70%',   body: 'Você usou 70% do seu orçamento de viagem.' },
+        90:  { title: '🚨 Orçamento em 90%',   body: 'Cuidado! Só restam 10% do orçamento.' },
+        100: { title: '🔴 Orçamento esgotado', body: 'Você ultrapassou o orçamento total de viagem.' },
+    },
+};
+
+// Evento push — payload JSON del servidor (Firebase Cloud Function):
+// { pct: 70|90|100, lang: 'es'|'en'|'pt', spent: 123.45, budget: 500, url: '...' }
+self.addEventListener('push', e => {
+    let data = {};
+    try { data = e.data ? e.data.json() : {}; } catch(_) {}
+
+    const pct    = data.pct    || 70;
+    const lang   = data.lang   || 'es';
+    const url    = data.url    || './compras.html';
+    const spentN  = data.spent  ? Number(data.spent).toFixed(0)  : null;
+    const budgetN = data.budget ? Number(data.budget).toFixed(0) : null;
+
+    const texts = (BUDGET_NOTIF_TEXTS[lang] || BUDGET_NOTIF_TEXTS.es)[pct]
+                || BUDGET_NOTIF_TEXTS.es[70];
+
+    const body = (spentN && budgetN)
+        ? `${texts.body} (USD ${spentN} / ${budgetN})`
+        : texts.body;
+
+    e.waitUntil(
+        self.registration.showNotification(texts.title, {
+            body,
+            icon:     './assets/icon-192.png',
+            badge:    './assets/icon-192.png',
+            tag:      'budget-alert-' + pct,
+            renotify: true,
+            vibrate:  [200, 100, 200],
+            data:     { url },
+            actions:  [
+                { action: 'open',    title: '📊 Ver gastos' },
+                { action: 'dismiss', title: '✕ Cerrar'      },
+            ],
+        })
+    );
+});
+
+// Click en la notificación — abre/enfoca la app
+self.addEventListener('notificationclick', e => {
+    e.notification.close();
+    if (e.action === 'dismiss') return;
+
+    const targetUrl = (e.notification.data && e.notification.data.url) || './compras.html';
+
+    e.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+            // Si ya hay una tab con compras abierta, enfocarla
+            for (const client of list) {
+                if (client.url.includes('compras') && 'focus' in client) {
+                    return client.focus();
+                }
+            }
+            // Si no, abrir nueva
+            if (clients.openWindow) return clients.openWindow(targetUrl);
+        })
+    );
+});
