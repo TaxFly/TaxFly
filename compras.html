@@ -182,6 +182,73 @@
         .app-footer img{width:16px;border-radius:2px;}
 
         /* ── Comparador ── */
+        .comp-stores-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px;}
+        .comp-store-card{display:block;text-decoration:none;border-radius:16px;border:1.5px solid var(--border);background:var(--surface);overflow:hidden;transition:all .2s cubic-bezier(.4,0,.2,1);position:relative;}
+        .comp-store-card:hover,.comp-store-card:active{border-color:var(--store-color,var(--primary));transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.10);}
+        .comp-store-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--store-color,var(--primary));opacity:.8;}
+        .comp-store-inner{display:flex;align-items:center;gap:10px;padding:14px 14px 12px;}
+        .comp-store-emoji{font-size:1.3rem;flex-shrink:0;line-height:1;}
+        .comp-store-name{flex:1;font-size:.82rem;font-weight:800;color:var(--text);letter-spacing:-.2px;}
+        .comp-store-arrow{font-size:.85rem;color:var(--store-color,var(--primary));font-weight:900;flex-shrink:0;transition:transform .2s;}
+        .comp-store-card:hover .comp-store-arrow{transform:translate(2px,-2px);}
+
+        /* ── Dashboard / Resumen ── */
+        /* ── Dashboard / Resumen ── */
+        .donut-wrap{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:20px;background:linear-gradient(135deg,rgba(37,99,235,.05),rgba(124,58,237,.05));border:1px solid var(--border);border-radius:20px;padding:16px 14px;overflow:hidden;}
+        .donut-svg{flex-shrink:0;filter:drop-shadow(0 6px 18px rgba(37,99,235,.2));}
+        .donut-center{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;width:72px;text-align:center;}
+        .donut-rel{position:relative;display:flex;align-items:center;justify-content:center;width:130px;height:130px;flex-shrink:0;}
+        .donut-total-lbl{font-size:.5rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.6px;}
+        .donut-total-val{font-size:1rem;font-weight:900;color:var(--text);line-height:1.15;word-break:break-all;max-width:70px;text-align:center;}
+        .donut-legend{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0;overflow:hidden;}
+        .legend-item{display:flex;align-items:center;gap:6px;cursor:pointer;min-width:0;}
+        .legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+        .legend-name{font-size:.68rem;font-weight:700;color:var(--text-sub);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+        .legend-val{font-size:.68rem;font-weight:800;color:var(--text);white-space:nowrap;flex-shrink:0;}
+        .legend-pct{font-size:.6rem;font-weight:700;color:var(--text-dim);min-width:26px;text-align:right;flex-shrink:0;}
+
+        .cat-bars{display:flex;flex-direction:column;gap:10px;}
+        .cat-bar-row{display:flex;flex-direction:column;gap:6px;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:12px 14px;}
+        .cat-bar-top{display:flex;align-items:center;justify-content:space-between;}
+        .cat-bar-name{font-size:.78rem;font-weight:800;color:var(--text);display:flex;align-items:center;gap:5px;}
+        .cat-bar-amount{font-size:.75rem;font-weight:800;color:var(--text-sub);}
+        .cat-bar-track{height:6px;background:var(--border);border-radius:99px;overflow:hidden;}
+        .cat-bar-fill{height:100%;border-radius:99px;transition:width .8s cubic-bezier(.4,0,.2,1);box-shadow:0 0 8px currentColor;opacity:.8;}
+
+        /* ── Stat Grid Redesign ── */
+        .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+        .stat-box{border-radius:18px;padding:16px 14px 14px;border:1px solid var(--border);text-align:center;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;}
+        .stat-box:active{transform:scale(.97);}
+        .stat-box::before{content:'';position:absolute;inset:0;opacity:.07;pointer-events:none;}
+        .stat-box:nth-child(1){background:linear-gradient(135deg,rgba(37,99,235,.12),rgba(37,99,235,.04));border-color:rgba(37,99,235,.25);}
+        .stat-box:nth-child(1)::before{background:radial-gradient(circle at 80% 20%,var(--primary),transparent 70%);}
+        .stat-box:nth-child(2){background:linear-gradient(135deg,rgba(16,185,129,.12),rgba(16,185,129,.04));border-color:rgba(16,185,129,.25);}
+        .stat-box:nth-child(2)::before{background:radial-gradient(circle at 80% 20%,var(--success),transparent 70%);}
+        .stat-box:nth-child(3){background:linear-gradient(135deg,rgba(14,165,233,.12),rgba(14,165,233,.04));border-color:rgba(14,165,233,.25);}
+        .stat-box:nth-child(3)::before{background:radial-gradient(circle at 80% 20%,var(--cyan),transparent 70%);}
+        .stat-box:nth-child(4){background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(124,58,237,.04));border-color:rgba(124,58,237,.25);}
+        .stat-box:nth-child(4)::before{background:radial-gradient(circle at 80% 20%,var(--accent),transparent 70%);}
+        .stat-icon{font-size:1.5rem;margin-bottom:6px;display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,.15));}
+        .stat-val{font-size:1.15rem;font-weight:900;color:var(--text);line-height:1.1;letter-spacing:-.3px;}
+        .stat-lbl{font-size:.55rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;margin-top:4px;}
+        /* Accent line top */
+        .stat-box:nth-child(1)::after{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;background:var(--primary);border-radius:0 0 4px 4px;opacity:.6;}
+        .stat-box:nth-child(2)::after{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;background:var(--success);border-radius:0 0 4px 4px;opacity:.6;}
+        .stat-box:nth-child(3)::after{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;background:var(--cyan);border-radius:0 0 4px 4px;opacity:.6;}
+        .stat-box:nth-child(4)::after{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;background:var(--accent);border-radius:0 0 4px 4px;opacity:.6;}
+
+        .cat-tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+        .cat-tag{padding:5px 10px;border-radius:20px;border:1.5px solid var(--border);background:var(--input-bg);font-size:.7rem;font-weight:700;cursor:pointer;transition:var(--tr);color:var(--text-sub);font-family:inherit;}
+        .cat-tag.sel{border-color:var(--primary);background:var(--primary-dim);color:var(--primary);}
+        .cat-tag-label{font-size:.58rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;display:block;}
+
+        .empty-dash{text-align:center;padding:28px 0;color:var(--text-dim);font-size:.85rem;font-weight:600;}
+        .empty-dash span{display:block;font-size:2rem;margin-bottom:8px;}
+
+        .app-footer{margin-top:8px;padding:12px 0;text-align:center;font-size:.7rem;color:var(--text-dim);font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;}
+        .app-footer img{width:16px;border-radius:2px;}
+
+        /* ── Comparador ── */
         .comp-hero{background:linear-gradient(135deg,var(--primary-dim),var(--accent-dim));border:1px solid rgba(37,99,235,.2);border-radius:var(--radius);padding:18px 18px 14px;margin-bottom:14px;}
         .comp-hero-title{font-size:.6rem;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:var(--primary);margin-bottom:12px;display:flex;align-items:center;gap:6px;}
         .comp-input-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
@@ -201,9 +268,6 @@
         .comp-verdict-icon{font-size:2rem;flex-shrink:0;}
         .comp-verdict-text{font-size:.82rem;font-weight:700;color:var(--text);line-height:1.4;}
         .comp-verdict-badge{display:inline-block;padding:3px 8px;border-radius:20px;font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
-        .badge-great{background:rgba(16,185,129,.12);color:var(--success);border:1px solid rgba(16,185,129,.3);}
-        .badge-ok{background:rgba(245,158,11,.12);color:#d97706;border:1px solid rgba(245,158,11,.3);}
-        .badge-skip{background:rgba(239,68,68,.12);color:var(--danger);border:1px solid rgba(239,68,68,.3);}
         .comp-breakdown{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border-top:1px solid var(--border);}
         .comp-cell{background:var(--surface);padding:12px 10px;text-align:center;}
         .comp-cell-val{font-size:.9rem;font-weight:900;color:var(--text);}
@@ -216,10 +280,6 @@
         .comp-hist-name{font-size:.85rem;font-weight:800;color:var(--text);flex:1;}
         .comp-hist-meta{font-size:.7rem;font-weight:700;color:var(--text-dim);}
         .comp-hist-badge{font-size:.6rem;font-weight:800;padding:2px 7px;border-radius:20px;}
-        .comp-spinner{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 0;gap:12px;}
-        .comp-spinner .spin{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite;}
-        @keyframes spin{to{transform:rotate(360deg)}}
-        .comp-spinner-text{font-size:.82rem;font-weight:700;color:var(--text-sub);}
         .comp-offline-notice{background:rgba(245,158,11,.08);border:1.5px solid rgba(245,158,11,.3);border-radius:var(--radius-sm);padding:12px 14px;font-size:.8rem;font-weight:700;color:#d97706;display:flex;align-items:center;gap:8px;margin-bottom:12px;}
         .comp-add-btn{width:100%;padding:12px;border:1.5px dashed var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--text-dim);font-family:inherit;font-size:.78rem;font-weight:700;cursor:pointer;transition:var(--tr);margin-top:6px;}
         .comp-add-btn:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-dim);}
@@ -612,67 +672,25 @@
     <!-- ══════════ COMPARADOR DE PRECIOS ══════════ -->
     <div id="sec-comparador" style="display:none;">
 
-        <div class="comp-hero">
-            <div class="comp-hero-title">🔍 <span data-i18n="tab_compare">COMPARAR</span></div>
-
-            <div class="input-group" style="margin-bottom:10px;">
-                <span class="slabel" id="lbl-comp-product">Nombre del producto</span>
-                <input type="text" id="comp-product" placeholder="Ej: Nike Air Max 90, iPhone 15, Levi's 501..." autocomplete="off" oninput="compClearResult()">
+        <!-- Search bar -->
+        <div class="card" style="padding:16px;margin-bottom:12px;">
+            <span class="slabel" id="lbl-comp-product">¿Qué producto querés buscar?</span>
+            <div style="display:flex;gap:8px;">
+                <input type="text" id="comp-product" placeholder="Ej: Nike Air Max 90, iPhone 15..." autocomplete="off"
+                    style="flex:1;"
+                    onkeydown="if(event.key==='Enter')compBuscar()"
+                    oninput="compMostrarTiendas()">
+                <button onclick="compBuscar()" id="btn-comp-buscar"
+                    style="padding:0 18px;border:none;border-radius:var(--radius-sm);background:var(--primary);color:white;font-weight:800;font-size:.85rem;cursor:pointer;flex-shrink:0;transition:.2s;font-family:inherit;">
+                    🔍
+                </button>
             </div>
-
-            <div class="comp-input-row">
-                <div>
-                    <span class="slabel" id="lbl-comp-price">Precio en tienda (USD)</span>
-                    <input type="number" id="comp-price" placeholder="0.00" step="0.01" inputmode="decimal" min="0" oninput="compClearResult()">
-                </div>
-                <div>
-                    <span class="slabel" id="lbl-comp-state">Estado / Tax aprox.</span>
-                    <select id="comp-state" onchange="compClearResult()">
-                        <option value="0">Sin tax (NJ ropa)</option>
-                        <option value="6.25">MA — 6.25%</option>
-                        <option value="8.875">NY — 8.875%</option>
-                        <option value="6">FL — 6%</option>
-                        <option value="10.25">IL — 10.25%</option>
-                        <option value="9.5">CA — 9.5%</option>
-                        <option value="8.25">TX — 8.25%</option>
-                        <option value="manual">✏️ Manual</option>
-                    </select>
-                </div>
-            </div>
-            <div id="comp-tax-manual-wrap" style="display:none;margin-bottom:10px;">
-                <input type="number" id="comp-tax-manual" placeholder="Tax % manual (ej: 8.5)" step="0.01" inputmode="decimal" min="0" max="20">
-            </div>
-
-            <div style="margin-bottom:10px;">
-                <span class="slabel" id="lbl-comp-cat">Categoría del producto</span>
-                <div class="comp-cat-strip" id="comp-cat-strip">
-                    <button class="comp-cat-chip sel" data-cat="general" onclick="compSelCat(this,'general')">🛒 General</button>
-                    <button class="comp-cat-chip" data-cat="ropa" onclick="compSelCat(this,'ropa')">👗 Ropa</button>
-                    <button class="comp-cat-chip" data-cat="zapatillas" onclick="compSelCat(this,'zapatillas')">👟 Zapatillas</button>
-                    <button class="comp-cat-chip" data-cat="electronica" onclick="compSelCat(this,'electronica')">📱 Electrónica</button>
-                    <button class="comp-cat-chip" data-cat="perfume" onclick="compSelCat(this,'perfume')">🧴 Perfumes</button>
-                    <button class="comp-cat-chip" data-cat="farmacia" onclick="compSelCat(this,'farmacia')">💊 Farmacia</button>
-                    <button class="comp-cat-chip" data-cat="juguetes" onclick="compSelCat(this,'juguetes')">🧸 Juguetes</button>
-                </div>
-            </div>
-
-            <button class="btn-compare" id="btn-compare" onclick="runComparador()">
-                🤖 <span id="btn-compare-lbl">ANALIZAR CON IA</span>
-            </button>
         </div>
 
-        <!-- Offline notice -->
-        <div class="comp-offline-notice" id="comp-offline-notice" style="display:none;">
-            ⚠️ <span id="comp-offline-text">Sin conexión — el análisis con IA no está disponible.</span>
-        </div>
-
-        <!-- Resultado -->
-        <div id="comp-result-wrap" style="display:none;"></div>
-
-        <!-- Historial -->
-        <div class="comp-history" id="comp-history-wrap" style="display:none;">
-            <div class="comp-history-title" id="comp-hist-lbl">Comparaciones recientes</div>
-            <div id="comp-history-list"></div>
+        <!-- Store grid - always visible once product is typed -->
+        <div id="comp-stores-wrap" style="display:none;">
+            <span class="slabel" id="lbl-comp-stores">Buscá en estas tiendas</span>
+            <div class="comp-stores-grid" id="comp-stores-grid"></div>
         </div>
 
     </div>
@@ -1717,282 +1735,87 @@ document.getElementById('userEmail').innerText = perfilNombre || user.email;
 });
 
 // ══════════ COMPARADOR DE PRECIOS ══════════
-const COMP_HISTORY_KEY = 'taxusa_comp_history_' + (perfilId || 'default');
-let compSelectedCat = 'general';
-let compIsLoading = false;
+const COMP_STORES = [
+    {
+        id:'amazon', name:'Amazon', emoji:'📦', color:'#FF9900', bg:'rgba(255,153,0,.1)',
+        url: q => `https://www.amazon.com/s?k=${encodeURIComponent(q)}`
+    },
+    {
+        id:'walmart', name:'Walmart', emoji:'🛒', color:'#0071CE', bg:'rgba(0,113,206,.1)',
+        url: q => `https://www.walmart.com/search?q=${encodeURIComponent(q)}`
+    },
+    {
+        id:'target', name:'Target', emoji:'🎯', color:'#CC0000', bg:'rgba(204,0,0,.1)',
+        url: q => `https://www.target.com/s?searchTerm=${encodeURIComponent(q)}`
+    },
+    {
+        id:'bestbuy', name:'Best Buy', emoji:'💛', color:'#003B64', bg:'rgba(0,59,100,.1)',
+        url: q => `https://www.bestbuy.com/site/searchpage.jsp?st=${encodeURIComponent(q)}`
+    },
+    {
+        id:'ebay', name:'eBay', emoji:'🏷️', color:'#E53238', bg:'rgba(229,50,56,.1)',
+        url: q => `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(q)}`
+    },
+    {
+        id:'costco', name:'Costco', emoji:'📦', color:'#005DAA', bg:'rgba(0,93,170,.1)',
+        url: q => `https://www.costco.com/CatalogSearch?keyword=${encodeURIComponent(q)}`
+    },
+    {
+        id:'nike', name:'Nike', emoji:'👟', color:'#111', bg:'rgba(0,0,0,.07)',
+        url: q => `https://www.nike.com/w?q=${encodeURIComponent(q)}&vst=${encodeURIComponent(q)}`
+    },
+    {
+        id:'adidas', name:'Adidas', emoji:'⚡', color:'#000', bg:'rgba(0,0,0,.07)',
+        url: q => `https://www.adidas.com/us/search?q=${encodeURIComponent(q)}`
+    },
+    {
+        id:'macys', name:"Macy's", emoji:'⭐', color:'#E21C21', bg:'rgba(226,28,33,.1)',
+        url: q => `https://www.macys.com/shop/featured/${encodeURIComponent(q)}`
+    },
+    {
+        id:'sephora', name:'Sephora', emoji:'💄', color:'#C44B99', bg:'rgba(196,75,153,.1)',
+        url: q => `https://www.sephora.com/search?keyword=${encodeURIComponent(q)}`
+    },
+    {
+        id:'tjmaxx', name:'TJ Maxx', emoji:'🏷️', color:'#C8102E', bg:'rgba(200,16,46,.1)',
+        url: q => `https://www.tjmaxx.tjx.com/store/jump/search?q=${encodeURIComponent(q)}`
+    },
+    {
+        id:'google', name:'Google Shopping', emoji:'🛍️', color:'#4285F4', bg:'rgba(66,133,244,.1)',
+        url: q => `https://www.google.com/search?tbm=shop&q=${encodeURIComponent(q)}`
+    },
+];
 
-function compInit() {
-    const isOnline = navigator.onLine;
-    const notice = document.getElementById('comp-offline-notice');
-    if (notice) notice.style.display = isOnline ? 'none' : 'flex';
-    compRenderHistory();
-}
-
-window.compSelCat = function(btn, cat) {
-    document.querySelectorAll('.comp-cat-chip').forEach(b => b.classList.remove('sel'));
-    btn.classList.add('sel');
-    compSelectedCat = cat;
-    compClearResult();
-};
-
-window.compClearResult = function() {
-    const w = document.getElementById('comp-result-wrap');
-    if (w) { w.style.display = 'none'; w.innerHTML = ''; }
-};
-
-document.addEventListener('DOMContentLoaded', () => {
-    const stateEl = document.getElementById('comp-state');
-    const manualWrap = document.getElementById('comp-tax-manual-wrap');
-    if (stateEl) stateEl.addEventListener('change', () => {
-        if (manualWrap) manualWrap.style.display = stateEl.value === 'manual' ? 'block' : 'none';
-    });
-});
-
-function compGetTaxRate() {
-    const stateEl = document.getElementById('comp-state');
-    if (!stateEl) return 0;
-    if (stateEl.value === 'manual') {
-        return parseFloat(document.getElementById('comp-tax-manual')?.value || '0') || 0;
-    }
-    return parseFloat(stateEl.value) || 0;
-}
-
-function compGetArsRate() {
-    // Use tarjeta rate from baseRates (already loaded by fetchRates)
-    if (typeof baseRates !== 'undefined' && baseRates.tarjeta > 0) return baseRates.tarjeta;
-    const cached = parseFloat(localStorage.getItem('taxusa_rate_tarjeta') || '0');
-    return cached || 1200; // fallback
-}
-
-window.runComparador = async function() {
-    if (compIsLoading) return;
-    const productEl = document.getElementById('comp-product');
-    const priceEl = document.getElementById('comp-price');
-    const product = productEl?.value.trim();
-    const priceUSD = parseFloat(priceEl?.value || '0');
-    const lang = localStorage.getItem('appLang') || 'es';
-
-    if (!product) { productEl?.focus(); return; }
-    if (!priceUSD || priceUSD <= 0) { priceEl?.focus(); return; }
-    if (!navigator.onLine) {
-        document.getElementById('comp-offline-notice').style.display = 'flex';
-        return;
-    }
-
-    compIsLoading = true;
-    const btn = document.getElementById('btn-compare');
-    const btnLbl = document.getElementById('btn-compare-lbl');
-    if (btn) btn.disabled = true;
-    const spinTexts = { es:'Analizando con IA...', en:'Analyzing with AI...', pt:'Analisando com IA...' };
-    if (btnLbl) btnLbl.textContent = spinTexts[lang] || spinTexts.es;
-
-    const wrap = document.getElementById('comp-result-wrap');
+function compMostrarTiendas() {
+    const q = (document.getElementById('comp-product')?.value || '').trim();
+    const wrap = document.getElementById('comp-stores-wrap');
+    const grid = document.getElementById('comp-stores-grid');
+    if (!wrap || !grid) return;
+    if (!q) { wrap.style.display = 'none'; return; }
     wrap.style.display = 'block';
-    wrap.innerHTML = `<div class="comp-spinner"><div class="spin"></div><div class="comp-spinner-text" id="comp-spin-msg">${spinTexts[lang]||spinTexts.es}</div></div>`;
-
-    const taxRate = compGetTaxRate();
-    const arsRate = compGetArsRate();
-    const totalUSD = priceUSD * (1 + taxRate / 100);
-    const totalARS = totalUSD * arsRate;
-
-    const catHints = {
-        general: '', ropa: 'Es ropa/indumentaria.',
-        zapatillas: 'Son zapatillas o calzado deportivo.',
-        electronica: 'Es electrónica o tecnología.',
-        perfume: 'Es perfume o cosmético.',
-        farmacia: 'Es medicamento o producto de farmacia.',
-        juguetes: 'Es juguete o artículo infantil.'
-    };
-
-    const systemPrompt = lang === 'en'
-        ? `You are a shopping advisor for Latin American travelers in the US. The user is comparing a product price. Respond ONLY with a JSON object (no markdown, no extra text) with these exact fields:
-{
-  "verdict": "great"|"ok"|"skip",
-  "verdict_label": "short label (3-5 words)",
-  "verdict_icon": "emoji",
-  "summary": "2-3 sentences explaining if it's worth buying here vs back home, considering the current exchange rate. Be specific about this product category.",
-  "amazon_estimate_usd": number or null,
-  "argentina_estimate_usd_equiv": number or null,
-  "tip": "1 practical tip for buying this in the US (store, timing, coupon, etc.)"
-}`
-        : lang === 'pt'
-        ? `Você é um consultor de compras para viajantes latino-americanos nos EUA. O usuário está comparando o preço de um produto. Responda APENAS com um objeto JSON (sem markdown) com estes campos exatos:
-{
-  "verdict": "great"|"ok"|"skip",
-  "verdict_label": "rótulo curto (3-5 palavras)",
-  "verdict_icon": "emoji",
-  "summary": "2-3 frases explicando se vale a pena comprar nos EUA vs no Brasil, considerando a taxa de câmbio atual. Seja específico sobre esta categoria.",
-  "amazon_estimate_usd": number ou null,
-  "argentina_estimate_usd_equiv": number ou null,
-  "tip": "1 dica prática para comprar isso nos EUA (loja, época, cupom, etc.)"
-}`
-        : `Eres un asesor de compras para viajeros latinoamericanos en EEUU. El usuario está comparando el precio de un producto. Respondé SOLO con un objeto JSON (sin markdown, sin texto extra) con estos campos exactos:
-{
-  "verdict": "great"|"ok"|"skip",
-  "verdict_label": "etiqueta corta (3-5 palabras)",
-  "verdict_icon": "emoji",
-  "summary": "2-3 oraciones explicando si vale la pena comprarlo acá vs en Argentina, considerando el tipo de cambio actual. Sé específico para esta categoría de producto.",
-  "amazon_estimate_usd": number o null,
-  "argentina_estimate_usd_equiv": number o null,
-  "tip": "1 tip práctico para comprar esto en EEUU (tienda, momento, cupón, etc.)"
-}`;
-
-    const userMsg = lang === 'en'
-        ? `Product: "${product}" | Category: ${compSelectedCat} — ${catHints[compSelectedCat]||''} | Price in store: USD ${priceUSD.toFixed(2)} | Tax rate: ${taxRate}% | Price after tax: USD ${totalUSD.toFixed(2)} | Current ARS/USD exchange rate (tarjeta): ${arsRate.toFixed(0)} | Price in ARS: $${totalARS.toLocaleString('es-AR',{maximumFractionDigits:0})}. Analyze if this is a good deal for an Argentine traveler.`
-        : lang === 'pt'
-        ? `Produto: "${product}" | Categoria: ${compSelectedCat} — ${catHints[compSelectedCat]||''} | Preço na loja: USD ${priceUSD.toFixed(2)} | Taxa: ${taxRate}% | Preço com imposto: USD ${totalUSD.toFixed(2)} | Taxa de câmbio ARS/USD (tarjeta): ${arsRate.toFixed(0)} | Preço em ARS: $${totalARS.toLocaleString('es-AR',{maximumFractionDigits:0})}. Analise se é uma boa compra para um viajante argentino.`
-        : `Producto: "${product}" | Categoría: ${compSelectedCat} — ${catHints[compSelectedCat]||''} | Precio en tienda: USD ${priceUSD.toFixed(2)} | Tax: ${taxRate}% | Precio final con tax: USD ${totalUSD.toFixed(2)} | Tipo de cambio ARS/USD tarjeta actual: ${arsRate.toFixed(0)} | Precio en pesos: $${totalARS.toLocaleString('es-AR',{maximumFractionDigits:0})}. Analizá si conviene comprarlo acá para un viajero argentino.`;
-
-    try {
-        const resp = await fetch('https://api.anthropic.com/v1/messages', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                model: 'claude-sonnet-4-20250514',
-                max_tokens: 600,
-                system: systemPrompt,
-                messages: [{ role: 'user', content: userMsg }]
-            })
-        });
-        const data = await resp.json();
-        const raw = (data.content||[]).map(b=>b.text||'').join('').replace(/```json|```/g,'').trim();
-        const parsed = JSON.parse(raw);
-        compShowResult(product, priceUSD, taxRate, totalUSD, totalARS, arsRate, parsed, lang);
-        compSaveHistory({ product, priceUSD, taxRate, totalUSD, totalARS, arsRate, result: parsed, lang, cat: compSelectedCat, ts: Date.now() });
-    } catch(e) {
-        const errMsgs = { es:'Error al conectar con la IA. Intentá de nuevo.', en:'Error connecting to AI. Please try again.', pt:'Erro ao conectar com a IA. Tente novamente.' };
-        wrap.innerHTML = `<div style="text-align:center;padding:24px;color:var(--danger);font-size:.85rem;font-weight:700;">${errMsgs[lang]||errMsgs.es}</div>`;
-    } finally {
-        compIsLoading = false;
-        if (btn) btn.disabled = false;
-        const labels = { es:'ANALIZAR CON IA', en:'ANALYZE WITH AI', pt:'ANALISAR COM IA' };
-        if (btnLbl) btnLbl.textContent = labels[lang]||labels.es;
-    }
-};
-
-function compShowResult(product, priceUSD, taxRate, totalUSD, totalARS, arsRate, r, lang) {
-    const badgeClass = r.verdict === 'great' ? 'badge-great' : r.verdict === 'ok' ? 'badge-ok' : 'badge-skip';
-    const fmtARS = n => '$' + parseFloat(n).toLocaleString('es-AR', { maximumFractionDigits: 0 });
-    const fmtUSD = n => 'USD ' + parseFloat(n).toFixed(2);
-
-    const cellLabels = {
-        es: ['Precio tienda', 'Tax incluido', 'En pesos'],
-        en: ['Store price', 'With tax', 'In ARS'],
-        pt: ['Preço loja', 'Com imposto', 'Em pesos']
-    }[lang] || ['Precio tienda', 'Tax incluido', 'En pesos'];
-
-    const amazonRow = r.amazon_estimate_usd ? `
-        <div class="comp-context">
-            💻 ${lang==='pt'?'Amazon (estimativa)':lang==='en'?'Amazon estimate':'Amazon (referencia)'}: ~${fmtUSD(r.amazon_estimate_usd)}
-            ${r.argentina_estimate_usd_equiv ? ` · 🇦🇷 ${lang==='en'?'ARG estimate':lang==='pt'?'Estimativa ARG':'ARG estimado'}: ~${fmtUSD(r.argentina_estimate_usd_equiv)}` : ''}
-        </div>` : '';
-
-    const tipLabel = { es:'💡 Tip', en:'💡 Tip', pt:'💡 Dica' }[lang];
-
-    const wrap = document.getElementById('comp-result-wrap');
-    wrap.innerHTML = `
-        <div class="comp-result">
-            <div class="comp-result-header">
-                <div class="comp-result-name">${product}</div>
-                <div class="comp-result-price">${fmtUSD(priceUSD)}</div>
+    grid.innerHTML = COMP_STORES.map(s => `
+        <a class="comp-store-card" href="${s.url(q)}" target="_blank" rel="noopener"
+            style="--store-color:${s.color};--store-bg:${s.bg};">
+            <div class="comp-store-inner">
+                <div class="comp-store-emoji">${s.emoji}</div>
+                <div class="comp-store-name">${s.name}</div>
+                <div class="comp-store-arrow">↗</div>
             </div>
-            <div class="comp-verdict">
-                <div class="comp-verdict-icon">${r.verdict_icon||'🤔'}</div>
-                <div>
-                    <div><span class="comp-verdict-badge ${badgeClass}">${r.verdict_label||''}</span></div>
-                    <div class="comp-verdict-text">${r.summary||''}</div>
-                </div>
-            </div>
-            <div class="comp-breakdown">
-                <div class="comp-cell">
-                    <div class="comp-cell-val">${fmtUSD(priceUSD)}</div>
-                    <div class="comp-cell-lbl">${cellLabels[0]}</div>
-                </div>
-                <div class="comp-cell">
-                    <div class="comp-cell-val">${fmtUSD(totalUSD)}</div>
-                    <div class="comp-cell-lbl">${cellLabels[1]} (${taxRate}%)</div>
-                </div>
-                <div class="comp-cell">
-                    <div class="comp-cell-val">${fmtARS(totalARS)}</div>
-                    <div class="comp-cell-lbl">${cellLabels[2]}</div>
-                </div>
-            </div>
-            ${amazonRow}
-            ${r.tip ? `<div class="comp-context">${tipLabel}: ${r.tip}</div>` : ''}
-            <button class="comp-add-btn" onclick="compAddToGastos('${product.replace(/'/g,"\\'")}', ${totalUSD.toFixed(2)})">
-                ➕ ${lang==='pt'?'Adicionar aos gastos':lang==='en'?'Add to expenses':'Agregar a gastos'}
-            </button>
-        </div>`;
-    wrap.style.display = 'block';
-    compRenderHistory();
+        </a>`).join('');
 }
 
-window.compAddToGastos = function(name, amount) {
-    document.getElementById('product-input') && (document.getElementById('product-input').value = name);
-    document.getElementById('price-input') && (document.getElementById('price-input').value = amount.toFixed(2));
-    showSec('gastos');
-    const lang = localStorage.getItem('appLang') || 'es';
-    const msgs = { es:`Producto precargado en Gastos — completá la categoría y guardá.`, en:`Product pre-loaded in Expenses — select a category and save.`, pt:`Produto pré-carregado em Gastos — selecione uma categoria e salve.` };
-    setTimeout(() => {
-        const inp = document.getElementById('product-input');
-        if (inp) inp.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 200);
+window.compBuscar = function() {
+    compMostrarTiendas();
+    const q = (document.getElementById('comp-product')?.value || '').trim();
+    if (!q) { document.getElementById('comp-product')?.focus(); return; }
+    // Auto-open Google Shopping as primary
+    window.open(COMP_STORES.find(s => s.id === 'google').url(q), '_blank', 'noopener');
 };
 
-function compSaveHistory(entry) {
-    try {
-        let hist = JSON.parse(localStorage.getItem(COMP_HISTORY_KEY) || '[]');
-        hist.unshift(entry);
-        hist = hist.slice(0, 10);
-        localStorage.setItem(COMP_HISTORY_KEY, JSON.stringify(hist));
-    } catch(e) {}
-}
-
-function compRenderHistory() {
-    const histWrap = document.getElementById('comp-history-wrap');
-    const histList = document.getElementById('comp-history-list');
-    if (!histWrap || !histList) return;
-    try {
-        const lang = localStorage.getItem('appLang') || 'es';
-        const hist = JSON.parse(localStorage.getItem(COMP_HISTORY_KEY) || '[]');
-        if (!hist.length) { histWrap.style.display = 'none'; return; }
-        histWrap.style.display = 'block';
-        const verdictColors = { great:'badge-great', ok:'badge-ok', skip:'badge-skip' };
-        histList.innerHTML = hist.map((h, i) => {
-            const bc = verdictColors[h.result?.verdict] || 'badge-ok';
-            const date = new Date(h.ts).toLocaleDateString(lang==='pt'?'pt-BR':lang==='en'?'en-US':'es-AR');
-            return `<div class="comp-hist-item" onclick="compReloadHistory(${i})">
-                <div>
-                    <div class="comp-hist-name">${h.product}</div>
-                    <div class="comp-hist-meta">USD ${h.priceUSD.toFixed(2)} · ${date}</div>
-                </div>
-                <span class="comp-hist-badge ${bc}">${h.result?.verdict_icon||''} ${h.result?.verdict_label||''}</span>
-            </div>`;
-        }).join('');
-    } catch(e) { histWrap.style.display = 'none'; }
-}
-
-window.compReloadHistory = function(idx) {
-    try {
-        const lang = localStorage.getItem('appLang') || 'es';
-        const hist = JSON.parse(localStorage.getItem(COMP_HISTORY_KEY) || '[]');
-        const h = hist[idx];
-        if (!h) return;
-        document.getElementById('comp-product').value = h.product;
-        document.getElementById('comp-price').value = h.priceUSD;
-        const stateEl = document.getElementById('comp-state');
-        let matched = false;
-        for (const opt of stateEl.options) {
-            if (parseFloat(opt.value) === h.taxRate) { stateEl.value = opt.value; matched = true; break; }
-        }
-        if (!matched) {
-            stateEl.value = 'manual';
-            document.getElementById('comp-tax-manual-wrap').style.display = 'block';
-            document.getElementById('comp-tax-manual').value = h.taxRate;
-        }
-        compShowResult(h.product, h.priceUSD, h.taxRate, h.totalUSD, h.totalARS, h.arsRate, h.result, lang);
-    } catch(e) {}
+window.compInit = function() {
+    compMostrarTiendas();
 };
+
 
 </script>
 
