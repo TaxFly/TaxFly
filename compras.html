@@ -186,11 +186,29 @@
         .comp-store-card{display:block;text-decoration:none;border-radius:16px;border:1.5px solid var(--border);background:var(--surface);overflow:hidden;transition:all .2s cubic-bezier(.4,0,.2,1);position:relative;}
         .comp-store-card:hover,.comp-store-card:active{border-color:var(--store-color,var(--primary));transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.10);}
         .comp-store-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--store-color,var(--primary));opacity:.8;}
-        .comp-store-inner{display:flex;align-items:center;gap:10px;padding:14px 14px 12px;}
+        .comp-store-inner{display:flex;align-items:center;gap:10px;padding:12px 14px 10px;}
         .comp-store-emoji{font-size:1.3rem;flex-shrink:0;line-height:1;}
-        .comp-store-name{flex:1;font-size:.82rem;font-weight:800;color:var(--text);letter-spacing:-.2px;}
+        .comp-store-info{flex:1;min-width:0;}
+        .comp-store-name{font-size:.82rem;font-weight:800;color:var(--text);letter-spacing:-.2px;}
+        .comp-store-tag{font-size:.55rem;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.4px;margin-top:1px;}
         .comp-store-arrow{font-size:.85rem;color:var(--store-color,var(--primary));font-weight:900;flex-shrink:0;transition:transform .2s;}
         .comp-store-card:hover .comp-store-arrow{transform:translate(2px,-2px);}
+        /* ── AI Recommendation ── */
+        #comp-ai-panel{display:none;margin-bottom:14px;}
+        .comp-ai-loading{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:18px 16px;display:flex;align-items:center;gap:12px;}
+        .comp-ai-dots{display:flex;gap:5px;}
+        .comp-ai-dot{width:7px;height:7px;border-radius:50%;background:var(--primary);animation:dot .9s infinite ease-in-out;}
+        .comp-ai-dot:nth-child(2){animation-delay:.18s}.comp-ai-dot:nth-child(3){animation-delay:.36s}
+        .comp-ai-loading-txt{font-size:.82rem;font-weight:700;color:var(--text-sub);}
+        .comp-ai-result{background:linear-gradient(135deg,rgba(37,99,235,.08),rgba(124,58,237,.06));border:1.5px solid rgba(37,99,235,.3);border-radius:var(--radius);padding:16px;}
+        .comp-ai-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+        .comp-ai-icon{font-size:1.2rem;}
+        .comp-ai-title{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--primary);}
+        .comp-ai-body{font-size:.84rem;font-weight:600;color:var(--text);line-height:1.6;}
+        .comp-ai-body strong{color:var(--primary);}
+        .comp-ai-body ul{margin:6px 0;padding-left:16px;}
+        .comp-ai-body li{margin:3px 0;font-size:.82rem;}
+        .comp-ai-body p{margin:4px 0;}
 
         /* ── Dashboard / Resumen ── */
         /* ── Dashboard / Resumen ── */
@@ -669,8 +687,6 @@
     </table>
 </div>
 
-        </div><!-- fin sec-talles -->
-
     <!-- ══════════ COMPARADOR DE PRECIOS ══════════ -->
     <div id="sec-comparador" style="display:none;">
 
@@ -681,16 +697,25 @@
                 <input type="text" id="comp-product" placeholder="Ej: Nike Air Max 90, iPhone 15..." autocomplete="off"
                     style="flex:1;"
                     onkeydown="if(event.key==='Enter')compBuscar()"
-                    oninput="compActualizarLinks()">
+                    oninput="compActualizarLinks();compToggleIABtn()">
                 <button onclick="compBuscar()" id="btn-comp-buscar"
                     style="padding:0 18px;border:none;border-radius:var(--radius-sm);background:var(--primary);color:white;font-weight:800;font-size:1rem;cursor:pointer;flex-shrink:0;transition:.2s;font-family:inherit;">
                     🔍
                 </button>
             </div>
+            <div id="comp-ai-btn-wrap" style="margin-top:10px;display:none;">
+                <button onclick="compAnalizarIA()" id="btn-comp-ia"
+                    style="width:100%;padding:11px;border:none;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--primary),var(--accent));color:white;font-weight:800;font-size:.82rem;cursor:pointer;transition:.2s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:7px;">
+                    <span>🤖</span> <span>Analizar con IA — ¿Dónde conviene comprarlo?</span>
+                </button>
+            </div>
         </div>
 
-        <!-- Store grid — siempre visible -->
-        <span class="slabel" style="margin-bottom:10px;display:block;">Tiendas</span>
+        <!-- AI Recommendation Panel -->
+        <div id="comp-ai-panel"></div>
+
+        <!-- Store grid -->
+        <span class="slabel" style="margin-bottom:10px;display:block;">Tiendas confiables</span>
         <div class="comp-stores-grid" id="comp-stores-grid"></div>
 
     </div>
@@ -1736,55 +1761,42 @@ document.getElementById('userEmail').innerText = perfilNombre || user.email;
 
 // ══════════ COMPARADOR DE PRECIOS ══════════
 const COMP_STORES = [
-    {
-        id:'amazon', name:'Amazon', emoji:'📦', color:'#FF9900', bg:'rgba(255,153,0,.1)',
-        url: q => `https://www.amazon.com/s?k=${encodeURIComponent(q)}`
-    },
-    {
-        id:'walmart', name:'Walmart', emoji:'🛒', color:'#0071CE', bg:'rgba(0,113,206,.1)',
-        url: q => `https://www.walmart.com/search?q=${encodeURIComponent(q)}`
-    },
-    {
-        id:'target', name:'Target', emoji:'🎯', color:'#CC0000', bg:'rgba(204,0,0,.1)',
-        url: q => `https://www.target.com/s?searchTerm=${encodeURIComponent(q)}`
-    },
-    {
-        id:'bestbuy', name:'Best Buy', emoji:'💛', color:'#003B64', bg:'rgba(0,59,100,.1)',
-        url: q => `https://www.bestbuy.com/site/searchpage.jsp?st=${encodeURIComponent(q)}`
-    },
-    {
-        id:'ebay', name:'eBay', emoji:'🏷️', color:'#E53238', bg:'rgba(229,50,56,.1)',
-        url: q => `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(q)}`
-    },
-    {
-        id:'costco', name:'Costco', emoji:'📦', color:'#005DAA', bg:'rgba(0,93,170,.1)',
-        url: q => `https://www.costco.com/CatalogSearch?keyword=${encodeURIComponent(q)}`
-    },
-    {
-        id:'nike', name:'Nike', emoji:'👟', color:'#111', bg:'rgba(0,0,0,.07)',
-        url: q => `https://www.nike.com/w?q=${encodeURIComponent(q)}&vst=${encodeURIComponent(q)}`
-    },
-    {
-        id:'adidas', name:'Adidas', emoji:'⚡', color:'#000', bg:'rgba(0,0,0,.07)',
-        url: q => `https://www.adidas.com/us/search?q=${encodeURIComponent(q)}`
-    },
-    {
-        id:'macys', name:"Macy's", emoji:'⭐', color:'#E21C21', bg:'rgba(226,28,33,.1)',
-        url: q => `https://www.macys.com/shop/featured/${encodeURIComponent(q)}`
-    },
-    {
-        id:'sephora', name:'Sephora', emoji:'💄', color:'#C44B99', bg:'rgba(196,75,153,.1)',
-        url: q => `https://www.sephora.com/search?keyword=${encodeURIComponent(q)}`
-    },
-    {
-        id:'tjmaxx', name:'TJ Maxx', emoji:'🏷️', color:'#C8102E', bg:'rgba(200,16,46,.1)',
-        url: q => `https://www.tjmaxx.tjx.com/store/jump/search?q=${encodeURIComponent(q)}`
-    },
-    {
-        id:'google', name:'Google Shopping', emoji:'🛍️', color:'#4285F4', bg:'rgba(66,133,244,.1)',
-        url: q => `https://www.google.com/search?tbm=shop&q=${encodeURIComponent(q)}`
-    },
+    // ── Generalistas ──
+    { id:'amazon',    name:'Amazon',         tag:'Generalista',    emoji:'📦', color:'#FF9900', url: q=>`https://www.amazon.com/s?k=${encodeURIComponent(q)}` },
+    { id:'walmart',   name:'Walmart',        tag:'Generalista',    emoji:'🛒', color:'#0071CE', url: q=>`https://www.walmart.com/search?q=${encodeURIComponent(q)}` },
+    { id:'target',    name:'Target',         tag:'Generalista',    emoji:'🎯', color:'#CC0000', url: q=>`https://www.target.com/s?searchTerm=${encodeURIComponent(q)}` },
+    { id:'costco',    name:'Costco',         tag:'Mayorista',      emoji:'🏬', color:'#005DAA', url: q=>`https://www.costco.com/CatalogSearch?keyword=${encodeURIComponent(q)}` },
+    { id:'ebay',      name:'eBay',           tag:'Marketplace',    emoji:'🏷️', color:'#E53238', url: q=>`https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(q)}` },
+    // ── Electrónica / Tech ──
+    { id:'bestbuy',   name:'Best Buy',       tag:'Electrónica',    emoji:'💛', color:'#003B64', url: q=>`https://www.bestbuy.com/site/searchpage.jsp?st=${encodeURIComponent(q)}` },
+    { id:'bhphoto',   name:'B&H Photo',      tag:'Foto / Video',   emoji:'📷', color:'#003580', url: q=>`https://www.bhphotovideo.com/c/search?Ntt=${encodeURIComponent(q)}` },
+    { id:'adorama',   name:'Adorama',        tag:'Foto / Video',   emoji:'🎥', color:'#c0392b', url: q=>`https://www.adorama.com/l/?searchinfo=${encodeURIComponent(q)}` },
+    { id:'apple',     name:'Apple Store',    tag:'Apple oficial',  emoji:'🍎', color:'#555555', url: q=>`https://www.apple.com/us/search/${encodeURIComponent(q)}` },
+    { id:'newegg',    name:'Newegg',         tag:'PC / Gaming',    emoji:'💻', color:'#F37022', url: q=>`https://www.newegg.com/p/pl?d=${encodeURIComponent(q)}` },
+    { id:'microcenter',name:'Micro Center',  tag:'PC / Hardware',  emoji:'🖥️', color:'#B22222', url: q=>`https://www.microcenter.com/search/search_results.aspx?Ntx=mode+matchall&Ntk=all&N=4294967288&myStore=false&cf=&Ntt=${encodeURIComponent(q)}` },
+    // ── Moda / Ropa ──
+    { id:'nike',      name:'Nike',           tag:'Deportivo',      emoji:'👟', color:'#111111', url: q=>`https://www.nike.com/w?q=${encodeURIComponent(q)}&vst=${encodeURIComponent(q)}` },
+    { id:'adidas',    name:'Adidas',         tag:'Deportivo',      emoji:'⚡', color:'#000000', url: q=>`https://www.adidas.com/us/search?q=${encodeURIComponent(q)}` },
+    { id:'nordstrom', name:'Nordstrom',      tag:'Premium',        emoji:'👗', color:'#1D1D1D', url: q=>`https://www.nordstrom.com/sr?origin=keywordsearch&keyword=${encodeURIComponent(q)}` },
+    { id:'macys',     name:"Macy's",         tag:'Grandes tiendas',emoji:'⭐', color:'#E21C21', url: q=>`https://www.macys.com/shop/featured/${encodeURIComponent(q)}` },
+    { id:'zappos',    name:'Zappos',         tag:'Calzado',        emoji:'👠', color:'#1D4ED8', url: q=>`https://www.zappos.com/search?term=${encodeURIComponent(q)}` },
+    { id:'tjmaxx',    name:'TJ Maxx',        tag:'Outlet/Descuento',emoji:'🏷️', color:'#C8102E', url: q=>`https://www.tjmaxx.tjx.com/store/jump/search?q=${encodeURIComponent(q)}` },
+    { id:'gap',       name:'Gap',            tag:'Ropa casual',    emoji:'👕', color:'#1A1A2E', url: q=>`https://www.gap.com/browse/search.do?searchText=${encodeURIComponent(q)}` },
+    // ── Belleza / Salud ──
+    { id:'sephora',   name:'Sephora',        tag:'Cosmética',      emoji:'💄', color:'#C44B99', url: q=>`https://www.sephora.com/search?keyword=${encodeURIComponent(q)}` },
+    { id:'ulta',      name:'Ulta Beauty',    tag:'Cosmética',      emoji:'💅', color:'#8B1A4A', url: q=>`https://www.ulta.com/search?search=${encodeURIComponent(q)}` },
+    // ── Hogar / Outdoor ──
+    { id:'rei',       name:'REI',            tag:'Outdoor',        emoji:'🏕️', color:'#1F6B31', url: q=>`https://www.rei.com/search?q=${encodeURIComponent(q)}` },
+    { id:'homedepot', name:'Home Depot',     tag:'Hogar / Herram.',emoji:'🔨', color:'#F96302', url: q=>`https://www.homedepot.com/s/${encodeURIComponent(q)}` },
+    { id:'ikea',      name:'IKEA',           tag:'Muebles / Hogar',emoji:'🪑', color:'#0051BA', url: q=>`https://www.ikea.com/us/en/search/?q=${encodeURIComponent(q)}` },
+    // ── Libros / Juegos ──
+    { id:'gamestop',  name:'GameStop',       tag:'Videojuegos',    emoji:'🎮', color:'#5C0A0A', url: q=>`https://www.gamestop.com/search#q=${encodeURIComponent(q)}` },
+    // ── Comparadores / Buscadores ──
+    { id:'google',    name:'Google Shopping',tag:'Comparador',     emoji:'🛍️', color:'#4285F4', url: q=>`https://www.google.com/search?tbm=shop&q=${encodeURIComponent(q)}` },
+    { id:'pricespy',  name:'PriceSpy',       tag:'Comparador',     emoji:'📊', color:'#009900', url: q=>`https://pricespy.com/search?search=${encodeURIComponent(q)}` },
 ];
+
+const GROQ_COMP_URL = 'https://taxusa.juanbria18.workers.dev';
 
 function compRenderGrid(q) {
     const grid = document.getElementById('comp-stores-grid');
@@ -1793,31 +1805,110 @@ function compRenderGrid(q) {
         const href = q ? s.url(q) : '#';
         const dimmed = q ? '' : 'opacity:.45;pointer-events:none;';
         return `<a class="comp-store-card" href="${href}" target="_blank" rel="noopener"
-            style="--store-color:${s.color};--store-bg:${s.bg};${dimmed}">
+            style="--store-color:${s.color};${dimmed}">
             <div class="comp-store-inner">
                 <div class="comp-store-emoji">${s.emoji}</div>
-                <div class="comp-store-name">${s.name}</div>
+                <div class="comp-store-info">
+                    <div class="comp-store-name">${s.name}</div>
+                    <div class="comp-store-tag">${s.tag}</div>
+                </div>
                 <div class="comp-store-arrow">↗</div>
             </div>
         </a>`;
     }).join('');
 }
 
+function compFormatAI(text) {
+    let html = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    const lines = html.split('\n');
+    const result = [];
+    let inList = false;
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        const isBullet = /^[•\-\*]\ /.test(line);
+        if (isBullet) {
+            if (!inList) { result.push('<ul>'); inList = true; }
+            result.push('<li>' + line.replace(/^[•\-\*]\ +/,'') + '</li>');
+        } else {
+            if (inList) { result.push('</ul>'); inList = false; }
+            if (line) result.push('<p>' + line + '</p>');
+        }
+    }
+    if (inList) result.push('</ul>');
+    return result.join('');
+}
+
+window.compToggleIABtn = function() {
+    const q = (document.getElementById('comp-product')?.value || '').trim();
+    const wrap = document.getElementById('comp-ai-btn-wrap');
+    if (wrap) wrap.style.display = q.length >= 2 ? 'block' : 'none';
+};
+
 window.compActualizarLinks = function() {
     const q = (document.getElementById('comp-product')?.value || '').trim();
     compRenderGrid(q);
 };
 
+window.compAnalizarIA = async function() {
+    const q = (document.getElementById('comp-product')?.value || '').trim();
+    if (!q) return;
+    const panel = document.getElementById('comp-ai-panel');
+    if (!panel) return;
+    panel.style.display = 'block';
+    panel.innerHTML = `<div class="comp-ai-loading">
+        <div class="comp-ai-dots"><div class="comp-ai-dot"></div><div class="comp-ai-dot"></div><div class="comp-ai-dot"></div></div>
+        <span class="comp-ai-loading-txt">Analizando tiendas para "<strong>${q.replace(/</g,'&lt;')}</strong>"...</span>
+    </div>`;
+    const storeList = COMP_STORES.filter(s => s.id !== 'google' && s.id !== 'pricespy')
+        .map(s => `${s.name} (${s.tag})`).join(', ');
+    const systemPrompt = \`Sos un experto en compras en Estados Unidos ayudando a turistas argentinos. 
+Conocés muy bien los precios y políticas de estas tiendas: \${storeList}.
+Tu tono es directo, concreto y útil. Usás viñetas y negritas solo si ayudan. Nunca empezás con "Claro!" ni rellenos.\`;
+    const userMsg = \`El usuario quiere comprar: "\${q}".
+Basándote en tu conocimiento de estas tiendas de USA (Amazon, B&H Photo, Best Buy, Apple Store, Costco, REI, Nordstrom, Zappos, Nike, Adidas, Newegg, etc), respondé:
+1. **¿Dónde recomendás comprarlo y por qué?** (considerá precio habitual, confiabilidad, garantía, si conviene esperar ofertas)
+2. **Alternativas** (1 o 2 opciones más baratas o similares)
+3. **Un tip extra** (promo habitual, tarjeta, cashback, época del año, etc.)
+Sé específico con el producto. Si es electrónica, mencioná B&H o Adorama. Si es ropa deportiva, Nike/Adidas directo vs Amazon. Formato claro, sin preamble.\`;
+    try {
+        const res = await fetch(GROQ_COMP_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                model: 'llama-3.3-70b-versatile',
+                messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userMsg }],
+                max_tokens: 600,
+                temperature: 0.6,
+                stream: false
+            })
+        });
+        const data = await res.json();
+        const reply = data.choices?.[0]?.message?.content || 'No se pudo obtener la recomendación. Intentá de nuevo.';
+        panel.innerHTML = \`<div class="comp-ai-result">
+            <div class="comp-ai-header">
+                <span class="comp-ai-icon">🤖</span>
+                <span class="comp-ai-title">Recomendación IA para "\${q.replace(/</g,'&lt;')}"</span>
+            </div>
+            <div class="comp-ai-body">\${compFormatAI(reply)}</div>
+        </div>\`;
+    } catch(e) {
+        panel.innerHTML = \`<div class="comp-ai-result" style="border-color:var(--danger);background:rgba(239,68,68,.06);">
+            <div class="comp-ai-body"><p>❌ No se pudo conectar con la IA. Verificá tu conexión e intentá de nuevo.</p></div>
+        </div>\`;
+    }
+};
+
 window.compBuscar = function() {
     const q = (document.getElementById('comp-product')?.value || '').trim();
     compRenderGrid(q);
+    compToggleIABtn();
     if (!q) { document.getElementById('comp-product')?.focus(); return; }
-    window.open(COMP_STORES.find(s => s.id === 'google').url(q), '_blank', 'noopener');
 };
 
 window.compInit = function() {
     const q = (document.getElementById('comp-product')?.value || '').trim();
     compRenderGrid(q);
+    compToggleIABtn();
 };
 
 
