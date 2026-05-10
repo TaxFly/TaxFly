@@ -441,6 +441,11 @@
             <button onclick="toggleBudgetEdit()" id="btn-change-budget" style="background:rgba(255,255,255,.25);border:none;color:white;padding:5px 12px;border-radius:8px;font-size:.72rem;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap;" data-i18n="btn_change_budget">✏️ Cambiar</button>
         </div>
 
+        <!-- Botón activar notificaciones push -->
+        <div id="notif-banner" style="display:none;margin-top:8px;">
+            <button id="btn-activar-notif" onclick="activarNotificaciones()" style="width:100%;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.35);color:white;padding:8px 14px;border-radius:10px;font-size:.75rem;font-weight:800;cursor:pointer;font-family:inherit;letter-spacing:.3px;">🔔 Activar alertas de presupuesto</button>
+        </div>
+
         <!-- Input para setear/cambiar presupuesto -->
         <div class="budget-set" id="budget-set-row">
             <input type="number" id="input-fondo" placeholder="USD 0" step="0.01" inputmode="decimal">
@@ -1233,7 +1238,133 @@ function updateBudgetDisplay(spent){
     if(el) el.innerText='USD '+fmt(presupuestoBase-spent);
     // Siempre refrescar la fila de info (por si cambió presupuestoBase)
     refreshBudgetInfoRow();
+    // Verificar umbrales de presupuesto y disparar notificación local si corresponde
+    if(presupuestoBase>0) checkBudgetAlerts(spent);
 }
+
+// ── PUSH NOTIFICATIONS — sistema completo del lado cliente ──────────────────
+
+// VAPID public key — reemplazá con la tuya de Firebase o web-push
+const VAPID_PUBLIC_KEY = 'BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjZJn1SEkuGvVYxXRdyS3abcdefg';
+
+// Último porcentaje alertado (para no repetir)
+let _lastAlertedPct = null;
+
+async function requestPushPermission(){
+    if(!('Notification' in window)||!('serviceWorker' in navigator)) return false;
+    if(Notification.permission==='granted') return true;
+    if(Notification.permission==='denied') return false;
+    const result = await Notification.requestPermission();
+    return result === 'granted';
+}
+
+function urlBase64ToUint8Array(base64String){
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding).replace(/-/g,'+').replace(/_/g,'/');
+    const rawData = window.atob(base64);
+    return Uint8Array.from([...rawData].map(c=>c.charCodeAt(0)));
+}
+
+async function subscribeToPush(){
+    try{
+        const reg = await navigator.serviceWorker.ready;
+        const existing = await reg.pushManager.getSubscription();
+        if(existing) return existing;
+        const sub = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+        });
+        // Guardá la suscripción en Firestore si querés enviar push desde servidor
+        // await savePushSubToFirestore(sub);
+        console.log('[Push] Suscripción creada:', sub.endpoint);
+        return sub;
+    }catch(e){
+        console.warn('[Push] No se pudo suscribir:', e);
+        return null;
+    }
+}
+
+// Mostrar notificación local (sin servidor) cuando se cruzan umbrales
+async function showLocalBudgetNotification(pct, spent, budget){
+    const granted = await requestPushPermission();
+    if(!granted) return;
+    const lang = localStorage.getItem('appLang')||'es';
+    const texts = {
+        es:{
+            70:{title:'⚠️ Presupuesto al 70%', body:`Gastaste $${fmt(spent)} de $${fmt(budget)} USD.`},
+            90:{title:'🚨 Presupuesto al 90%', body:`¡Cuidado! Solo te quedan $${fmt(budget-spent)} USD.`},
+            100:{title:'🔴 Presupuesto agotado', body:`Superaste tu presupuesto. Llevás $${fmt(spent)} USD gastados.`},
+        },
+        en:{
+            70:{title:'⚠️ Budget at 70%', body:`You've spent $${fmt(spent)} of $${fmt(budget)} USD.`},
+            90:{title:'🚨 Budget at 90%', body:`Almost there! Only $${fmt(budget-spent)} USD left.`},
+            100:{title:'🔴 Budget exceeded', body:`You went over budget. Total spent: $${fmt(spent)} USD.`},
+        },
+        pt:{
+            70:{title:'⚠️ Orçamento em 70%', body:`Você gastou $${fmt(spent)} de $${fmt(budget)} USD.`},
+            90:{title:'🚨 Orçamento em 90%', body:`Cuidado! Restam apenas $${fmt(budget-spent)} USD.`},
+            100:{title:'🔴 Orçamento esgotado', body:`Você ultrapassou o orçamento. Total: $${fmt(spent)} USD.`},
+        },
+    };
+    const t = (texts[lang]||texts.es)[pct];
+    if(!t) return;
+    try{
+        const reg = await navigator.serviceWorker.ready;
+        reg.showNotification(t.title,{
+            body: t.body,
+            icon: './assets/icon-192.png',
+            badge: './assets/icon-192.png',
+            tag: 'budget-alert-'+pct,
+            renotify: true,
+            vibrate: [200,100,200],
+            data: { url:'./compras.html' },
+            actions:[
+                {action:'open', title:'📊 Ver gastos'},
+                {action:'dismiss', title:'✕ Cerrar'},
+            ],
+        });
+    }catch(e){ console.warn('[Push] showNotification falló:', e); }
+}
+
+function checkBudgetAlerts(spent){
+    if(!presupuestoBase||presupuestoBase<=0) return;
+    const pct = (spent / presupuestoBase) * 100;
+    // Determinar umbral alcanzado (100 tiene prioridad)
+    let threshold = null;
+    if(pct >= 100) threshold = 100;
+    else if(pct >= 90) threshold = 90;
+    else if(pct >= 70) threshold = 70;
+    if(!threshold) { _lastAlertedPct = null; return; } // Por debajo del 70%, resetear
+    if(_lastAlertedPct === threshold) return; // Ya alertamos este umbral
+    _lastAlertedPct = threshold;
+    showLocalBudgetNotification(threshold, spent, presupuestoBase);
+}
+
+// Inicializar push al cargar — pedir permiso después de primer gasto
+async function initPushNotifications(){
+    if(!('serviceWorker' in navigator)||!('PushManager' in window)) return;
+    // Solo intentar suscribir si ya tiene permiso (no interrumpir al usuario al cargar)
+    if(Notification.permission === 'granted'){
+        await subscribeToPush();
+    }
+}
+
+// ── Botón para activar notificaciones (se muestra si no están activas) ──────
+window.activarNotificaciones = async function(){
+    const btn = document.getElementById('btn-activar-notif');
+    const granted = await requestPushPermission();
+    if(granted){
+        await subscribeToPush();
+        if(btn) btn.style.display='none';
+        const lang=localStorage.getItem('appLang')||'es';
+        const ok={es:'✅ Notificaciones activadas',en:'✅ Notifications enabled',pt:'✅ Notificações ativadas'};
+        alert(ok[lang]||ok.es);
+    } else {
+        const lang=localStorage.getItem('appLang')||'es';
+        const deny={es:'Activá las notificaciones desde los ajustes del navegador.',en:'Enable notifications in your browser settings.',pt:'Ative as notificações nas configurações do navegador.'};
+        alert(deny[lang]||deny.es);
+    }
+};
 
 function renderDashboard(gastos){
     const empty=document.getElementById('dash-empty');
@@ -1287,6 +1418,11 @@ window.showSec=(s)=>{
 
 // Category tag selector
 document.addEventListener('DOMContentLoaded',()=>{
+    // Mostrar banner de notificaciones si no están activadas
+    if('Notification' in window && Notification.permission !== 'granted'){
+        const banner = document.getElementById('notif-banner');
+        if(banner) banner.style.display = 'block';
+    }
     document.querySelectorAll('#cat-tag-row .cat-tag').forEach(btn=>{
         btn.addEventListener('click',()=>{
             document.querySelectorAll('#cat-tag-row .cat-tag').forEach(b=>b.classList.remove('sel'));
@@ -1753,6 +1889,7 @@ document.getElementById('userEmail').innerText = perfilNombre || user.email;
     // Asegurar que la fila de presupuesto esté actualizada después de cargar gastos
     setTimeout(refreshBudgetInfoRow, 500);
     flushPendingGastos(); // Sincronizar operaciones pendientes
+    initPushNotifications(); // Activar push si ya tiene permiso
     const lang=localStorage.getItem('appLang')||'es';
     window.changeLanguage(lang);
     document.getElementById('tip-text').innerText=shoppingTips[lang][0];
