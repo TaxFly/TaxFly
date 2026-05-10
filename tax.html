@@ -149,6 +149,45 @@
 
         /* ── Split Bill ── */
         .split-card{background:var(--surface);border-radius:var(--radius);padding:20px;width:100%;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:14px;}
+
+        /* ── Medical Emergency Card ── */
+        .med-card{background:var(--surface);border-radius:var(--radius);padding:20px;width:100%;box-shadow:var(--shadow);border:1.5px solid rgba(239,68,68,.3);margin-bottom:14px;}
+        .med-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
+        .med-title{font-size:.85rem;font-weight:900;color:var(--text);display:flex;align-items:center;gap:8px;}
+        .med-toggle{font-size:.7rem;color:var(--text-dim);font-weight:700;display:flex;align-items:center;gap:4px;transition:var(--tr);}
+        .med-body{display:none;margin-top:16px;}
+        .med-body.open{display:block;}
+        .med-disclaimer{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);border-radius:10px;padding:10px 12px;font-size:.68rem;font-weight:600;color:#ef4444;line-height:1.4;margin-bottom:14px;}
+        .med-cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+        .med-cat{flex:1;min-width:calc(50% - 3px);padding:9px 8px;border:1.5px solid var(--border);border-radius:10px;background:var(--input-bg);font-size:.68rem;font-weight:800;color:var(--text-sub);cursor:pointer;transition:var(--tr);font-family:inherit;text-align:center;line-height:1.3;}
+        .med-cat.active{border-color:#ef4444;background:rgba(239,68,68,.08);color:#ef4444;}
+        .med-items{display:flex;flex-direction:column;gap:8px;}
+        .med-item{background:var(--input-bg);border-radius:10px;padding:13px 14px;border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:10px;}
+        .med-item-info{}
+        .med-item-name{font-size:.78rem;font-weight:800;color:var(--text);line-height:1.2;}
+        .med-item-detail{font-size:.62rem;font-weight:600;color:var(--text-dim);margin-top:2px;line-height:1.3;}
+        .med-item-price{text-align:right;flex-shrink:0;}
+        .med-item-range{font-size:.88rem;font-weight:900;color:#ef4444;line-height:1;}
+        .med-item-unit{font-size:.55rem;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;margin-top:1px;}
+        .med-tip-box{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:11px 13px;font-size:.68rem;font-weight:600;color:#d97706;line-height:1.45;margin-top:12px;}
+        .med-tip-box strong{font-weight:900;}
+        /* Insurance banner */
+        .med-insurance-banner{background:linear-gradient(135deg,rgba(16,185,129,.12),rgba(37,99,235,.08));border:1.5px solid rgba(16,185,129,.35);border-radius:12px;padding:13px 14px;margin-bottom:14px;display:flex;flex-direction:column;gap:8px;}
+        .med-ins-header{display:flex;align-items:center;gap:8px;}
+        .med-ins-icon{font-size:1.3rem;flex-shrink:0;}
+        .med-ins-info{flex:1;min-width:0;}
+        .med-ins-label{font-size:.55rem;font-weight:800;color:var(--success);text-transform:uppercase;letter-spacing:.8px;}
+        .med-ins-name{font-size:.88rem;font-weight:900;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+        .med-ins-doc{font-size:.62rem;font-weight:600;color:var(--text-dim);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+        .med-ins-actions{display:flex;gap:7px;}
+        .med-ins-btn{flex:1;padding:9px 6px;border:none;border-radius:9px;font-size:.68rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:5px;transition:opacity .2s;}
+        .med-ins-btn-call{background:var(--success);color:white;}
+        .med-ins-btn-view{background:var(--primary-dim);color:var(--primary);border:1.5px solid var(--primary);}
+        .med-ins-btn:hover{opacity:.85;}
+        .med-ins-loading{display:flex;align-items:center;gap:8px;font-size:.72rem;font-weight:700;color:var(--text-sub);}
+        .med-ins-spinner{width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--success);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
+        .med-ins-none{font-size:.68rem;font-weight:600;color:var(--text-dim);display:flex;align-items:center;gap:6px;}
+        @keyframes spin{to{transform:rotate(360deg);}}
         .split-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;cursor:pointer;user-select:none;}
         .split-title{font-size:.85rem;font-weight:900;color:var(--text);display:flex;align-items:center;gap:8px;}
         .split-toggle{font-size:.7rem;color:var(--text-dim);font-weight:700;display:flex;align-items:center;gap:4px;transition:var(--tr);}
@@ -492,6 +531,28 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <!-- ══════════ EMERGENCIAS MÉDICAS ══════════ -->
+    <div class="med-card">
+        <div class="med-header" onclick="toggleMed()">
+            <div class="med-title">🏥 <span id="med-title-lbl">Emergencias Médicas en EE.UU.</span></div>
+            <div class="med-toggle" id="med-toggle-lbl">▼ <span id="med-toggle-txt">VER</span></div>
+        </div>
+        <div class="med-body" id="med-body">
+            <div id="med-insurance-slot"></div>
+            <div class="med-disclaimer" id="med-disclaimer">
+                ⚠️ Precios estimativos basados en datos de FAIR Health Consumer, Healthcare Bluebook y CMS 2024. Los costos reales varían según estado, hospital y cobertura de seguro. Siempre llamá a tu seguro antes de ir.
+            </div>
+            <div class="med-cats" id="med-cats">
+                <button class="med-cat active" onclick="setMedCat('er',this)" id="medcat-er">🚨 Urgencias</button>
+                <button class="med-cat" onclick="setMedCat('urgent',this)" id="medcat-urgent">⚕️ Urgent Care</button>
+                <button class="med-cat" onclick="setMedCat('pharma',this)" id="medcat-pharma">💊 Farmacia</button>
+                <button class="med-cat" onclick="setMedCat('dental',this)" id="medcat-dental">🦷 Dental</button>
+            </div>
+            <div class="med-items" id="med-items"></div>
+            <div class="med-tip-box" id="med-tip-box"></div>
         </div>
     </div>
 
@@ -1598,6 +1659,413 @@ window.onload = () => {
     const tc = document.getElementById('tip-content');
     if (tc) tc.innerText = econTips[lang][tipIndex];
     tipTimer = setInterval(window.cambiarConsejo, 8000);
+};
+
+// ══════════════════════════════════════════════
+// 🏥 CALCULADORA DE EMERGENCIAS MÉDICAS EE.UU.
+// Fuentes: FAIR Health Consumer 2024, Healthcare Bluebook 2024,
+//          CMS Medicare Fee Schedule 2024, GoodRx 2024
+// ══════════════════════════════════════════════
+
+const MED_DATA = {
+    er: {
+        items: {
+            es: [
+                { name: "Visita a Urgencias (nivel bajo)", detail: "Revisión simple, sin estudios (CPT 99281-99282) — fee de instalación incluido", range: "$800 – $1,900" },
+                { name: "Visita a Urgencias (nivel medio)", detail: "Examen + análisis de sangre básico (CPT 99283-99284)", range: "$1,900 – $3,500" },
+                { name: "Visita a Urgencias (nivel alto)", detail: "Múltiples estudios, observación (CPT 99285) — caso típico", range: "$3,500 – $8,000" },
+                { name: "Radiografía simple (tórax/tobillo)", detail: "Sin contraste — precio por imagen, cargo aparte del fee de sala", range: "$300 – $900" },
+                { name: "TC / TAC (tomografía computada)", detail: "Abdomen o tórax sin contraste — uno de los cargos que más infla la factura", range: "$1,500 – $5,000" },
+                { name: "Sutura de herida simple", detail: "Hasta 5 cm sin complicaciones (CPT 12001) — más fee de sala ER", range: "$500 – $1,500" },
+                { name: "Traslado en ambulancia", detail: "Promedio nacional 2025, trayecto corto — factura por separado", range: "$1,300 – $2,800" },
+            ],
+            en: [
+                { name: "ER Visit (low level)", detail: "Simple check, no procedures (CPT 99281-99282) — facility fee included", range: "$800 – $1,900" },
+                { name: "ER Visit (moderate)", detail: "Exam + basic bloodwork (CPT 99283-99284)", range: "$1,900 – $3,500" },
+                { name: "ER Visit (high complexity)", detail: "Multiple tests, observation (CPT 99285) — typical case", range: "$3,500 – $8,000" },
+                { name: "X-Ray (chest/ankle)", detail: "No contrast — per image, billed separately from ER facility fee", range: "$300 – $900" },
+                { name: "CT Scan", detail: "Abdomen or chest, no contrast — one of the biggest bill inflators", range: "$1,500 – $5,000" },
+                { name: "Laceration repair (simple)", detail: "Up to 5 cm, no complications (CPT 12001) — plus ER facility fee", range: "$500 – $1,500" },
+                { name: "Ambulance transport", detail: "2025 national avg, short distance — billed separately", range: "$1,300 – $2,800" },
+            ],
+            pt: [
+                { name: "Pronto-Socorro (nível baixo)", detail: "Avaliação simples, sem procedimentos (CPT 99281-99282)", range: "$800 – $1.900" },
+                { name: "Pronto-Socorro (nível médio)", detail: "Exame + hemograma básico (CPT 99283-99284)", range: "$1.900 – $3.500" },
+                { name: "Pronto-Socorro (alta complexidade)", detail: "Múltiplos exames, observação (CPT 99285) — caso típico", range: "$3.500 – $8.000" },
+                { name: "Raio-X simples (tórax/tornozelo)", detail: "Sem contraste — por imagem, cobrado separado da taxa de sala", range: "$300 – $900" },
+                { name: "Tomografia (TC)", detail: "Abdômen ou tórax sem contraste — um dos maiores infladores da conta", range: "$1.500 – $5.000" },
+                { name: "Sutura de ferimento simples", detail: "Até 5 cm sem complicações (CPT 12001) — mais taxa de sala ER", range: "$500 – $1.500" },
+                { name: "Transporte de ambulância", detail: "Média nacional 2025, curta distância — cobrado separadamente", range: "$1.300 – $2.800" },
+            ],
+        },
+        tip: {
+            es: "<strong>⚠️ Llamá SIEMPRE al seguro antes de ir a urgencias.</strong> El ER promedio cuesta USD 2.600 sin seguro (UnitedHealthcare 2025). Si podés, elegí Urgent Care — cuesta entre 5 y 10 veces menos. En emergencia real (paro, ACV, trauma grave), llamá al <strong>911</strong> sin dudar. Pedí siempre factura itemizada — hay cargos que podés disputar.",
+            en: "<strong>⚠️ ALWAYS call your insurer before going to the ER.</strong> The average ER visit costs USD 2,600 without insurance (UnitedHealthcare 2025). When possible, choose Urgent Care — it's 5-10x cheaper. For real emergencies (cardiac arrest, stroke, severe trauma), call <strong>911</strong> immediately. Always request an itemized bill — many charges can be disputed.",
+            pt: "<strong>⚠️ SEMPRE ligue para o seguro antes de ir à emergência.</strong> A visita média ao PS custa USD 2.600 sem seguro (UnitedHealthcare 2025). Se possível, prefira o Urgent Care — custa de 5 a 10 vezes menos. Em emergências reais (parada cardíaca, AVC, trauma grave), ligue para o <strong>911</strong>. Peça sempre a conta detalhada — muitas cobranças podem ser contestadas.",
+        }
+    },
+    urgent: {
+        items: {
+            es: [
+                { name: "Consulta base Urgent Care (sin seguro)", detail: "Visita estándar, sin estudios adicionales — promedio nacional 2025", range: "$150 – $280" },
+                { name: "Test rápido (strep, gripe, COVID)", detail: "Incluye toma de muestra y resultado — varía según tipo de test", range: "$60 – $200" },
+                { name: "Análisis de sangre o urina (UTI/ITU)", detail: "Urinalysis + cultivo básico o hemograma simple", range: "$50 – $150" },
+                { name: "Radiografía en Urgent Care", detail: "Esguince, fractura menor — más económico que en ER", range: "$200 – $450" },
+                { name: "Inyección IV / hidratación", detail: "Antibiótico IV, solución salina, antieméticos, etc.", range: "$150 – $400" },
+                { name: "Sutura o cierre de herida", detail: "Corte simple con puntos o Dermabond — precio al walk-in", range: "$150 – $350" },
+                { name: "Consulta pediátrica urgente", detail: "Niño sin turno, sin hospitalización — cargo base en 2025", range: "$150 – $300" },
+            ],
+            en: [
+                { name: "Urgent Care base visit (uninsured)", detail: "Standard visit, no extra tests — 2025 national average", range: "$150 – $280" },
+                { name: "Rapid test (strep, flu, COVID)", detail: "Includes swab and result — varies by test type", range: "$60 – $200" },
+                { name: "Blood or urine test (UTI)", detail: "Urinalysis + basic culture or blood panel", range: "$50 – $150" },
+                { name: "X-Ray at Urgent Care", detail: "Sprain, minor fracture — cheaper than ER", range: "$200 – $450" },
+                { name: "IV drip / hydration", detail: "IV antibiotic, saline, antiemetics, etc.", range: "$150 – $400" },
+                { name: "Laceration / wound closure", detail: "Simple cut with sutures or Dermabond — walk-in price", range: "$150 – $350" },
+                { name: "Pediatric urgent visit", detail: "Child, no appointment, no hospitalization — 2025 base price", range: "$150 – $300" },
+            ],
+            pt: [
+                { name: "Consulta base Urgent Care (sem seguro)", detail: "Visita padrão, sem exames extras — média nacional 2025", range: "$150 – $280" },
+                { name: "Teste rápido (strep, gripe, COVID)", detail: "Inclui coleta e resultado — varia conforme o tipo de teste", range: "$60 – $200" },
+                { name: "Exame de sangue ou urina (ITU)", detail: "Urinálise + cultura básica ou hemograma simples", range: "$50 – $150" },
+                { name: "Raio-X no Urgent Care", detail: "Torção, fratura leve — mais barato que no PS", range: "$200 – $450" },
+                { name: "Injeção IV / hidratação", detail: "Antibiótico IV, soro, antieméticos, etc.", range: "$150 – $400" },
+                { name: "Sutura / fechamento de ferimento", detail: "Corte simples com pontos ou Dermabond — preço walk-in", range: "$150 – $350" },
+                { name: "Consulta pediátrica urgente", detail: "Criança, sem agendamento, sem internação — preço base 2025", range: "$150 – $300" },
+            ],
+        },
+        tip: {
+            es: "<strong>💡 Urgent Care vs Urgencias (ER):</strong> Para fiebre, infecciones, cortes, torceduras y molestias que no son vida-o-muerte, el Urgent Care es la opción correcta. En 2025 cuesta entre USD 150–280 base, contra USD 2.600 en el ER por el mismo problema. Buscá cadenas como <strong>CityMD, MinuteClinic o AFC Urgent Care</strong>. Muchos abren 7 días. Informá siempre tu seguro al registrarte.",
+            en: "<strong>💡 Urgent Care vs ER:</strong> For fever, infections, cuts, sprains and non-life-threatening issues, Urgent Care is the right call. In 2025 it costs $150–$280 base vs. $2,600 average at the ER for the same issue. Look for <strong>CityMD, MinuteClinic or AFC Urgent Care</strong>. Many are open 7 days. Always provide your travel insurance when checking in.",
+            pt: "<strong>💡 Urgent Care vs Emergência:</strong> Para febre, infecções, cortes, torções e problemas não fatais, o Urgent Care é a escolha certa. Em 2025 custa entre USD 150–280 base, contra USD 2.600 no PS pelo mesmo problema. Procure <strong>CityMD, MinuteClinic ou AFC Urgent Care</strong>. Muitos funcionam 7 dias. Informe seu seguro viagem no cadastro.",
+        }
+    },
+    pharma: {
+        items: {
+            es: [
+                { name: "Ibuprofeno 200mg (Advil) × 50 tab", detail: "Analgésico/antiinflamatorio OTC — precio en Walmart/Target 2025", range: "$8 – $16" },
+                { name: "Acetaminofén 500mg (Tylenol) × 100", detail: "Analgésico y antipirético OTC — precio en CVS/Walgreens 2025", range: "$10 – $20" },
+                { name: "Antihistamínico (Benadryl / Claritin)", detail: "Para alergias, urticaria, picaduras — en cadenas de farmacia", range: "$10 – $28" },
+                { name: "Antibiótico genérico (amoxicilina)", detail: "Con receta — precio con cupón GoodRx en farmacias de cadena 2025", range: "$10 – $35" },
+                { name: "EpiPen (adrenalina, emergencia alérgica)", detail: "Con receta, precio sin seguro — con GoodRx puede bajar a $100–250", range: "$300 – $650" },
+                { name: "Antidiarreico (Imodium) + antiácido", detail: "Kit OTC estándar — precio en Walmart o Target 2025", range: "$10 – $22" },
+                { name: "Kit básico primeros auxilios", detail: "Neosporin + Band-Aid surtido + antiséptico", range: "$15 – $32" },
+            ],
+            en: [
+                { name: "Ibuprofen 200mg (Advil) × 50 tabs", detail: "OTC analgesic/anti-inflammatory — Walmart/Target 2025 price", range: "$8 – $16" },
+                { name: "Acetaminophen 500mg (Tylenol) × 100", detail: "OTC analgesic/antipyretic — CVS/Walgreens 2025 price", range: "$10 – $20" },
+                { name: "Antihistamine (Benadryl / Claritin)", detail: "For allergies, hives, insect bites — chain pharmacy price", range: "$10 – $28" },
+                { name: "Generic antibiotic (amoxicillin)", detail: "Prescription — 2025 price with GoodRx coupon at chain pharmacy", range: "$10 – $35" },
+                { name: "EpiPen (epinephrine, allergic emergency)", detail: "Prescription, uninsured price — GoodRx can bring it to $100–250", range: "$300 – $650" },
+                { name: "Anti-diarrheal (Imodium) + antacid", detail: "Standard OTC kit — Walmart or Target 2025", range: "$10 – $22" },
+                { name: "Basic first aid kit", detail: "Neosporin + assorted Band-Aid + antiseptic", range: "$15 – $32" },
+            ],
+            pt: [
+                { name: "Ibuprofeno 200mg (Advil) × 50 comp.", detail: "Analgésico/anti-inflamatório OTC — preço Walmart/Target 2025", range: "$8 – $16" },
+                { name: "Paracetamol 500mg (Tylenol) × 100", detail: "Analgésico e antitérmico OTC — preço CVS/Walgreens 2025", range: "$10 – $20" },
+                { name: "Anti-histamínico (Benadryl / Claritin)", detail: "Para alergias, urticária, picadas — preço em redes de farmácia", range: "$10 – $28" },
+                { name: "Antibiótico genérico (amoxicilina)", detail: "Com receita — preço 2025 com cupom GoodRx em redes de farmácia", range: "$10 – $35" },
+                { name: "EpiPen (adrenalina, emergência alérgica)", detail: "Com receita, sem seguro — com GoodRx pode cair a $100–250", range: "$300 – $650" },
+                { name: "Antidiarreico (Imodium) + antiácido", detail: "Kit OTC padrão — preço Walmart ou Target 2025", range: "$10 – $22" },
+                { name: "Kit básico de primeiros socorros", detail: "Neosporin + Band-Aid sortido + antisséptico", range: "$15 – $32" },
+            ],
+        },
+        tip: {
+            es: "<strong>💊 Farmacias de cadena:</strong> CVS, Walgreens y Walmart Pharmacy tienen los mejores precios. Siempre usá la app <strong>GoodRx</strong> antes de pagar — en antibióticos genéricos puede bajar hasta un 80% el precio de lista. El EpiPen sin seguro cuesta hasta USD 650, pero con GoodRx o el programa de ahorro de fabricante puede bajar a USD 100–250.",
+            en: "<strong>💊 Chain pharmacies:</strong> CVS, Walgreens and Walmart Pharmacy have the best prices. Always check the <strong>GoodRx app</strong> before paying — for generic antibiotics it can cut up to 80% off the list price. EpiPens can run up to $650 without insurance, but GoodRx or manufacturer savings programs can bring it down to $100–250.",
+            pt: "<strong>💊 Farmácias de rede:</strong> CVS, Walgreens e Walmart Pharmacy têm os melhores preços. Sempre use o app <strong>GoodRx</strong> antes de pagar — para antibióticos genéricos pode reduzir até 80% do preço de tabela. O EpiPen sem seguro pode custar até USD 650, mas com GoodRx ou programas de desconto do fabricante pode cair para USD 100–250.",
+        }
+    },
+    dental: {
+        items: {
+            es: [
+                { name: "Consulta de emergencia dental", detail: "Examen + radiografía panorámica — promedio nacional 2025", range: "$100 – $250" },
+                { name: "Extracción dental simple", detail: "Diente erupcionado sin complicaciones — precio promedio 2025", range: "$150 – $400" },
+                { name: "Extracción molar del juicio", detail: "Impactado con anestesia local — puede llegar a $600 con sedación", range: "$300 – $700" },
+                { name: "Tratamiento de conducto (endodoncia)", detail: "Molar sin corona — rango actualizado 2025 según GoodRx y ADA", range: "$1,000 – $1,800" },
+                { name: "Antibiótico dental (amoxicilina)", detail: "Para infecciones agudas, con receta — 10 días de tratamiento", range: "$10 – $35" },
+                { name: "Relleno / obturación compuesta", detail: "Resina compuesta, una superficie — precio promedio dentista 2025", range: "$150 – $350" },
+                { name: "Corona dental provisional", detail: "Mientras se resuelve la emergencia — material y tiempo del dentista", range: "$500 – $1,200" },
+            ],
+            en: [
+                { name: "Emergency dental visit", detail: "Exam + panoramic X-ray — 2025 national average", range: "$100 – $250" },
+                { name: "Simple tooth extraction", detail: "Erupted tooth, no complications — 2025 average price", range: "$150 – $400" },
+                { name: "Wisdom tooth extraction", detail: "Impacted with local anesthesia — up to $600 with sedation", range: "$300 – $700" },
+                { name: "Root canal treatment", detail: "Molar without crown — 2025 range per GoodRx & ADA data", range: "$1,000 – $1,800" },
+                { name: "Dental antibiotic (amoxicillin)", detail: "For acute infections, prescription — 10-day course", range: "$10 – $35" },
+                { name: "Composite filling", detail: "Composite resin, one surface — 2025 average dentist price", range: "$150 – $350" },
+                { name: "Temporary dental crown", detail: "While resolving the emergency — material + dentist time", range: "$500 – $1,200" },
+            ],
+            pt: [
+                { name: "Consulta de emergência dental", detail: "Exame + radiografia panorâmica — média nacional 2025", range: "$100 – $250" },
+                { name: "Extração dental simples", detail: "Dente erupcionado sem complicações — preço médio 2025", range: "$150 – $400" },
+                { name: "Extração de siso", detail: "Impactado com anestesia local — até $600 com sedação", range: "$300 – $700" },
+                { name: "Tratamento de canal (endodontia)", detail: "Molar sem coroa — faixa 2025 segundo GoodRx e ADA", range: "$1.000 – $1.800" },
+                { name: "Antibiótico dental (amoxicilina)", detail: "Para infecções agudas, com receita — 10 dias de tratamento", range: "$10 – $35" },
+                { name: "Restauração composta", detail: "Resina composta, uma superfície — preço médio 2025", range: "$150 – $350" },
+                { name: "Coroa dental provisória", detail: "Enquanto a emergência é resolvida — material + tempo do dentista", range: "$500 – $1.200" },
+            ],
+        },
+        tip: {
+            es: "<strong>🦷 Tip dental 2025:</strong> Un tratamiento de conducto en molar cuesta USD 1.000–1.800 sin seguro (GoodRx/ADA 2025). Muchas universidades con facultad de odontología ofrecen atención de emergencia a precios reducidos. Ante dolor agudo, un antibiótico controla la infección temporalmente. La corona va aparte — sumale USD 800–1.500 si la necesitás.",
+            en: "<strong>🦷 Dental tip 2025:</strong> A molar root canal costs USD 1,000–1,800 without insurance (GoodRx/ADA 2025). Many dental schools offer emergency care at reduced prices. For acute pain, an antibiotic can temporarily control infection. The crown is separate — add USD 800–1,500 if needed.",
+            pt: "<strong>🦷 Dica dental 2025:</strong> Um canal em molar custa USD 1.000–1.800 sem seguro (GoodRx/ADA 2025). Muitas faculdades de odontologia oferecem atendimento de emergência a preços reduzidos. Em caso de dor aguda, um antibiótico controla a infecção temporariamente. A coroa é cobrada à parte — some USD 800–1.500 se necessário.",
+        }
+    }
+};
+
+let medCatActive = 'er';
+
+window.toggleMed = () => {
+    const body = document.getElementById('med-body');
+    const lbl  = document.getElementById('med-toggle-lbl');
+    const open = body.classList.toggle('open');
+    const lang = localStorage.getItem('appLang') || 'es';
+    const labels = { es: ['▲ CERRAR','▼ VER'], en: ['▲ CLOSE','▼ VIEW'], pt: ['▲ FECHAR','▼ VER'] };
+    const [cls, opn] = labels[lang] || labels.es;
+    lbl.innerHTML = open
+        ? `${cls.split(' ')[0]} <span id="med-toggle-txt">${cls.split(' ')[1]}</span>`
+        : `${opn.split(' ')[0]} <span id="med-toggle-txt">${opn.split(' ')[1]}</span>`;
+    if (open) {
+        renderMed();
+        loadInsuranceBanner();
+    }
+};
+
+window.setMedCat = (cat, btn) => {
+    medCatActive = cat;
+    document.querySelectorAll('.med-cat').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderMed();
+};
+
+function renderMed() {
+    const lang  = localStorage.getItem('appLang') || 'es';
+    const data  = MED_DATA[medCatActive];
+    const items = data.items[lang] || data.items.es;
+    const tip   = data.tip[lang]   || data.tip.es;
+
+    // Disclaimer i18n
+    const disclaimers = {
+        es: '⚠️ Precios estimativos basados en GoodRx, Mira Health, eHealth, UnitedHealthcare y ADA — datos 2025. Los costos reales varían por estado, hospital y seguro. Llamá siempre a tu seguro antes de ir.',
+        en: '⚠️ Estimated prices based on GoodRx, Mira Health, eHealth, UnitedHealthcare & ADA — 2025 data. Actual costs vary by state, hospital and insurance. Always call your insurer first.',
+        pt: '⚠️ Preços estimativos baseados em GoodRx, Mira Health, eHealth, UnitedHealthcare e ADA — dados 2025. Os custos reais variam por estado, hospital e seguro. Ligue sempre para seu seguro antes de ir.',
+    };
+    const d = document.getElementById('med-disclaimer');
+    if (d) d.textContent = disclaimers[lang] || disclaimers.es;
+
+    const container = document.getElementById('med-items');
+    container.innerHTML = items.map(item => `
+        <div class="med-item">
+            <div class="med-item-info">
+                <div class="med-item-name">${item.name}</div>
+                <div class="med-item-detail">${item.detail}</div>
+            </div>
+            <div class="med-item-price">
+                <div class="med-item-range">${item.range}</div>
+                <div class="med-item-unit">USD</div>
+            </div>
+        </div>
+    `).join('');
+
+    const tipBox = document.getElementById('med-tip-box');
+    if (tipBox) tipBox.innerHTML = tip;
+
+    // i18n cat buttons
+    const catLabels = {
+        es: { er:'🚨 Urgencias', urgent:'⚕️ Urgent Care', pharma:'💊 Farmacia', dental:'🦷 Dental' },
+        en: { er:'🚨 ER', urgent:'⚕️ Urgent Care', pharma:'💊 Pharmacy', dental:'🦷 Dental' },
+        pt: { er:'🚨 Emergência', urgent:'⚕️ Urgent Care', pharma:'💊 Farmácia', dental:'🦷 Dentista' },
+    };
+    const cl = catLabels[lang] || catLabels.es;
+    Object.entries(cl).forEach(([k, v]) => {
+        const b = document.getElementById('medcat-' + k);
+        if (b) b.textContent = v;
+    });
+
+    // i18n title
+    const titles = { es:'Emergencias Médicas en EE.UU.', en:'Medical Emergencies in the U.S.', pt:'Emergências Médicas nos EUA' };
+    const tl = document.getElementById('med-title-lbl');
+    if (tl) tl.textContent = titles[lang] || titles.es;
+}
+
+// ── INSURANCE DETECTION FROM TICKETS CACHE ──────────────────────────────────
+
+let _insCache = null; // { analyzed: bool, result: obj } — avoids re-calling API on tab switch
+
+async function loadInsuranceBanner() {
+    const slot = document.getElementById('med-insurance-slot');
+    if (!slot) return;
+
+    // Already analyzed this session — render from cache
+    if (_insCache) { renderInsuranceBanner(_insCache); return; }
+
+    const lang = localStorage.getItem('appLang') || 'es';
+    const perfilId = localStorage.getItem('perfilActivoId') || 'default';
+    const cacheKey = 'taxusa_docs_cache_' + perfilId;
+
+    // Show loading state
+    const loadingText = { es: 'Buscando tu seguro de viaje…', en: 'Looking for your travel insurance…', pt: 'Procurando seu seguro viagem…' };
+    slot.innerHTML = `<div class="med-insurance-banner" style="margin-bottom:14px;">
+        <div class="med-ins-loading"><div class="med-ins-spinner"></div>${loadingText[lang]||loadingText.es}</div>
+    </div>`;
+
+    // Read docs from localStorage cache
+    let docs = [];
+    try {
+        const raw = localStorage.getItem(cacheKey);
+        if (raw) docs = JSON.parse(raw);
+    } catch(e) {}
+
+    // Find insurance/medical docs (type 🛡️ or 🩺)
+    const insuranceDocs = docs.filter(d => d.type === '🛡️' || d.type === '🩺');
+
+    if (!insuranceDocs.length) {
+        _insCache = { found: false };
+        renderInsuranceBanner(_insCache);
+        return;
+    }
+
+    // Take the first insurance doc and its first file
+    const doc = insuranceDocs[0];
+    const file = (doc.files || [])[0];
+
+    // If no file attached, at least show the doc name
+    if (!file || !file.dataUrl) {
+        _insCache = { found: true, name: doc.name, phone: null, insurer: null, docId: doc.id, fromName: true };
+        renderInsuranceBanner(_insCache);
+        return;
+    }
+
+    // Analyze via Claude API
+    try {
+        const result = await analyzeInsuranceDoc(file, doc.name, lang);
+        _insCache = { found: true, ...result, docId: doc.id };
+    } catch(e) {
+        // Fallback: use just the doc name
+        _insCache = { found: true, name: doc.name, phone: null, insurer: null, docId: doc.id, fromName: true };
+    }
+    renderInsuranceBanner(_insCache);
+}
+
+async function analyzeInsuranceDoc(file, docName, lang) {
+    // Determine media type from dataUrl or file name
+    let mediaType = 'image/jpeg';
+    let isImage = true;
+    if (file.dataUrl && file.dataUrl.startsWith('data:')) {
+        const mime = file.dataUrl.split(';')[0].split(':')[1];
+        mediaType = mime;
+        isImage = mime.startsWith('image/');
+    } else if (file.name) {
+        if (file.name.toLowerCase().endsWith('.pdf')) { mediaType = 'application/pdf'; isImage = false; }
+        else if (file.name.toLowerCase().endsWith('.png')) { mediaType = 'image/png'; isImage = true; }
+    }
+
+    // Extract base64 data
+    let b64 = file.dataUrl || '';
+    if (b64.includes(',')) b64 = b64.split(',')[1];
+
+    const prompt = `You are analyzing a travel insurance policy document. 
+Extract ONLY these two fields from the document:
+1. insurer: The insurance company name (e.g. "Assist Card", "Allianz", "IATI", "Mapfre", "Europ Assistance", "Falabella Seguros", etc.)
+2. phone: The 24/7 emergency phone number for medical emergencies abroad (international format preferred, e.g. "+1-800-XXX-XXXX" or "+54-11-XXXX-XXXX")
+
+Document name hint: "${docName}"
+
+Respond ONLY with a JSON object, nothing else, no markdown:
+{"insurer": "...", "phone": "..."}
+
+If you cannot find a field, use null for that field. Do not invent data.`;
+
+    const content = isImage
+        ? [
+            { type: 'image', source: { type: 'base64', media_type: mediaType, data: b64 } },
+            { type: 'text', text: prompt }
+          ]
+        : [
+            { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: b64 } },
+            { type: 'text', text: prompt }
+          ];
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 150,
+            messages: [{ role: 'user', content }]
+        })
+    });
+
+    const data = await res.json();
+    const text = (data.content || []).map(c => c.text || '').join('').trim();
+    const clean = text.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+    return {
+        insurer: parsed.insurer || null,
+        phone:   parsed.phone   || null,
+        name:    docName,
+    };
+}
+
+function renderInsuranceBanner(state) {
+    const slot = document.getElementById('med-insurance-slot');
+    if (!slot) return;
+    const lang = localStorage.getItem('appLang') || 'es';
+
+    if (!state.found) {
+        const noIns = {
+            es: '🛡️ Sin seguro guardado — <a href="tickets.html" style="color:var(--primary);font-weight:800;text-decoration:none;">agregá tu póliza en Documentos</a>',
+            en: '🛡️ No insurance found — <a href="tickets.html" style="color:var(--primary);font-weight:800;text-decoration:none;">add your policy in Documents</a>',
+            pt: '🛡️ Sem seguro salvo — <a href="tickets.html" style="color:var(--primary);font-weight:800;text-decoration:none;">adicione sua apólice em Documentos</a>',
+        };
+        slot.innerHTML = `<div class="med-insurance-banner" style="margin-bottom:14px;background:rgba(0,0,0,.03);border-color:var(--border);">
+            <div class="med-ins-none">${noIns[lang]||noIns.es}</div>
+        </div>`;
+        return;
+    }
+
+    const labels = {
+        es: { badge:'TU SEGURO DE VIAJE', call:'📞 Llamar ahora', view:'📄 Ver póliza', noPhone:'Sin tel. detectado', fallback:'Documento guardado' },
+        en: { badge:'YOUR TRAVEL INSURANCE', call:'📞 Call now', view:'📄 View policy', noPhone:'No phone detected', fallback:'Saved document' },
+        pt: { badge:'SEU SEGURO VIAGEM', call:'📞 Ligar agora', view:'📄 Ver apólice', noPhone:'Sem tel. detectado', fallback:'Documento salvo' },
+    };
+    const lbl = labels[lang] || labels.es;
+
+    const displayName = state.insurer || state.name || lbl.fallback;
+    const phoneBtn = state.phone
+        ? `<a class="med-ins-btn med-ins-btn-call" href="tel:${state.phone.replace(/\s/g,'')}">${lbl.call}</a>`
+        : `<span class="med-ins-btn" style="background:var(--input-bg);color:var(--text-dim);cursor:default;">${lbl.noPhone}</span>`;
+
+    // Build deep-link to the specific doc in tickets.html
+    const policyUrl = state.docId
+        ? `tickets.html#doc-${state.docId}`
+        : 'tickets.html';
+
+    slot.innerHTML = `<div class="med-insurance-banner">
+        <div class="med-ins-header">
+            <div class="med-ins-icon">🛡️</div>
+            <div class="med-ins-info">
+                <div class="med-ins-label">${lbl.badge}</div>
+                <div class="med-ins-name">${displayName}</div>
+                ${state.insurer && state.name !== state.insurer ? `<div class="med-ins-doc">📄 ${state.name}</div>` : ''}
+                ${state.phone ? `<div class="med-ins-doc">📞 ${state.phone}</div>` : ''}
+            </div>
+        </div>
+        <div class="med-ins-actions">
+            ${phoneBtn}
+            <a class="med-ins-btn med-ins-btn-view" href="${policyUrl}">${lbl.view}</a>
+        </div>
+    </div>`;
+}
+const _origChangeLang = window.changeLanguage;
+window.changeLanguage = function(lang) {
+    if (_origChangeLang) _origChangeLang(lang);
+    const body = document.getElementById('med-body');
+    if (body && body.classList.contains('open')) {
+        renderMed();
+        if (_insCache) renderInsuranceBanner(_insCache);
+    }
 };
 
 </script>
