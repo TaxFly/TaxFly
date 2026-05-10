@@ -1862,15 +1862,8 @@ window.compAnalizarIA = async function() {
     </div>`;
     const storeList = COMP_STORES.filter(s => s.id !== 'google' && s.id !== 'pricespy')
         .map(s => `${s.name} (${s.tag})`).join(', ');
-    const systemPrompt = \`Sos un experto en compras en Estados Unidos ayudando a turistas argentinos. 
-Conocés muy bien los precios y políticas de estas tiendas: \${storeList}.
-Tu tono es directo, concreto y útil. Usás viñetas y negritas solo si ayudan. Nunca empezás con "Claro!" ni rellenos.\`;
-    const userMsg = \`El usuario quiere comprar: "\${q}".
-Basándote en tu conocimiento de estas tiendas de USA (Amazon, B&H Photo, Best Buy, Apple Store, Costco, REI, Nordstrom, Zappos, Nike, Adidas, Newegg, etc), respondé:
-1. **¿Dónde recomendás comprarlo y por qué?** (considerá precio habitual, confiabilidad, garantía, si conviene esperar ofertas)
-2. **Alternativas** (1 o 2 opciones más baratas o similares)
-3. **Un tip extra** (promo habitual, tarjeta, cashback, época del año, etc.)
-Sé específico con el producto. Si es electrónica, mencioná B&H o Adorama. Si es ropa deportiva, Nike/Adidas directo vs Amazon. Formato claro, sin preamble.\`;
+    const systemPrompt = `Sos un experto en compras en Estados Unidos ayudando a turistas argentinos. Conocés muy bien los precios y políticas de estas tiendas: ${storeList}. Tu tono es directo, concreto y útil. Usás viñetas y negritas solo si ayudan. Nunca empezás con "Claro!" ni rellenos.`;
+    const userMsg = `El usuario quiere comprar: "${q}". Basándote en tu conocimiento de estas tiendas de USA, respondé:\n1. **¿Dónde recomendás comprarlo y por qué?** (considerá precio habitual, confiabilidad, garantía, si conviene esperar ofertas)\n2. **Alternativas** (1 o 2 opciones más baratas o similares)\n3. **Un tip extra** (promo habitual, tarjeta, cashback, época del año, etc.)\nSé específico. Si es electrónica/foto, mencioná B&H o Adorama. Si es ropa deportiva, Nike/Adidas directo vs Amazon. Formato claro, sin introducción.`;
     try {
         const res = await fetch(GROQ_COMP_URL, {
             method: 'POST',
@@ -1884,17 +1877,17 @@ Sé específico con el producto. Si es electrónica, mencioná B&H o Adorama. Si
         });
         const data = await res.json();
         const reply = data.choices?.[0]?.message?.content || 'No se pudo obtener la recomendación. Intentá de nuevo.';
-        panel.innerHTML = \`<div class="comp-ai-result">
+        panel.innerHTML = `<div class="comp-ai-result">
             <div class="comp-ai-header">
                 <span class="comp-ai-icon">🤖</span>
-                <span class="comp-ai-title">Recomendación IA para "\${q.replace(/</g,'&lt;')}"</span>
+                <span class="comp-ai-title">Recomendación IA para "${q.replace(/</g,'&lt;')}"</span>
             </div>
-            <div class="comp-ai-body">\${compFormatAI(reply)}</div>
-        </div>\`;
+            <div class="comp-ai-body">${compFormatAI(reply)}</div>
+        </div>`;
     } catch(e) {
-        panel.innerHTML = \`<div class="comp-ai-result" style="border-color:var(--danger);background:rgba(239,68,68,.06);">
+        panel.innerHTML = `<div class="comp-ai-result" style="border-color:var(--danger);background:rgba(239,68,68,.06);">
             <div class="comp-ai-body"><p>❌ No se pudo conectar con la IA. Verificá tu conexión e intentá de nuevo.</p></div>
-        </div>\`;
+        </div>`;
     }
 };
 
