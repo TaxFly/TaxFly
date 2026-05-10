@@ -186,6 +186,23 @@
         .cat-filter-btn.active{background:var(--primary);color:white;border-color:var(--primary);}
         @keyframes farmaIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
         .farma-card{animation:farmaIn .2s ease both;}
+        /* ── FRASES & ABREVIATURAS ── */
+        .frases-section-label{font-size:.58rem;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:var(--primary);padding:4px 0 8px;border-bottom:1.5px solid var(--primary-dim);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+        .frase-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px;margin-bottom:8px;transition:var(--tr);}
+        .frase-card:hover{border-color:var(--primary);box-shadow:0 3px 12px rgba(37,99,235,.08);}
+        .frase-en{font-size:.88rem;font-weight:800;color:var(--text);line-height:1.3;}
+        .frase-fonetica{font-size:.75rem;font-weight:700;color:var(--primary);margin-top:3px;font-style:italic;}
+        .frase-ctx{font-size:.68rem;font-weight:600;color:var(--text-sub);margin-top:3px;line-height:1.4;}
+        .abrev-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 13px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px;transition:var(--tr);}
+        .abrev-card:hover{border-color:var(--accent);box-shadow:0 3px 12px rgba(124,58,237,.08);}
+        .abrev-tag{font-size:.82rem;font-weight:900;color:var(--accent);min-width:56px;flex-shrink:0;line-height:1.3;}
+        .abrev-info{flex:1;}
+        .abrev-significado{font-size:.8rem;font-weight:800;color:var(--text);line-height:1.3;}
+        .abrev-uso{font-size:.68rem;font-weight:600;color:var(--text-sub);margin-top:3px;line-height:1.4;}
+        .frases-cat-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px;}
+        .frases-tab{padding:4px 11px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--text-sub);font-size:.65rem;font-weight:800;cursor:pointer;transition:var(--tr);text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;}
+        .frases-tab.active{background:var(--primary);color:white;border-color:var(--primary);}
+        .frases-tab.abrev-active{background:var(--accent);color:white;border-color:var(--accent);}
     </style>
 </head>
 <body>
@@ -437,6 +454,16 @@
                     <p id="farma-disclaimer" style="font-size:.7rem;font-weight:600;color:var(--danger);line-height:1.5;margin:0;">⚠️ Esta información es orientativa. Consultá siempre con un farmacéutico o médico antes de automedicarte. Las dosis pueden variar según edad y peso.</p>
                 </div>
             </div>
+        </div>
+
+        <!-- FRASES & ABREVIATURAS -->
+        <div class="conv-group" id="grp-frases">
+            <div class="group-header" onclick="toggleGroup('grp-frases')">
+                <span class="group-emoji">💬</span>
+                <span class="group-title">Frases & Abreviaturas en inglés</span>
+                <span class="group-arrow">▼</span>
+            </div>
+            <div class="conv-body" id="frases-body"></div>
         </div>
 
     </div><!-- /card -->
@@ -1522,10 +1549,223 @@ window.farmaSetCat = function(cat) {
     farmaRender(farmaGetFiltered(q, cat));
 };
 
-// Inicializar cuando el DOM está listo
+</script>
+
+<!-- ══════════ FRASES & ABREVIATURAS JS ══════════ -->
+<script>
+const FRASES_CATS = [
+    {
+        id:'shopping', emoji:'🛍️', label:'Shopping',
+        frases:[
+            { en:'Do you have this in a larger / smaller size?', fon:'Du yu jav dis in a lárger / smóler sais?', ctx:'En tiendas cuando probás ropa y no encontrás tu talle.' },
+            { en:'Where can I find the fitting rooms?', fon:'Wér can ái faind de fíting rums?', ctx:'Para buscar los probadores.' },
+            { en:'Is this on sale?', fon:'Is dis on séil?', ctx:'Preguntá si tiene descuento. "On sale" = en oferta.' },
+            { en:'Do you price match?', fon:'Du yu práis mach?', ctx:'Si viste el mismo producto más barato en otro lado, podés pedirles que igualen el precio.' },
+            { en:'Can I get a rain check?', fon:'Can ái guet a réin chek?', ctx:'Si un producto en oferta está agotado, podés pedir un voucher para comprarlo al precio de oferta cuando llegue stock.' },
+            { en:'Do you have this in stock?', fon:'Du yu jav dis in stok?', ctx:'Para saber si tienen disponible el producto.' },
+            { en:'Where is the clearance section?', fon:'Wér is de klírans sékshon?', ctx:'"Clearance" = sección de liquidación, los precios más bajos de la tienda.' },
+            { en:'Can I return this without a receipt?', fon:'Can ái ritérn dis widáut a risít?', ctx:'Para devolver sin ticket. Muchas tiendas US aceptan devoluciones con tarjeta.' },
+            { en:'Do you offer a student / military discount?', fon:'Du yu ófer a stiúdent / mílitari diskáunt?', ctx:'Muchas tiendas tienen descuentos especiales para estudiantes y militares.' },
+            { en:'Is tax included in this price?', fon:'Is taxinklúded in dis práis?', ctx:'El precio en góndola NO incluye impuestos en casi todos los estados de US.' },
+            { en:"What's your return policy?", fon:'Uats yor ritérn pólisi?', ctx:'Preguntá cuántos días tienen para devolver y si necesitan el recibo.' },
+            { en:'Can I pay with a foreign credit card?', fon:'Can ái péi uid a fóren krédit kard?', ctx:'La mayoría acepta Visa/Mastercard internacionales. Avisá si tu tarjeta trae chip.' },
+            { en:'Do you have a loyalty program?', fon:'Du yu jav a lóyalti próugram?', ctx:'Programas de puntos/descuentos por ser cliente frecuente. Vale la pena si comprás mucho.' },
+            { en:'Could you gift wrap this, please?', fon:'Kud yu guíft rap dis, plís?', ctx:'Pedir envoltura para regalo.' },
+            { en:'I\'m just browsing, thanks.', fon:'Aim yast bráusing, zanks.', ctx:'Cuando un vendedor te pregunta si necesitás ayuda y solo estás mirando.' },
+        ]
+    },
+    {
+        id:'restaurante', emoji:'🍔', label:'Restaurante',
+        frases:[
+            { en:'Table for two, please.', fon:'Téibel for tu, plís.', ctx:'Para pedir mesa al entrar a un restaurante.' },
+            { en:'Can we sit outside?', fon:'Can ui sit áutsaid?', ctx:'Pedir mesa al aire libre / terraza.' },
+            { en:'What do you recommend?', fon:'Uat du yu rékoménd?', ctx:'Preguntarle al mozo qué está bueno.' },
+            { en:'I\'ll have the same.', fon:'Áil jav de séim.', ctx:'Pedir lo mismo que otra persona de tu mesa. Útil y rápido.' },
+            { en:'Could I get this to go, please?', fon:'Kud ái guet dis tu góu, plís?', ctx:'Pedir para llevar. También "Can I get a doggy bag?" si te sobra comida.' },
+            { en:'Is this dish spicy?', fon:'Is dis dish spáisi?', ctx:'Preguntá si pica antes de pedir.' },
+            { en:'Can you make it without onions / gluten?', fon:'Can yu méik it widáut ányons / glúten?', ctx:'Para pedir sin un ingrediente. Muy habitual, los mozos están acostumbrados.' },
+            { en:'Can we split the check?', fon:'Can ui split de chek?', ctx:'Dividir la cuenta entre varios. También "separate checks" si quieren pagar individualmente.' },
+            { en:'Keep the change.', fon:'Kip de chéinch.', ctx:'Decirle que se quede con el vuelto como propina. Solo en efectivo.' },
+            { en:'Could I get a refill, please?', fon:'Kud ái guet a rifíl, plís?', ctx:'En muchos restaurantes US, los refills de bebidas sin alcohol son gratis e ilimitados.' },
+            { en:'Do you have a kids\' menu?', fon:'Du yu jav a kids méniu?', ctx:'Preguntá por el menú infantil, suele ser más barato y con porciones chicas.' },
+            { en:'We have a reservation under [nombre].', fon:'Ui jav a réservéishon ánder [nombre].', ctx:'Al llegar a un restaurante donde reservaste.' },
+            { en:'Excuse me, we\'ve been waiting for a while.', fon:'Ekskiús mi, uiv bin uéiting for a uáil.', ctx:'Si el servicio tarda demasiado, es válido llamar la atención educadamente.' },
+            { en:'No ice, please.', fon:'Nóu áis, plís.', ctx:'En US ponen MUCHO hielo en todo. Aclaralo si no querés.' },
+        ]
+    },
+    {
+        id:'hotel', emoji:'🏨', label:'Hotel',
+        frases:[
+            { en:'I have a reservation under [nombre].', fon:'Ái jav a réservéishon ánder [nombre].', ctx:'Al hacer check-in.' },
+            { en:'Is early check-in / late check-out possible?', fon:'Is érli chek-in / léit chek-áut pósibel?', ctx:'Preguntá si podés entrar antes o salir después del horario estándar.' },
+            { en:'Can I get a room with a view?', fon:'Can ái guet a rum uid a viú?', ctx:'Pedir habitación con vista. No siempre cuesta más.' },
+            { en:'The air conditioning isn\'t working.', fon:'Di éir kondíshoning ísnt uérking.', ctx:'Reportar que el aire no funciona. También sirve para calefacción, agua caliente, etc.' },
+            { en:'Could I get extra towels / pillows?', fon:'Kud ái guet éxtra táuels / pílous?', ctx:'Pedir toallas o almohadas extra a housekeeping.' },
+            { en:'Can I get a wake-up call at 7 AM?', fon:'Can ái guet a uéik-ap kol at séven éi em?', ctx:'Pedir que te llamen por teléfono para despertarte.' },
+            { en:'Is breakfast included?', fon:'Is brékfast inklúded?', ctx:'Preguntá antes de bajar al desayuno si es parte de la tarifa o tiene costo extra.' },
+            { en:'What time is checkout?', fon:'Uat táim is chék-áut?', ctx:'Horario estándar de salida, generalmente 11am o 12pm.' },
+            { en:'Can you store my luggage?', fon:'Can yu stór mai lúgach?', ctx:'Para dejar las valijas antes del check-in o después del check-out.' },
+            { en:'The Wi-Fi password isn\'t working.', fon:'De uáifai pásword ísnt uérking.', ctx:'Para pedir el password correcto o reportar que la conexión no anda.' },
+        ]
+    },
+    {
+        id:'transporte', emoji:'🚕', label:'Transporte',
+        frases:[
+            { en:'Can you take me to this address?', fon:'Can yu téik mi tu dis ádrés?', ctx:'Mostrá la pantalla del mapa al taxista si no pronunciás bien la dirección.' },
+            { en:'How long will it take to get there?', fon:'Jáu long uil it téik tu guet dér?', ctx:'Preguntar tiempo estimado de viaje.' },
+            { en:'Could you slow down, please?', fon:'Kud yu slóu dáun, plís?', ctx:'Si el conductor maneja muy rápido.' },
+            { en:'Please turn on the meter.', fon:'Plís térn on de míter.', ctx:'En taxis formales, el taxímetro debe estar encendido siempre.' },
+            { en:'Keep the change.', fon:'Kip de chéinch.', ctx:'Dejá el vuelto como propina al taxista.' },
+            { en:'Where do I catch the subway / bus to [lugar]?', fon:'Wér du ái kach de sábuei / bos tu [lugar]?', ctx:'Para orientarte en transporte público.' },
+            { en:'Does this bus go to downtown?', fon:'Das dis bos góu tu dáuntaun?', ctx:'Para confirmar el recorrido del colectivo.' },
+            { en:'Could you drop me off here?', fon:'Kud yu drop mi of jíer?', ctx:'Pedirle al conductor que te deje en ese punto.' },
+            { en:'Is there a toll on this route?', fon:'Is dér a tóul on dis rúut?', ctx:'Preguntá si hay peajes. Importante al alquilar auto.' },
+            { en:'Where is the nearest gas station?', fon:'Wér is de nírest gas stéishon?', ctx:'Para encontrar una estación de servicio.' },
+        ]
+    },
+    {
+        id:'emergencia', emoji:'🚨', label:'Emergencias',
+        frases:[
+            { en:'Call 911!', fon:'Kol náin uan uan!', ctx:'El número de emergencias en US. Equivale a nuestro 911 (coincide). Policía, bomberos, ambulancia.' },
+            { en:'I need a doctor.', fon:'Ái níd a dóktor.', ctx:'Pedí ayuda médica. En US los "urgent care" son más rápidos y baratos que la guardia de hospital.' },
+            { en:'I\'ve been robbed.', fon:'Áiv bin robd.', ctx:'Denunciar un robo. Necesitás el reporte policial para el seguro de viaje.' },
+            { en:'I lost my passport / wallet.', fon:'Ái lost mai pásport / uólet.', ctx:'Reportar pérdida. El consulado argentino puede emitir un documento de emergencia.' },
+            { en:'I have an allergic reaction.', fon:'Ái jav an alérchik riákshon.', ctx:'Reacción alérgica. Si es grave pedí una EpiPen en urgencias.' },
+            { en:'I need an interpreter.', fon:'Ái níd an intérpreter.', ctx:'Por ley los hospitales y dependencias públicas deben proveer uno gratis.' },
+            { en:'Where is the nearest emergency room?', fon:'Wér is de nírest emérchenci rum?', ctx:'Guardia de hospital más cercana.' },
+            { en:'I have travel insurance. Here is my card.', fon:'Ái jav trável inshúrans. Jíer is mai kard.', ctx:'Siempre tené a mano los datos del seguro antes de que te atiendan.' },
+            { en:'My medication was stolen / lost.', fon:'Mái medikéishon uos stólen / lost.', ctx:'Para que el médico pueda recetarte de vuelta. Tené el nombre genérico del medicamento.' },
+            { en:'I feel dizzy and I can\'t breathe well.', fon:'Ái fíl dísi and ái kant bríd uel.', ctx:'Síntomas físicos importantes para comunicar en urgencias.' },
+        ]
+    },
+    {
+        id:'aeropuerto', emoji:'✈️', label:'Aeropuerto',
+        frases:[
+            { en:'I\'m here on vacation / business.', fon:'Áim jíer on vaqueishon / bísnes.', ctx:'Lo primero que te pregunta Migraciones al entrar a US.' },
+            { en:'I\'ll be staying for [X] days.', fon:'Áil bi stéying for [X] déis.', ctx:'Decirle cuántos días vas a estar.' },
+            { en:'I\'m staying at [hotel / dirección].', fon:'Áim stéying at [hotel].', ctx:'La dirección de donde te hospedás. Tenela anotada antes de llegar.' },
+            { en:'I have nothing to declare.', fon:'Ái jav náding tu deklér.', ctx:'En Aduana si no traés productos que superen el límite permitido.' },
+            { en:'My flight was delayed / cancelled.', fon:'Mái fláit uos diléid / kánseld.', ctx:'Para reclamar en el mostrador o con la aerolínea.' },
+            { en:'I missed my connecting flight.', fon:'Ái misd mái konékting fláit.', ctx:'Si perdiste la conexión, dirigite al mostrador de tu aerolínea inmediatamente.' },
+            { en:'Where do I pick up my luggage?', fon:'Wér du ái pik ap mái lúgach?', ctx:'Preguntar por la cinta de equipaje.' },
+            { en:'My bag didn\'t arrive.', fon:'Mái bag dídn\'t aráiv.', ctx:'Para reportar equipaje perdido. Hacelo antes de salir del aeropuerto.' },
+            { en:'Is there a shuttle to the hotel?', fon:'Is dér a shátl tu de joutél?', ctx:'Muchos hoteles tienen traslado gratuito desde el aeropuerto. Preguntá.' },
+            { en:'Where is the TSA PreCheck / Global Entry lane?', fon:'Wér is de tíeséi préchek / glóbal éntri léin?', ctx:'Si tenés preaprobación, tiene fila separada y más rápida.' },
+        ]
+    },
+];
+
+const ABREVIATURAS = [
+    // Shopping & comercio
+    { abbr:'BOGO', sig:'Buy One Get One', uso:'Comprás uno y te llevan otro gratis (o a mitad de precio). Muy común en CVS, Walgreens, supermercados.' },
+    { abbr:'OOS', sig:'Out Of Stock', uso:'Sin stock. Lo vas a ver en apps y webs cuando el producto no está disponible.' },
+    { abbr:'MSRP', sig:'Manufacturer\'s Suggested Retail Price', uso:'Precio sugerido por el fabricante. El precio "de lista" antes de descuentos.' },
+    { abbr:'EBT', sig:'Electronic Benefit Transfer', uso:'Tarjeta de asistencia alimentaria del gobierno. Algunas tiendas tienen filas especiales.' },
+    { abbr:'FSA / HSA', sig:'Flexible / Health Savings Account', uso:'Cuentas de ahorro para gastos médicos. Si ves "FSA Eligible" en un producto, lo podés pagar con esa cuenta.' },
+    { abbr:'SKU', sig:'Stock Keeping Unit', uso:'Código interno del producto. Si necesitás algo puntual, preguntá el SKU para que lo busquen rápido.' },
+    { abbr:'ROI', sig:'Return On Investment', uso:'Retorno sobre la inversión. Lo vas a escuchar mucho en contextos de negocios o compras grandes.' },
+    { abbr:'COD', sig:'Cash On Delivery', uso:'Pago al recibir el pedido. Cada vez menos común en US.' },
+    { abbr:'ETA', sig:'Estimated Time of Arrival', uso:'Hora o fecha estimada de llegada. Para pedidos online o coordinar llegadas.' },
+    // Redes sociales / chat
+    { abbr:'IYKYK', sig:'If You Know You Know', uso:'Si lo sabés, lo sabés. Se usa para referencias internas o chistes que no todos entienden.' },
+    { abbr:'TBH', sig:'To Be Honest', uso:'Para ser honesto. "TBH the food was mid" = siendo honesto, la comida fue mediocre.' },
+    { abbr:'NGL', sig:'Not Gonna Lie', uso:'No te voy a mentir. Similar a TBH, para confesar algo.' },
+    { abbr:'IMO / IMHO', sig:'In My Opinion / In My Humble Opinion', uso:'En mi opinión. Muy común en foros y reviews de productos.' },
+    { abbr:'SMH', sig:'Shaking My Head', uso:'Moviendo la cabeza (incredulidad o decepción). "They charged me twice, SMH."' },
+    { abbr:'LMK', sig:'Let Me Know', uso:'Avisame. "LMK if you need help" = avisame si necesitás ayuda.' },
+    { abbr:'BRB', sig:'Be Right Back', uso:'Ya vuelvo. En chats o si tenés que alejarte un momento.' },
+    { abbr:'AFK', sig:'Away From Keyboard', uso:'Ausente / no disponible temporalmente.' },
+    { abbr:'DM', sig:'Direct Message', uso:'Mensaje privado en redes. "Slide into my DMs" = mandame un mensaje privado.' },
+    { abbr:'FYI', sig:'For Your Information', uso:'Para tu información. Se usa para compartir algo relevante sin pedir respuesta.' },
+    { abbr:'ASAP', sig:'As Soon As Possible', uso:'Lo antes posible. Muy común en trabajo y pedidos.' },
+    { abbr:'EOM', sig:'End Of Message', uso:'Fin del mensaje. Lo usás en emails cuando el asunto ya lo dice todo y el cuerpo queda vacío.' },
+    // Transporte / viaje
+    { abbr:'TSA', sig:'Transportation Security Administration', uso:'Seguridad aeroportuaria de US. Los que revisan las valijas y te hacen sacar los zapatos.' },
+    { abbr:'CBP', sig:'Customs and Border Protection', uso:'Aduana y control de fronteras. Los que te sellan el pasaporte al entrar.' },
+    { abbr:'DHS', sig:'Department of Homeland Security', uso:'Seguridad nacional, el ministerio que supervisa TSA, CBP e inmigración.' },
+    { abbr:'ETA / ESTA', sig:'Electronic System for Travel Authorization', uso:'El permiso electrónico que necesitan los argentinos para entrar a US sin visa (hasta 90 días).' },
+    { abbr:'TSA PreCheck', sig:'TSA Pre-Check', uso:'Programa de preaprobación de seguridad. Fila más rápida en aeropuertos, no sacás laptops ni zapatos.' },
+    { abbr:'LAX / JFK / ORD / MIA', sig:'Códigos IATA de aeropuertos', uso:'LAX=Los Ángeles, JFK=New York, ORD=Chicago O\'Hare, MIA=Miami. Siempre aparecen en los pasajes.' },
+    { abbr:'OAK / SFO', sig:'Aeropuertos de Bay Area', uso:'OAK=Oakland, SFO=San Francisco. Son diferentes aeropuertos, ojo con cuál reservás.' },
+    { abbr:'PNR', sig:'Passenger Name Record', uso:'El código de reserva de tu vuelo. Lo necesitás para hacer el check-in online.' },
+    // Medicina / salud
+    { abbr:'OTC', sig:'Over The Counter', uso:'Sin receta. Medicamentos que podés comprar libremente en cualquier farmacia.' },
+    { abbr:'RX', sig:'Prescription (Receta médica)', uso:'Medicamento que requiere receta. Lo verás en farmacias para indicar que necesitás prescripción.' },
+    { abbr:'ER / ED', sig:'Emergency Room / Emergency Department', uso:'Guardia de hospital. Muy caro sin seguro — si podés, usá un Urgent Care en su lugar.' },
+    { abbr:'MD / DO', sig:'Medical Doctor / Doctor of Osteopathy', uso:'Ambos son médicos reconocidos en US. DO tiene formación adicional en medicina holística.' },
+    { abbr:'ICU', sig:'Intensive Care Unit', uso:'Unidad de terapia intensiva (UTI).' },
+    { abbr:'BP', sig:'Blood Pressure', uso:'Presión arterial. Te lo van a preguntar en cualquier consulta médica.' },
+    // Gastronomía
+    { abbr:'BYOB', sig:'Bring Your Own Bottle / Beer', uso:'Restaurante que te permite llevar tu propia bebida alcohólica (y solo te cobran el "corkage fee").' },
+    { abbr:'prix fixe', sig:'Menú a precio fijo (del francés)', uso:'Menú cerrado con entrada, plato y postre a un precio único. Muy común en restaurantes finos.' },
+    // Finanzas
+    { abbr:'APR', sig:'Annual Percentage Rate', uso:'Tasa de interés anual. Lo verás en ofertas de tarjetas de crédito y préstamos.' },
+    { abbr:'FICO', sig:'Fair Isaac Corporation (score crediticio)', uso:'El puntaje de crédito en US. Sin historial argentino, arrancás desde cero.' },
+    { abbr:'ACH', sig:'Automated Clearing House', uso:'Sistema de transferencias bancarias en US, equivalente a una transferencia bancaria local.' },
+];
+
+let frasesActiveCat = 'shopping';
+let frasesActiveSection = 'frases'; // 'frases' | 'abrev'
+
+function frasesRender() {
+    const body = document.getElementById('frases-body');
+    if (!body) return;
+
+    // Tabs de sección principal
+    let html = `<div class="frases-cat-tabs" style="margin-bottom:12px;">
+        <button class="frases-tab${frasesActiveSection==='frases'?' active':''}" onclick="frasesSetSection('frases')">💬 Frases</button>
+        <button class="frases-tab${frasesActiveSection==='abrev'?' abrev-active':''}" onclick="frasesSetSection('abrev')">🔤 Abreviaturas</button>
+    </div>`;
+
+    if (frasesActiveSection === 'frases') {
+        // Tabs de categorías
+        html += `<div class="frases-cat-tabs">`;
+        FRASES_CATS.forEach(cat => {
+            const active = cat.id === frasesActiveCat ? ' active' : '';
+            html += `<button class="frases-tab${active}" onclick="frasesSetCat('${cat.id}')">${cat.emoji} ${cat.label}</button>`;
+        });
+        html += `</div>`;
+
+        const cat = FRASES_CATS.find(c => c.id === frasesActiveCat);
+        if (cat) {
+            html += `<div class="frases-section-label">${cat.emoji} ${cat.label}</div>`;
+            cat.frases.forEach(f => {
+                html += `<div class="frase-card">
+                    <div class="frase-en">"${f.en}"</div>
+                    <div class="frase-fonetica">🔊 ${f.fon}</div>
+                    <div class="frase-ctx">💡 ${f.ctx}</div>
+                </div>`;
+            });
+        }
+    } else {
+        html += `<div class="frases-section-label">🔤 Abreviaturas & Siglas</div>`;
+        ABREVIATURAS.forEach(a => {
+            html += `<div class="abrev-card">
+                <div class="abrev-tag">${a.abbr}</div>
+                <div class="abrev-info">
+                    <div class="abrev-significado">${a.sig}</div>
+                    <div class="abrev-uso">${a.uso}</div>
+                </div>
+            </div>`;
+        });
+    }
+
+    body.innerHTML = html;
+}
+
+window.frasesSetSection = function(sec) {
+    frasesActiveSection = sec;
+    frasesRender();
+};
+window.frasesSetCat = function(cat) {
+    frasesActiveCat = cat;
+    frasesRender();
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     farmaInitCats();
     farmaRender(FARMA_DATA);
+    frasesRender();
 });
 </script>
 
