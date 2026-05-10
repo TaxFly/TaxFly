@@ -790,6 +790,25 @@
   </div>
 </div>
 
+<script>
+window.toggleMoreMenu = function(e) {
+    e.stopPropagation();
+    var btn = document.getElementById('btnMore');
+    var dd  = document.getElementById('navDropdown');
+    var isOpen = dd.classList.contains('show');
+    dd.classList.toggle('show', !isOpen);
+    btn.classList.toggle('open', !isOpen);
+};
+document.addEventListener('click', function(e) {
+    var dd  = document.getElementById('navDropdown');
+    var btn = document.getElementById('btnMore');
+    if (dd && btn && !btn.contains(e.target)) {
+        dd.classList.remove('show');
+        btn.classList.remove('open');
+    }
+});
+</script>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser, verifyBeforeUpdateEmail } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
@@ -1770,22 +1789,7 @@ window.deleteReceiptPhoto=async()=>{
 
 function parseTicket(text){ /* legacy — ya no se usa directo */ openOcrModal(text,''); }
 
-window.toggleMoreMenu = (e) => {
-    e.stopPropagation();
-    const btn = document.getElementById('btnMore');
-    const dd  = document.getElementById('navDropdown');
-    const isOpen = dd.classList.contains('show');
-    dd.classList.toggle('show', !isOpen);
-    btn.classList.toggle('open', !isOpen);
-};
-document.addEventListener('click', (e) => {
-    const dd  = document.getElementById('navDropdown');
-    const btn = document.getElementById('btnMore');
-    if (dd && btn && !btn.contains(e.target)) {
-        dd.classList.remove('show');
-        btn.classList.remove('open');
-    }
-});
+
 
 window.toggleSettings=()=>{
     const d=document.getElementById('settingsDrawer'),open=d.classList.toggle('open');
