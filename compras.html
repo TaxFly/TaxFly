@@ -673,25 +673,23 @@
     <div id="sec-comparador" style="display:none;">
 
         <!-- Search bar -->
-        <div class="card" style="padding:16px;margin-bottom:12px;">
-            <span class="slabel" id="lbl-comp-product">¿Qué producto querés buscar?</span>
+        <div class="card" style="padding:16px;margin-bottom:14px;">
+            <span class="slabel">¿Qué producto querés buscar?</span>
             <div style="display:flex;gap:8px;">
                 <input type="text" id="comp-product" placeholder="Ej: Nike Air Max 90, iPhone 15..." autocomplete="off"
                     style="flex:1;"
                     onkeydown="if(event.key==='Enter')compBuscar()"
-                    oninput="compMostrarTiendas()">
+                    oninput="compActualizarLinks()">
                 <button onclick="compBuscar()" id="btn-comp-buscar"
-                    style="padding:0 18px;border:none;border-radius:var(--radius-sm);background:var(--primary);color:white;font-weight:800;font-size:.85rem;cursor:pointer;flex-shrink:0;transition:.2s;font-family:inherit;">
+                    style="padding:0 18px;border:none;border-radius:var(--radius-sm);background:var(--primary);color:white;font-weight:800;font-size:1rem;cursor:pointer;flex-shrink:0;transition:.2s;font-family:inherit;">
                     🔍
                 </button>
             </div>
         </div>
 
-        <!-- Store grid - always visible once product is typed -->
-        <div id="comp-stores-wrap" style="display:none;">
-            <span class="slabel" id="lbl-comp-stores">Buscá en estas tiendas</span>
-            <div class="comp-stores-grid" id="comp-stores-grid"></div>
-        </div>
+        <!-- Store grid — siempre visible -->
+        <span class="slabel" style="margin-bottom:10px;display:block;">Tiendas</span>
+        <div class="comp-stores-grid" id="comp-stores-grid"></div>
 
     </div>
     <!-- ══ FIN COMPARADOR ══ -->
@@ -1786,34 +1784,38 @@ const COMP_STORES = [
     },
 ];
 
-function compMostrarTiendas() {
-    const q = (document.getElementById('comp-product')?.value || '').trim();
-    const wrap = document.getElementById('comp-stores-wrap');
+function compRenderGrid(q) {
     const grid = document.getElementById('comp-stores-grid');
-    if (!wrap || !grid) return;
-    if (!q) { wrap.style.display = 'none'; return; }
-    wrap.style.display = 'block';
-    grid.innerHTML = COMP_STORES.map(s => `
-        <a class="comp-store-card" href="${s.url(q)}" target="_blank" rel="noopener"
-            style="--store-color:${s.color};--store-bg:${s.bg};">
+    if (!grid) return;
+    grid.innerHTML = COMP_STORES.map(s => {
+        const href = q ? s.url(q) : '#';
+        const dimmed = q ? '' : 'opacity:.45;pointer-events:none;';
+        return `<a class="comp-store-card" href="${href}" target="_blank" rel="noopener"
+            style="--store-color:${s.color};--store-bg:${s.bg};${dimmed}">
             <div class="comp-store-inner">
                 <div class="comp-store-emoji">${s.emoji}</div>
                 <div class="comp-store-name">${s.name}</div>
                 <div class="comp-store-arrow">↗</div>
             </div>
-        </a>`).join('');
+        </a>`;
+    }).join('');
 }
 
-window.compBuscar = function() {
-    compMostrarTiendas();
+window.compActualizarLinks = function() {
     const q = (document.getElementById('comp-product')?.value || '').trim();
+    compRenderGrid(q);
+};
+
+window.compBuscar = function() {
+    const q = (document.getElementById('comp-product')?.value || '').trim();
+    compRenderGrid(q);
     if (!q) { document.getElementById('comp-product')?.focus(); return; }
-    // Auto-open Google Shopping as primary
     window.open(COMP_STORES.find(s => s.id === 'google').url(q), '_blank', 'noopener');
 };
 
 window.compInit = function() {
-    compMostrarTiendas();
+    const q = (document.getElementById('comp-product')?.value || '').trim();
+    compRenderGrid(q);
 };
 
 
