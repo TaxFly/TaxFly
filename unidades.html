@@ -1808,6 +1808,33 @@ const ABREVIATURAS = [
     { abbr:'ACH', sig:'Automated Clearing House', uso:'Sistema de transferencias bancarias en US, equivalente a una transferencia bancaria local.' },
 ];
 
+const FRASES_CAT_LABELS = {
+    es: {
+        shopping:    'Shopping',
+        restaurante: 'Restaurante',
+        hotel:       'Hotel',
+        transporte:  'Transporte',
+        emergencia:  'Emergencias',
+        aeropuerto:  'Aeropuerto',
+    },
+    en: {
+        shopping:    'Shopping',
+        restaurante: 'Restaurant',
+        hotel:       'Hotel',
+        transporte:  'Transport',
+        emergencia:  'Emergencies',
+        aeropuerto:  'Airport',
+    },
+    pt: {
+        shopping:    'Shopping',
+        restaurante: 'Restaurante',
+        hotel:       'Hotel',
+        transporte:  'Transporte',
+        emergencia:  'Emergências',
+        aeropuerto:  'Aeroporto',
+    }
+};
+
 let frasesActiveCat = 'shopping';
 let frasesActiveSection = 'frases'; // 'frases' | 'abrev'
 
@@ -1816,6 +1843,7 @@ function frasesRender() {
     if (!body) return;
     const lang = localStorage.getItem('appLang') || 'es';
     const t = i18n[lang] || i18n.es;
+    const catLabels = FRASES_CAT_LABELS[lang] || FRASES_CAT_LABELS.es;
 
     // Tabs de sección principal
     let html = `<div class="frases-cat-tabs" style="margin-bottom:12px;">
@@ -1828,13 +1856,15 @@ function frasesRender() {
         html += `<div class="frases-cat-tabs">`;
         FRASES_CATS.forEach(cat => {
             const active = cat.id === frasesActiveCat ? ' active' : '';
-            html += `<button class="frases-tab${active}" onclick="frasesSetCat('${cat.id}')">${cat.emoji} ${cat.label}</button>`;
+            const label = catLabels[cat.id] || cat.label;
+            html += `<button class="frases-tab${active}" onclick="frasesSetCat('${cat.id}')">${cat.emoji} ${label}</button>`;
         });
         html += `</div>`;
 
         const cat = FRASES_CATS.find(c => c.id === frasesActiveCat);
         if (cat) {
-            html += `<div class="frases-section-label">${cat.emoji} ${cat.label}</div>`;
+            const label = catLabels[cat.id] || cat.label;
+            html += `<div class="frases-section-label">${cat.emoji} ${label}</div>`;
             cat.frases.forEach(f => {
                 html += `<div class="frase-card">
                     <div class="frase-en">"${f.en}"</div>
