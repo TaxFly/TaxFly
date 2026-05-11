@@ -726,7 +726,7 @@
                     <div style="display:flex;align-items:center;gap:10px;">
                         <span style="font-size:1.3rem;">🚇</span>
                         <div>
-                            <div style="font-size:.85rem;font-weight:900;color:#0ea5e9;" id="inline-transport-title">Transporte Público</div>
+                            <div style="font-size:.85rem;font-weight:900;color:#0ea5e9;" id="inline-transport-title" data-i18n="section_public_transport">Transporte Público</div>
                             <div style="font-size:.62rem;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;" id="inline-transport-subtitle">Sistema · Precios · Tips</div>
                         </div>
                     </div>
@@ -746,8 +746,8 @@
                     <div style="display:flex;align-items:center;gap:10px;">
                         <span style="font-size:1.3rem;">🎢</span>
                         <div>
-                            <div style="font-size:.85rem;font-weight:900;color:var(--primary);">Tracker de Parques</div>
-                            <div style="font-size:.62rem;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;">Tachá cada atracción que hagas</div>
+                            <div style="font-size:.85rem;font-weight:900;color:var(--primary);" data-i18n="section_park_tracker">Tracker de Parques</div>
+                            <div style="font-size:.62rem;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;" data-i18n="section_park_tracker_sub">Tachá cada atracción que hagas</div>
                         </div>
                     </div>
                     <div style="display:flex;align-items:center;gap:10px;">
@@ -776,7 +776,7 @@
                         <button onclick="ipFilter('epic',this)" style="border:1.5px solid var(--border);border-radius:99px;padding:5px 10px;font-size:.7rem;font-weight:800;cursor:pointer;background:var(--surface-2);color:var(--text-sub);font-family:inherit;">✨ Epic</button>
                     </div>
                     <div id="ip-parksContainer"></div>
-                    <button onclick="ipResetAll()" style="width:100%;margin-top:8px;padding:8px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface-2);color:var(--text-dim);font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;">↺ Reiniciar progreso</button>
+                    <button onclick="ipResetAll()" style="width:100%;margin-top:8px;padding:8px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface-2);color:var(--text-dim);font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;" data-i18n="btn_reset_progress">↺ Reiniciar progreso</button>
                 </div>
             </div>
         </div>
@@ -788,7 +788,7 @@
                     <div style="display:flex;align-items:center;gap:10px;">
                         <span style="font-size:1.3rem;">🚇</span>
                         <div>
-                            <div style="font-size:.85rem;font-weight:900;color:#0ea5e9;">Transporte Público</div>
+                            <div style="font-size:.85rem;font-weight:900;color:#0ea5e9;" data-i18n="section_public_transport">Transporte Público</div>
                             <div style="font-size:.62rem;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;">Lynx Bus · SunRail · I-Ride</div>
                         </div>
                     </div>
@@ -1681,7 +1681,7 @@ buildParks();
             alert_reauth_required:"Error: Reautenticación requerida para cambios sensibles.",
             confirm_delete_account:"¿ESTÁS SEGURO? Esta acción borrará todos tus datos de forma permanente.",
             confirm_delete:"¿Eliminar?",
-            tab_transport:"MOVILIDAD",
+            tab_transport:"MOVILIDAD", section_public_transport:"Transporte Público", section_park_tracker:"Tracker de Parques", section_park_tracker_sub:"Tachá cada atracción que hagas", btn_reset_progress:"↺ Reiniciar progreso",
             transport_title:"🚇 Transporte Público por Ciudad",
             transport_intro:"Seleccioná una ciudad para ver info de transporte, precios y mapas oficiales.",
             transport_system:"🚇 Sistema", transport_price:"💵 Precio", transport_payment:"💳 Pago",
@@ -1731,7 +1731,7 @@ buildParks();
             alert_reauth_required:"Error: Re-authentication required for sensitive changes.",
             confirm_delete_account:"ARE YOU SURE? This action will permanently delete all your data.",
             confirm_delete:"Delete?",
-            tab_transport:"TRANSIT",
+            tab_transport:"TRANSIT", section_public_transport:"Public Transit", section_park_tracker:"Park Tracker", section_park_tracker_sub:"Check off each ride you do", btn_reset_progress:"↺ Reset progress",
             transport_title:"🚇 Public Transit by City",
             transport_intro:"Select a city to see transit info, prices and official maps.",
             transport_system:"🚇 System", transport_price:"💵 Price", transport_payment:"💳 Payment",
@@ -1781,7 +1781,7 @@ buildParks();
             alert_reauth_required:"Erro: Reautenticação necessária para mudanças sensíveis.",
             confirm_delete_account:"TEM CERTEZA? Esta ação excluirá todos os seus dados permanentemente.",
             confirm_delete:"Excluir?",
-            tab_transport:"MOBILIDADE",
+            tab_transport:"MOBILIDADE", section_public_transport:"Transporte Público", section_park_tracker:"Tracker de Parques", section_park_tracker_sub:"Marque cada atração que fizer", btn_reset_progress:"↺ Reiniciar progresso",
             transport_title:"🚇 Transporte Público por Cidade",
             transport_intro:"Selecione uma cidade para ver informações de transporte, preços e mapas oficiais.",
             transport_system:"🚇 Sistema", transport_price:"💵 Preço", transport_payment:"💳 Pagamento",
