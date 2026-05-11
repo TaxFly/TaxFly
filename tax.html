@@ -433,7 +433,7 @@
             <input type="number" id="manual-tax-input" placeholder="Ej: 8.25" step="0.01" inputmode="decimal" min="0" max="20" oninput="applyManualTax()" style="border-color:var(--warn);">
             <div style="font-size:.65rem;font-weight:600;color:var(--text-dim);margin-top:4px;">Ingresá el % de tax si no encontrás tu ciudad.</div>
         </div>
-        <button id="toggle-manual-tax" onclick="toggleManualTax()" style="background:none;border:none;color:var(--text-dim);font-size:.65rem;font-weight:700;cursor:pointer;padding:2px 0 10px;text-decoration:underline;display:block;">✏️ Ingresar tax manualmente</button>
+        <button id="toggle-manual-tax" onclick="toggleManualTax()" style="background:none;border:none;color:var(--text-dim);font-size:.65rem;font-weight:700;cursor:pointer;padding:2px 0 10px;text-decoration:underline;display:block;">✏️ <span data-i18n="btn_manual_tax">Ingresar tax manualmente</span></button>
 
         <div class="result-box">
             <div class="result-value" id="total-with-tax">USD 0.00</div>
@@ -703,7 +703,8 @@ const i18n = {
         split_per_person:"por persona",split_total:"total cuenta",
         split_subtotal:"subtotal",split_tax:"tax",split_tip_amt:"propina",
         offline_title:"Sin conexión",
-        offline_sub:"La calculadora, propina y dividir cuenta siguen funcionando normalmente"
+        offline_sub:"La calculadora, propina y dividir cuenta siguen funcionando normalmente",
+        btn_manual_tax:"Ingresar tax manualmente"
     },
     en:{
         nav_expenses:"EXPENSES",nav_home:"HOME",nav_itinerary:"ITINERARY",nav_compare:"COMPARE",nav_units:"Help & References",nav_tickets:"DOCUMENTS",nav_group:"GROUP",nav_routes:"ROUTES",nav_more:"MORE",nav_units_desc:"Unit Converter & Utilities",nav_tickets_desc:"ESTA, insurance, check-in",nav_group_desc:"Shared expenses",
@@ -725,7 +726,8 @@ const i18n = {
         split_per_person:"per person",split_total:"total bill",
         split_subtotal:"subtotal",split_tax:"tax",split_tip_amt:"tip",
         offline_title:"No connection",
-        offline_sub:"Calculator, tip and split bill work normally without internet"
+        offline_sub:"Calculator, tip and split bill work normally without internet",
+        btn_manual_tax:"Enter tax manually"
     },
     pt:{
         nav_expenses:"GASTOS",nav_home:"INÍCIO",nav_itinerary:"ITINERARIO",nav_compare:"COMPARAR",nav_units:"Ajuda e Referências",nav_tickets:"DOCUMENTOS",nav_group:"GRUPO",nav_routes:"ROTAS",nav_more:"MAIS",nav_units_desc:"Conversor de Unidades e Utilidades",nav_tickets_desc:"ESTA, seguros, check-in",nav_group_desc:"Gastos compartilhados",
@@ -747,7 +749,8 @@ const i18n = {
         split_per_person:"por pessoa",split_total:"total conta",
         split_subtotal:"subtotal",split_tax:"tax",split_tip_amt:"gorjeta",
         offline_title:"Sem conexão",
-        offline_sub:"Calculadora, gorjeta e dividir conta funcionam normalmente sem internet"
+        offline_sub:"Calculadora, gorjeta e dividir conta funcionam normalmente sem internet",
+        btn_manual_tax:"Inserir imposto manualmente"
     }
 };
 
