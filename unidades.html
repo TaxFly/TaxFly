@@ -1583,25 +1583,71 @@ window.farmaGetFilteredCurrent = function() {
     return farmaGetFiltered(q, farmaActiveCat);
 };
 
-window.farmaInitCats = farmaInitCats;
+const FARMA_CAT_LABELS = {
+    es: {
+        'Dolor':            'Dolor',
+        'Dolor intenso':    'Dolor intenso',
+        'Gastro / Digestivo': 'Gastro / Digestivo',
+        'Alergia':          'Alergia',
+        'Tos / Resfrío':    'Tos / Resfrío',
+        'Migraña':          'Migraña',
+        'Sueño / Jet lag':  'Sueño / Jet lag',
+        'Ansiolítico':      'Ansiolítico',
+        'Piel':             'Piel',
+        'Ojos':             'Ojos',
+        'Rehidratación':    'Rehidratación',
+        'Vitaminas':        'Vitaminas',
+    },
+    en: {
+        'Dolor':            'Pain',
+        'Dolor intenso':    'Strong Pain',
+        'Gastro / Digestivo': 'Gastro / Digestive',
+        'Alergia':          'Allergy',
+        'Tos / Resfrío':    'Cough / Cold',
+        'Migraña':          'Migraine',
+        'Sueño / Jet lag':  'Sleep / Jet lag',
+        'Ansiolítico':      'Anxiolytic',
+        'Piel':             'Skin',
+        'Ojos':             'Eyes',
+        'Rehidratación':    'Rehydration',
+        'Vitaminas':        'Vitamins',
+    },
+    pt: {
+        'Dolor':            'Dor',
+        'Dolor intenso':    'Dor intensa',
+        'Gastro / Digestivo': 'Gastro / Digestivo',
+        'Alergia':          'Alergia',
+        'Tos / Resfrío':    'Tosse / Resfriado',
+        'Migraña':          'Enxaqueca',
+        'Sueño / Jet lag':  'Sono / Jet lag',
+        'Ansiolítico':      'Ansiolítico',
+        'Piel':             'Pele',
+        'Ojos':             'Olhos',
+        'Rehidratación':    'Reidratação',
+        'Vitaminas':        'Vitaminas',
+    }
+};
 
 function farmaInitCats() {
     const cats = ['all', ...new Set(FARMA_DATA.map(m => m.cat))];
     const lang = localStorage.getItem('appLang') || 'es';
     const allLabel = {es:'Todos', en:'All', pt:'Todos'}[lang] || 'Todos';
+    const catMap = FARMA_CAT_LABELS[lang] || FARMA_CAT_LABELS.es;
     const container = document.getElementById('farma-cats');
     if (!container) return;
     container.innerHTML = cats.map(c => {
-        const label = c === 'all' ? allLabel : c;
+        const label = c === 'all' ? allLabel : (catMap[c] || c);
         const active = c === farmaActiveCat ? ' active' : '';
-        return `<button class="cat-filter-btn${active}" onclick="farmaSetCat('${c}')">${label}</button>`;
+        return `<button class="cat-filter-btn${active}" data-cat="${c}" onclick="farmaSetCat('${c}')">${label}</button>`;
     }).join('');
 }
+
+window.farmaInitCats = farmaInitCats;
 
 window.farmaSetCat = function(cat) {
     farmaActiveCat = cat;
     document.querySelectorAll('.cat-filter-btn').forEach(b => {
-        b.classList.toggle('active', b.textContent.trim() === cat || (cat === 'all' && (b.textContent === 'Todos' || b.textContent === 'All')));
+        b.classList.toggle('active', b.dataset.cat === cat);
     });
     const q = document.getElementById('farma-search')?.value || '';
     farmaRender(farmaGetFiltered(q, cat));
