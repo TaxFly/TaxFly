@@ -859,6 +859,13 @@ applyI18n();
 updateGreeting();
 loadExchangeRate();
 loadWeather();
+
+// Registrar Service Worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+}
+// Guardar última página visitada para el retorno offline
+sessionStorage.setItem('taxfly_last_page', './index.html');
 </script>
 </body>
 </html>
