@@ -253,7 +253,7 @@ textarea{resize:none;line-height:1.5;}
 
 @keyframes pinBoxIn{from{opacity:0;transform:scale(.88) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
 </style>
-<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js').catch(()=>{});sessionStorage.setItem('taxfly_last_page','./rutas.html');});}</script>
 </head>
 <body>
 
@@ -495,8 +495,42 @@ const db   = getFirestore(app);
 
 let currentUser = null;
 
-onAuthStateChanged(auth, (user) => {
-  if (!user) { window.location.replace('login.html'); return; }
+// ── Cached connectivity probe ─────────────────────────────────────────────────
+async function probeConnectivity() {
+    const cached = sessionStorage.getItem('taxfly_connectivity');
+    if (cached !== null) return cached === '1';
+    try {
+        await fetch('https://www.gstatic.com/generate_204', {
+            method: 'HEAD', cache: 'no-store', mode: 'no-cors',
+            signal: AbortSignal.timeout(1500)
+        });
+        sessionStorage.setItem('taxfly_connectivity', '1');
+        return true;
+    } catch(e) {
+        sessionStorage.setItem('taxfly_connectivity', '0');
+        return false;
+    }
+}
+window.addEventListener('online',  () => sessionStorage.setItem('taxfly_connectivity', '1'));
+window.addEventListener('offline', () => sessionStorage.setItem('taxfly_connectivity', '0'));
+// ─────────────────────────────────────────────────────────────────────────────
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    try {
+        await probeConnectivity();
+        window.location.replace('login.html'); return;
+    } catch(e) {
+        const pinHash = localStorage.getItem('taxusa_pin_hash');
+        const pinEmail = localStorage.getItem('taxusa_offline_email');
+        if (!pinHash || !pinEmail) { window.location.replace('login.html'); return; }
+        const nombre = localStorage.getItem('perfilActivoNombre') || pinEmail;
+        const el = document.getElementById('userEmail'); if (el) el.innerText = nombre;
+        const foto = localStorage.getItem('perfilActivoFoto') || '';
+        if (foto) { const btn = document.getElementById('btnSettings'); if(btn){ btn.style.backgroundImage=`url('${foto}')`; btn.innerText=''; } }
+        const lang = localStorage.getItem('appLang') || 'es'; window.changeLanguage(lang);
+        return;
+    }
+  }
   currentUser = user;
   const perfilNombre = localStorage.getItem('perfilActivoNombre');
   const el = document.getElementById('userEmail');
