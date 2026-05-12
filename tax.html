@@ -344,6 +344,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js').catch(() => {});
+        sessionStorage.setItem('taxfly_last_page', './tax.html');
             });
         }
     </script>
