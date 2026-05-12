@@ -1,5 +1,5 @@
 // TaxFly Service Worker — v8  (+ alertas de presupuesto)
-const CACHE = 'taxfly-v11';
+const CACHE = 'taxfly-v12';
 const PRECACHE = [
     './login.html',
     './selector.html',
@@ -11,7 +11,9 @@ const PRECACHE = [
     './tickets.html',
     './grupo.html',
     './rutas.html',
-    './style/style.css', 
+    './tax.html',
+    './offline.html',
+    './assets/style.css',
     './manifest.json',
     './assets/icon-512.png',
     './assets/icon-192.png',
@@ -60,6 +62,7 @@ self.addEventListener('fetch', e => {
         'corsproxy.io', 'recaptcha',
         'taxusa-proxy', 'taxusa.juanbria18.workers.dev',
         'groq', 'llama', 'anthropic',
+        'generate_204',   // probe de conectividad — nunca cachear
     ];
     if (networkOnly.some(d => url.href.includes(d))) return;
 
