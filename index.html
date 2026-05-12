@@ -842,15 +842,65 @@ window.doLogout=()=>signOut(auth).then(()=>window.location.replace('login.html')
 window.openSwitchApp=()=>{ document.getElementById('switchAppModal').style.display='flex'; };
 window.doSwitchApp=function(d){ localStorage.setItem('taxfly_destino',d); document.getElementById('switchAppModal').style.display='none'; window.location.href=d==='usa'?'tax.html':'europe.html'; };
 
-onAuthStateChanged(auth, user=>{
-    if(!user){window.location.replace('login.html');return;}
-    currentUser = user;
-    const perfilNombre = localStorage.getItem('perfilActivoNombre');
-    document.getElementById('userEmail').textContent = perfilNombre || user.email || '';
-    const img = localStorage.getItem('perfilActivoFoto') || user.photoURL;
-    if(img){ const b=document.getElementById('btnSettings'); b.style.backgroundImage=`url(${img})`; b.textContent=''; }
+// ── Offline auth guard ───────────────────────────────────────────────────────
+// ── Cached connectivity probe ─────────────────────────────────────────────────
+async function probeConnectivity() {
+    const cached = sessionStorage.getItem('taxfly_connectivity');
+    if (cached !== null) return cached === '1';
+    try {
+        await fetch('https://www.gstatic.com/generate_204', {
+            method: 'HEAD', cache: 'no-store', mode: 'no-cors',
+            signal: AbortSignal.timeout(1500)
+        });
+        sessionStorage.setItem('taxfly_connectivity', '1');
+        return true;
+    } catch(e) {
+        sessionStorage.setItem('taxfly_connectivity', '0');
+        return false;
+    }
+}
+window.addEventListener('online',  () => sessionStorage.setItem('taxfly_connectivity', '1'));
+window.addEventListener('offline', () => sessionStorage.setItem('taxfly_connectivity', '0'));
+// ─────────────────────────────────────────────────────────────────────────────
+async function guardOfflineAuth(user, onOnlineUser, onOfflineUser) {
+    if (user) { onOnlineUser(user); return; }
+    try {
+        await probeConnectivity();
+        window.location.replace('login.html');
+    } catch(e) {
+        const pinHash = localStorage.getItem('taxusa_pin_hash');
+        const pinEmail = localStorage.getItem('taxusa_offline_email');
+        if (pinHash && pinEmail) { if (onOfflineUser) onOfflineUser(); }
+        else window.location.replace('login.html');
+    }
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
+function loadOfflineUI() {
+    const nombre = localStorage.getItem('perfilActivoNombre') || localStorage.getItem('taxusa_offline_email') || '—';
+    const foto   = localStorage.getItem('perfilActivoFoto') || '';
+    const el = document.getElementById('userEmail');
+    if (el) el.textContent = nombre;
+    if (foto) { const b = document.getElementById('btnSettings'); if(b){ b.style.backgroundImage=`url(${foto})`; b.textContent=''; } }
     loadBudget();
     loadNextEvent();
+}
+
+onAuthStateChanged(auth, user=>{
+    guardOfflineAuth(user,
+        // online con usuario válido
+        (u) => {
+            currentUser = u;
+            const perfilNombre = localStorage.getItem('perfilActivoNombre');
+            document.getElementById('userEmail').textContent = perfilNombre || u.email || '';
+            const img = localStorage.getItem('perfilActivoFoto') || u.photoURL;
+            if(img){ const b=document.getElementById('btnSettings'); b.style.backgroundImage=`url(${img})`; b.textContent=''; }
+            loadBudget();
+            loadNextEvent();
+        },
+        // offline con sesión cacheada
+        loadOfflineUI
+    );
 });
 
 (function(){const toast=document.getElementById('offline-toast');function upd(){toast.classList.toggle('show',!navigator.onLine);}window.addEventListener('online',upd);window.addEventListener('offline',upd);upd();})();
