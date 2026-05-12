@@ -524,14 +524,81 @@
 
     applyLang();
 
+    // ── Detección de conectividad real (misma lógica que login.html) ──
+    async function checkRealConnectivity() {
+        try {
+            await fetch('https://www.gstatic.com/generate_204', {
+                method: 'HEAD', cache: 'no-store', mode: 'no-cors',
+                signal: AbortSignal.timeout(1500)
+            });
+            return true;
+        } catch(e) {
+            return false;
+        }
+    }
+
+    // ── Carga perfiles desde localStorage (modo offline) ──
+    function loadOfflineProfiles() {
+        try {
+            const cached = localStorage.getItem('taxfly_cached_profiles');
+            return cached ? JSON.parse(cached) : null;
+        } catch(e) { return null; }
+    }
+
+    // ── Modo offline: mostrar perfiles cacheados sin Firebase ──
+    function enterOfflineMode() {
+        const cachedProfiles = loadOfflineProfiles();
+        const cachedUid = localStorage.getItem('taxusa_offline_uid');
+        if (!cachedUid) {
+            // Sin sesión previa cacheada — volver a login
+            window.location.replace('login.html');
+            return;
+        }
+        uid = cachedUid;
+        if (cachedProfiles && cachedProfiles.length > 0) {
+            profiles = cachedProfiles;
+        } else {
+            const nombre = localStorage.getItem('taxusa_cached_name') || t.guest;
+            const foto   = localStorage.getItem('taxusa_cached_foto') || photos[0];
+            profiles = [{ id: localStorage.getItem('perfilActivoId') || 'p_offline', nombre, foto }];
+        }
+        // Mostrar badge offline
+        const badge = document.createElement('div');
+        badge.style.cssText = 'background:rgba(239,159,39,.1);border:1.5px solid rgba(239,159,39,.3);color:#BA7517;border-radius:12px;padding:8px 14px;font-size:.78rem;font-weight:700;margin-bottom:12px;text-align:center;';
+        badge.textContent = '📵 Modo sin conexión — mostrando datos guardados';
+        const wrap = document.querySelector('.profiles-wrap') || document.body;
+        wrap.insertBefore(badge, wrap.firstChild);
+        render();
+    }
+
     onAuthStateChanged(auth, async (user) => {
-        if (!user) return window.location.replace('login.html');
+        const online = await checkRealConnectivity();
+
+        if (!online) {
+            // Sin internet — usar datos cacheados sin depender de Firebase
+            enterOfflineMode();
+            return;
+        }
+
+        if (!user) {
+            window.location.replace('login.html');
+            return;
+        }
+
         uid = user.uid;
-        const snap = await getDoc(doc(db, 'usuarios', uid));
-        profiles = snap.exists() ? (snap.data().perfiles || []) : [];
-        if (profiles.length === 0) {
-            profiles = [{ id: 'p' + Date.now(), nombre: t.guest, foto: photos[0] }];
-            await setDoc(doc(db, 'usuarios', uid), { perfiles: profiles });
+        try {
+            const snap = await getDoc(doc(db, 'usuarios', uid));
+            profiles = snap.exists() ? (snap.data().perfiles || []) : [];
+            if (profiles.length === 0) {
+                profiles = [{ id: 'p' + Date.now(), nombre: t.guest, foto: photos[0] }];
+                await setDoc(doc(db, 'usuarios', uid), { perfiles: profiles });
+            }
+            // Cachear perfiles para uso offline
+            localStorage.setItem('taxfly_cached_profiles', JSON.stringify(profiles));
+        } catch(e) {
+            // Firestore falló pero el usuario está autenticado — intentar caché
+            const cached = loadOfflineProfiles();
+            if (cached) profiles = cached;
         }
         render();
     });
@@ -628,6 +695,7 @@
         if (editingId) profiles = profiles.map(p => p.id === editingId ? { ...p, nombre: name, foto: selectedPhoto } : p);
         else profiles.push({ id: 'p' + Date.now(), nombre: name, foto: selectedPhoto });
         await updateDoc(doc(db, 'usuarios', uid), { perfiles: profiles });
+        localStorage.setItem('taxfly_cached_profiles', JSON.stringify(profiles));
         closeModal();
         if (isEditing) toggleEditMode();
         render();
@@ -808,6 +876,7 @@
         if (profiles.length <= 1 || !confirm(t.confirm)) return;
         profiles = profiles.filter(p => p.id !== editingId);
         await updateDoc(doc(db, 'usuarios', uid), { perfiles: profiles });
+        localStorage.setItem('taxfly_cached_profiles', JSON.stringify(profiles));
         closeModal();
         if (isEditing) toggleEditMode();
         render();
