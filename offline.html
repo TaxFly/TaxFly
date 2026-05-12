@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TaxFly — Sin conexión</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" href="assets/icon-512.png">
+    <link rel="apple-touch-icon" href="assets/icon-512.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800;900&display=swap" rel="stylesheet"></noscript>
+    <script>
+        const _t = localStorage.getItem('theme');
+        if (_t) document.documentElement.setAttribute('data-theme', _t);
+        else if (window.matchMedia('(prefers-color-scheme: dark)').matches)
+            document.documentElement.setAttribute('data-theme', 'dark');
+    </script>
+    <style>
+        :root {
+            --primary:#2563eb; --primary-dim:rgba(37,99,235,0.1);
+            --accent:#7c3aed;  --accent-dim:rgba(124,58,237,0.1);
+            --danger:#ef4444;  --success:#10b981; --warn:#f59e0b;
+            --bg:#f1f5f9; --surface:#ffffff; --surface-2:#f8fafc;
+            --border:#e2e8f0;
+            --text:#0f172a; --text-sub:#64748b; --text-dim:#94a3b8;
+            --header-color:#1e3a8a;
+            --radius:20px; --radius-sm:12px;
+            --shadow:0 4px 20px rgba(0,0,0,0.06); --shadow-lg:0 12px 40px rgba(0,0,0,0.1);
+            --tr:all 0.25s cubic-bezier(0.4,0,0.2,1);
+            color-scheme: light;
+        }
+        [data-theme="dark"] {
+            --bg:#0f172a; --surface:#1e293b; --surface-2:#273549;
+            --border:#334155;
+            --text:#f1f5f9; --text-sub:#94a3b8; --text-dim:#64748b;
+            --header-color:#2563eb;
+            --shadow:0 4px 20px rgba(0,0,0,0.3);
+            color-scheme: dark;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'DM Sans', -apple-system, system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px 16px 40px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .wrap { width: 100%; max-width: 460px; }
+
+        /* ── Header ── */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--header-color);
+            letter-spacing: -.5px;
+        }
+        .logo svg { width: 28px; height: 28px; flex-shrink: 0; }
+
+        /* ── Hero card ── */
+        .hero-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 36px 28px 32px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            margin-bottom: 16px;
+            animation: fadeIn .4s ease both;
+        }
+
+        .plane-wrap {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--primary-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+        .plane-wrap svg { width: 40px; height: 40px; }
+
+        @keyframes float {
+            0%,100% { transform: translateY(0); }
+            50%      { transform: translateY(-8px); }
+        }
+
+        .hero-title {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--text);
+            letter-spacing: -.4px;
+            margin-bottom: 8px;
+        }
+        .hero-sub {
+            font-size: .88rem;
+            font-weight: 600;
+            color: var(--text-sub);
+            line-height: 1.5;
+            margin-bottom: 28px;
+        }
+
+        /* Status pill */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: rgba(239,68,68,.1);
+            border: 1.5px solid rgba(239,68,68,.25);
+            border-radius: 100px;
+            padding: 6px 14px;
+            font-size: .72rem;
+            font-weight: 800;
+            color: var(--danger);
+            text-transform: uppercase;
+            letter-spacing: .6px;
+            margin-bottom: 28px;
+        }
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--danger);
+            animation: pulse-dot 1.6s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%,100% { opacity: 1; transform: scale(1); }
+            50%      { opacity: .4; transform: scale(.7); }
+        }
+
+        /* Retry button */
+        .btn-retry {
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff;
+            font-family: inherit;
+            font-size: .9rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: var(--tr);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(37,99,235,.35);
+        }
+        .btn-retry:hover  { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(37,99,235,.4); }
+        .btn-retry:active { transform: scale(.97); }
+        .btn-retry.loading { opacity: .7; pointer-events: none; }
+        .spinner {
+            width: 16px; height: 16px;
+            border-radius: 50%;
+            border: 2.5px solid rgba(255,255,255,.35);
+            border-top-color: #fff;
+            animation: spin .7s linear infinite;
+            display: none;
+        }
+        .btn-retry.loading .spinner { display: block; }
+        .btn-retry.loading .btn-label { display: none; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── Cached pages section ── */
+        .section-label {
+            font-size: .6rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+            padding-left: 2px;
+            animation: fadeIn .4s .1s ease both;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .pages-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+            animation: fadeIn .4s .15s ease both;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .page-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 14px 8px 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+            transition: var(--tr);
+        }
+        .page-card:hover  { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(37,99,235,.13); }
+        .page-card:active { transform: scale(.95); }
+        .page-card.disabled { opacity: .4; pointer-events: none; }
+
+        .pc-emoji { font-size: 1.5rem; line-height: 1; }
+        .pc-label {
+            font-size: .58rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            color: var(--text-sub);
+            text-align: center;
+            line-height: 1.2;
+        }
+        .pc-badge {
+            font-size: .5rem;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 100px;
+            background: var(--success);
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: .3px;
+        }
+        .pc-badge.na {
+            background: var(--border);
+            color: var(--text-dim);
+        }
+
+        /* ── Tips section ── */
+        .tip-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px 18px;
+            box-shadow: var(--shadow);
+            animation: fadeIn .4s .2s ease both;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+        .tip-header {
+            font-size: .6rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .tip-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 9px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: .82rem;
+            font-weight: 600;
+            color: var(--text-sub);
+            line-height: 1.4;
+        }
+        .tip-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .tip-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+        @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    </style>
+</head>
+<body>
+<div class="wrap">
+
+    <header class="app-header">
+        <div class="logo">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="32" height="32" rx="8" fill="#1e3a8a"/>
+                <rect x="0" y="10" width="32" height="4" fill="#ef4444"/>
+                <rect x="0" y="18" width="32" height="4" fill="#ef4444"/>
+                <polygon points="16,4 18.4,11 26,11 20,15.5 22.4,22.5 16,18 9.6,22.5 12,15.5 6,11 13.6,11" fill="#ffffff"/>
+            </svg>
+            <span>Tax<span style="color:#ef4444;">USA</span></span>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <div class="hero-card">
+        <div class="plane-wrap">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M35 20L8 6l4 14-4 14 27-14z" fill="#2563eb" opacity=".15"/>
+                <path d="M8 6l27 14-27 14 4-14-4-14z" stroke="#2563eb" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M12 20h16" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </div>
+
+        <div class="status-pill">
+            <div class="status-dot"></div>
+            <span id="pill-text">Sin conexión</span>
+        </div>
+
+        <div class="hero-title" id="hero-title">Estás en modo avión</div>
+        <div class="hero-sub" id="hero-sub">No hay internet disponible, pero podés seguir usando las secciones guardadas en tu dispositivo.</div>
+
+        <button class="btn-retry" id="btnRetry" onclick="retryConnection()">
+            <div class="spinner"></div>
+            <span class="btn-label" id="retry-label">🔄 Reintentar conexión</span>
+        </button>
+    </div>
+
+    <!-- Cached pages -->
+    <div class="section-label" id="label-pages">Disponible sin internet</div>
+    <div class="pages-grid" id="pagesGrid">
+        <!-- populated by JS -->
+    </div>
+
+    <!-- Tips -->
+    <div class="tip-card">
+        <div class="tip-header">
+            <span>💡</span>
+            <span id="tips-label">Qué podés hacer sin internet</span>
+        </div>
+        <div class="tip-item"><span class="tip-icon">🧾</span><span id="tip1">Revisá tus gastos cargados y el resumen de presupuesto.</span></div>
+        <div class="tip-item"><span class="tip-icon">🗓️</span><span id="tip2">Consultá tu itinerario completo con todos los eventos.</span></div>
+        <div class="tip-item"><span class="tip-icon">🧮</span><span id="tip3">Calculá impuestos con el último tipo de cambio guardado.</span></div>
+        <div class="tip-item"><span class="tip-icon">📶</span><span id="tip4">Activá el Wi-Fi del hotel o comprá datos locales para retomar.</span></div>
+    </div>
+
+</div>
+
+<script>
+// ── i18n ──
+const LANG = (localStorage.getItem('taxfly_lang') || navigator.language || 'es').substring(0,2);
+
+const T = {
+    es: {
+        pill:      'Sin conexión',
+        title:     'Estás en modo avión',
+        sub:       'No hay internet disponible, pero podés seguir usando las secciones guardadas en tu dispositivo.',
+        retry:     '🔄 Reintentar conexión',
+        retrying:  'Verificando…',
+        pages:     'Disponible sin internet',
+        tips:      'Qué podés hacer sin internet',
+        tip1:      'Revisá tus gastos cargados y el resumen de presupuesto.',
+        tip2:      'Consultá tu itinerario completo con todos los eventos.',
+        tip3:      'Calculá impuestos con el último tipo de cambio guardado.',
+        tip4:      'Activá el Wi-Fi del hotel o comprá datos locales para retomar.',
+        cached:    'En caché',
+        notCached: 'No disponible',
+        pages_list: [
+            { emoji:'🏠', label:'Inicio',      href:'./index.html' },
+            { emoji:'🧾', label:'Gastos',      href:'./compras.html' },
+            { emoji:'🗓️', label:'Itinerario', href:'./itinerario.html' },
+            { emoji:'🧮', label:'Tax',         href:'./tax.html' },
+            { emoji:'👥', label:'Grupo',       href:'./grupo.html' },
+            { emoji:'📐', label:'Unidades',    href:'./unidades.html' },
+        ],
+    },
+    en: {
+        pill:      'No connection',
+        title:     'You\'re in airplane mode',
+        sub:       'No internet available, but you can still use the sections saved on your device.',
+        retry:     '🔄 Retry connection',
+        retrying:  'Checking…',
+        pages:     'Available offline',
+        tips:      'What you can do without internet',
+        tip1:      'Review your logged expenses and budget summary.',
+        tip2:      'Check your full itinerary with all events.',
+        tip3:      'Calculate taxes using the last saved exchange rate.',
+        tip4:      'Connect to hotel Wi-Fi or buy local data to resume.',
+        cached:    'Cached',
+        notCached: 'Not available',
+        pages_list: [
+            { emoji:'🏠', label:'Home',       href:'./index.html' },
+            { emoji:'🧾', label:'Expenses',   href:'./compras.html' },
+            { emoji:'🗓️', label:'Itinerary', href:'./itinerario.html' },
+            { emoji:'🧮', label:'Tax',        href:'./tax.html' },
+            { emoji:'👥', label:'Group',      href:'./grupo.html' },
+            { emoji:'📐', label:'Units',      href:'./unidades.html' },
+        ],
+    },
+    pt: {
+        pill:      'Sem conexão',
+        title:     'Você está no modo avião',
+        sub:       'Sem internet disponível, mas você pode continuar usando as seções salvas no seu dispositivo.',
+        retry:     '🔄 Tentar novamente',
+        retrying:  'Verificando…',
+        pages:     'Disponível sem internet',
+        tips:      'O que você pode fazer sem internet',
+        tip1:      'Revise seus gastos registrados e o resumo do orçamento.',
+        tip2:      'Consulte seu itinerário completo com todos os eventos.',
+        tip3:      'Calcule impostos com a última cotação salva.',
+        tip4:      'Conecte-se ao Wi-Fi do hotel ou compre dados locais.',
+        cached:    'Em cache',
+        notCached: 'Indisponível',
+        pages_list: [
+            { emoji:'🏠', label:'Início',     href:'./index.html' },
+            { emoji:'🧾', label:'Gastos',     href:'./compras.html' },
+            { emoji:'🗓️', label:'Itinerário',href:'./itinerario.html' },
+            { emoji:'🧮', label:'Tax',        href:'./tax.html' },
+            { emoji:'👥', label:'Grupo',      href:'./grupo.html' },
+            { emoji:'📐', label:'Unidades',   href:'./unidades.html' },
+        ],
+    },
+};
+
+const t = T[LANG] || T.es;
+
+// Apply translations
+document.getElementById('pill-text').textContent   = t.pill;
+document.getElementById('hero-title').textContent  = t.title;
+document.getElementById('hero-sub').textContent    = t.sub;
+document.getElementById('retry-label').textContent = t.retry;
+document.getElementById('label-pages').textContent = t.pages;
+document.getElementById('tips-label').textContent  = t.tips;
+document.getElementById('tip1').textContent = t.tip1;
+document.getElementById('tip2').textContent = t.tip2;
+document.getElementById('tip3').textContent = t.tip3;
+document.getElementById('tip4').textContent = t.tip4;
+
+// ── Build pages grid, checking cache availability ──
+async function buildPagesGrid() {
+    const grid = document.getElementById('pagesGrid');
+    grid.innerHTML = '';
+
+    for (const page of t.pages_list) {
+        let isCached = false;
+        try {
+            const keys   = await caches.keys();
+            for (const key of keys) {
+                const cache  = await caches.open(key);
+                const match  = await cache.match(page.href);
+                if (match) { isCached = true; break; }
+            }
+        } catch(e) { /* caches API not available */ }
+
+        const card = document.createElement('a');
+        card.href      = page.href;
+        card.className = 'page-card' + (isCached ? '' : ' disabled');
+
+        card.innerHTML = `
+            <span class="pc-emoji">${page.emoji}</span>
+            <span class="pc-label">${page.label}</span>
+            <span class="pc-badge ${isCached ? '' : 'na'}">${isCached ? t.cached : t.notCached}</span>
+        `;
+        grid.appendChild(card);
+    }
+}
+
+buildPagesGrid();
+
+// ── Retry connection ──
+async function retryConnection() {
+    const btn = document.getElementById('btnRetry');
+    document.getElementById('retry-label').textContent = t.retrying;
+    btn.classList.add('loading');
+
+    try {
+        await fetch('https://www.gstatic.com/generate_204', {
+            method: 'HEAD',
+            cache:  'no-store',
+            mode:   'no-cors',
+            signal: AbortSignal.timeout(4000),
+        });
+        // If we get here, we're back online — go to last page or home
+        const last = sessionStorage.getItem('taxfly_last_page') || './index.html';
+        window.location.replace(last);
+    } catch(e) {
+        btn.classList.remove('loading');
+        document.getElementById('retry-label').textContent = t.retry;
+
+        // Brief shake animation on failure
+        btn.style.animation = 'shake .4s ease';
+        btn.addEventListener('animationend', () => btn.style.animation = '', { once: true });
+    }
+}
+
+// ── Auto-retry when connection is restored ──
+window.addEventListener('online', () => {
+    const last = sessionStorage.getItem('taxfly_last_page') || './index.html';
+    window.location.replace(last);
+});
+
+// ── Add shake keyframes dynamically ──
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes shake {
+        0%,100% { transform: translateX(0); }
+        20%      { transform: translateX(-6px); }
+        40%      { transform: translateX(6px); }
+        60%      { transform: translateX(-4px); }
+        80%      { transform: translateX(4px); }
+    }
+`;
+document.head.appendChild(style);
+</script>
+</body>
+</html>
