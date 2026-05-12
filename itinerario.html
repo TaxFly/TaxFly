@@ -175,6 +175,22 @@
         .app-footer img{width:16px;border-radius:2px;}
         .api-note{font-size:.55rem;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;opacity:.6;text-align:center;margin-top:4px;}
 
+        /* ── Reminder banner (notificaciones) ── */
+        .reminder-banner{display:flex;align-items:center;gap:12px;padding:13px 16px;background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(37,99,235,.08));border:1.5px solid var(--primary);border-radius:var(--radius-sm);margin-bottom:14px;cursor:pointer;transition:var(--tr);}
+        .reminder-banner:hover{opacity:.88;}
+        .reminder-banner-icon{font-size:1.4rem;flex-shrink:0;}
+        .reminder-banner-body{flex:1;}
+        .reminder-banner-title{font-size:.78rem;font-weight:800;color:var(--primary);}
+        .reminder-banner-sub{font-size:.68rem;font-weight:600;color:var(--text-sub);margin-top:2px;}
+        .reminder-banner-action{font-size:.7rem;font-weight:800;color:var(--primary);background:var(--primary-dim);padding:5px 12px;border-radius:20px;flex-shrink:0;white-space:nowrap;}
+        /* Campana en cada act-item */
+        .act-bell{background:none;border:none;font-size:.95rem;cursor:pointer;padding:4px 2px;flex-shrink:0;opacity:.45;transition:var(--tr);line-height:1;}
+        .act-bell:hover{opacity:1;}
+        .act-bell.on{opacity:1;filter:drop-shadow(0 0 4px rgba(124,58,237,.6));}
+        /* Toast recordatorio */
+        .reminder-toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--primary);border-radius:14px;padding:11px 18px;font-size:.82rem;font-weight:700;color:var(--primary);box-shadow:var(--shadow-lg);z-index:9999;display:none;white-space:nowrap;max-width:calc(100vw - 32px);text-align:center;}
+        .reminder-toast.show{display:block;animation:ddIn .2s ease;}
+
         /* Settings */
         .menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:1000;backdrop-filter:blur(4px);}
         .settings-drawer{position:fixed;top:0;right:-300px;width:290px;height:100%;background:var(--surface);z-index:1001;transition:.3s ease;padding:28px 20px;display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(0,0,0,.15);border-left:1px solid var(--border);overflow-y:auto;}
@@ -847,9 +863,18 @@
             </div>
         </div>
 
-        <!-- Lista de actividades -->
-        <div class="card">
-            <span class="slabel" data-i18n="label_schedule">📅 Agenda</span>
+        <!-- Banner para activar recordatorios -->
+        <div id="reminder-banner" class="reminder-banner" onclick="pedirPermisoRecordatorios()" style="display:none;">
+            <div class="reminder-banner-icon">🔔</div>
+            <div class="reminder-banner-body">
+                <div class="reminder-banner-title" id="rbn-title">Activá los recordatorios</div>
+                <div class="reminder-banner-sub" id="rbn-sub">Te avisamos antes de cada actividad</div>
+            </div>
+            <div class="reminder-banner-action" id="rbn-action">ACTIVAR</div>
+        </div>
+        <div class="reminder-toast" id="reminder-toast"></div>
+
+
             <div class="act-list" id="activitiesList">
                 <div class="empty-state">
                     <div class="empty-icon">🗺️</div>
@@ -1699,6 +1724,14 @@ buildParks();
             sync_fail:"⚠️ {n} cambio{s} sin sincronizar",
             toast_activity_saved:"📥 Actividad guardada — se sincronizará al volver la conexión",
             toast_note_saved:"📥 Nota guardada — se sincronizará al volver la conexión",
+            rbn_title:"Activá los recordatorios", rbn_sub:"Te avisamos 1 día y 1 hora antes de cada actividad", rbn_action:"ACTIVAR",
+            bell_on:"🔔 Recordatorio activado", bell_off:"🔕 Recordatorio cancelado",
+            reminder_denied:"Activá las notificaciones desde los ajustes del navegador.",
+            reminder_day_before:"Mañana: {name} a las {time}",
+            reminder_hour_before:"En 1 hora: {name}",
+            reminder_body_day:"Recordatorio de tu itinerario TaxUSA",
+            reminder_body_hour:"Recordatorio de tu itinerario TaxUSA",
+            reminder_no_time:"Agregá un horario a la actividad para activar el recordatorio.",
         },
         en: {
             nav_home:"HOME", nav_tax:"TAXES", nav_expenses:"EXPENSES", nav_routes:"ROUTES", nav_units:"Help & References", nav_tickets:"DOCUMENTS", nav_group:"GROUP", nav_more:"MORE", nav_units_desc:"Unit Converter & Utilities", nav_tickets_desc:"ESTA, insurance, check-in", nav_group_desc:"Shared expenses",
@@ -1749,6 +1782,14 @@ buildParks();
             sync_fail:"⚠️ {n} change{s} failed to sync",
             toast_activity_saved:"📥 Activity saved — will sync when back online",
             toast_note_saved:"📥 Note saved — will sync when back online",
+            rbn_title:"Enable reminders", rbn_sub:"We'll notify you 1 day and 1 hour before each activity", rbn_action:"ENABLE",
+            bell_on:"🔔 Reminder set", bell_off:"🔕 Reminder cancelled",
+            reminder_denied:"Enable notifications in your browser settings.",
+            reminder_day_before:"Tomorrow: {name} at {time}",
+            reminder_hour_before:"In 1 hour: {name}",
+            reminder_body_day:"TaxUSA itinerary reminder",
+            reminder_body_hour:"TaxUSA itinerary reminder",
+            reminder_no_time:"Add a time to this activity to enable the reminder.",
         },
         pt: {
             nav_home:"INÍCIO", nav_tax:"TAXES", nav_expenses:"GASTOS", nav_routes:"ROTAS", nav_units:"Ajuda e Referências", nav_tickets:"DOCUMENTOS", nav_group:"GRUPO", nav_more:"MAIS", nav_units_desc:"Conversor de Unidades e Utilidades", nav_tickets_desc:"ESTA, seguros, check-in", nav_group_desc:"Gastos compartilhados",
@@ -1799,6 +1840,14 @@ buildParks();
             sync_fail:"⚠️ {n} alteração{s} sem sincronizar",
             toast_activity_saved:"📥 Atividade salva — será sincronizada ao voltar",
             toast_note_saved:"📥 Nota salva — será sincronizada ao voltar",
+            rbn_title:"Ativar lembretes", rbn_sub:"Te avisamos 1 dia e 1 hora antes de cada atividade", rbn_action:"ATIVAR",
+            bell_on:"🔔 Lembrete ativado", bell_off:"🔕 Lembrete cancelado",
+            reminder_denied:"Ative as notificações nas configurações do navegador.",
+            reminder_day_before:"Amanhã: {name} às {time}",
+            reminder_hour_before:"Em 1 hora: {name}",
+            reminder_body_day:"Lembrete do itinerário TaxUSA",
+            reminder_body_hour:"Lembrete do itinerário TaxUSA",
+            reminder_no_time:"Adicione um horário à atividade para ativar o lembrete.",
         }
     };
 
@@ -2159,6 +2208,7 @@ buildParks();
                                     <span class="act-badge badge-${act.type}">${getBadgeLabel(act.type, lang)}</span>
                                 </div>
                             </div>
+                            <button class="act-bell ${isReminderOn(act.id) ? 'on' : ''}" onclick="toggleReminder('${act.id}','${act.name.replace(/'/g,"\\'")}','${act.date}','${act.time||''}')" title="Recordatorio">🔔</button>
                             <button class="act-del" onclick="deleteActivity('${act.id}')">✕</button>
                         </div>
                     `).join('')}
@@ -2615,8 +2665,187 @@ window.doLogout = () => signOut(auth).then(() => window.location.replace("login.
             setInterval(window.nextTip, 8000);
             // Si ya hay conexión y hay pendientes del itinerario, sincronizar
             if (navigator.onLine && getPending().length > 0) flushPending();
+            // Inicializar recordatorios
+            initReminderBanner();
+            scheduleAllReminders();
         } else { window.location.replace("login.html"); }
     });
+
+    // ══════════════════════════════════════════════════
+    // ──  SISTEMA DE RECORDATORIOS DE ITINERARIO  ─────
+    // ══════════════════════════════════════════════════
+
+    // Clave en localStorage: taxfly_reminders = { [actId]: true }
+    const REMINDERS_KEY = 'taxfly_reminders_' + (perfilId || 'default');
+
+    function loadReminders() {
+        try { return JSON.parse(localStorage.getItem(REMINDERS_KEY) || '{}'); }
+        catch { return {}; }
+    }
+    function saveReminders(obj) {
+        localStorage.setItem(REMINDERS_KEY, JSON.stringify(obj));
+    }
+    function isReminderOn(actId) {
+        return !!loadReminders()[actId];
+    }
+
+    // Mostrar / ocultar el banner según permiso actual
+    function initReminderBanner() {
+        if (!('Notification' in window)) return;
+        const lang = localStorage.getItem('appLang') || 'es';
+        const T = i18n[lang] || i18n.es;
+        const banner = document.getElementById('reminder-banner');
+        if (!banner) return;
+        document.getElementById('rbn-title').textContent  = T.rbn_title  || 'Activá los recordatorios';
+        document.getElementById('rbn-sub').textContent    = T.rbn_sub    || 'Te avisamos antes de cada actividad';
+        document.getElementById('rbn-action').textContent = T.rbn_action || 'ACTIVAR';
+        if (Notification.permission !== 'granted') {
+            banner.style.display = 'flex';
+        } else {
+            banner.style.display = 'none';
+        }
+    }
+
+    // Pedir permiso y ocultar el banner
+    window.pedirPermisoRecordatorios = async function() {
+        if (!('Notification' in window)) return;
+        const lang = localStorage.getItem('appLang') || 'es';
+        const T = i18n[lang] || i18n.es;
+        const result = await Notification.requestPermission();
+        if (result === 'granted') {
+            document.getElementById('reminder-banner').style.display = 'none';
+            scheduleAllReminders();
+            showReminderToast('🔔 ' + (T.rbn_title || 'Recordatorios activados'));
+        } else {
+            alert(T.reminder_denied || 'Activá las notificaciones desde los ajustes del navegador.');
+        }
+    };
+
+    // Toggle campana de una actividad
+    window.toggleReminder = function(actId, actName, actDate, actTime) {
+        const lang = localStorage.getItem('appLang') || 'es';
+        const T = i18n[lang] || i18n.es;
+
+        if (!('Notification' in window)) return;
+
+        // Si no tiene hora definida, no se puede programar
+        if (!actTime) {
+            showReminderToast(T.reminder_no_time || 'Agregá un horario para activar el recordatorio.');
+            return;
+        }
+
+        if (Notification.permission !== 'granted') {
+            pedirPermisoRecordatorios();
+            return;
+        }
+
+        const reminders = loadReminders();
+        const wasOn = !!reminders[actId];
+
+        if (wasOn) {
+            delete reminders[actId];
+            saveReminders(reminders);
+            showReminderToast(T.bell_off || '🔕 Recordatorio cancelado');
+        } else {
+            reminders[actId] = { name: actName, date: actDate, time: actTime };
+            saveReminders(reminders);
+            showReminderToast(T.bell_on || '🔔 Recordatorio activado');
+        }
+
+        // Refrescar la campana en el DOM sin re-renderizar toda la lista
+        const bellBtn = document.querySelector(`#act-item-${actId} .act-bell`);
+        if (bellBtn) bellBtn.classList.toggle('on', !wasOn);
+
+        scheduleAllReminders();
+    };
+
+    // Programar todas las notificaciones activas
+    // Usamos setTimeout para "disparar" la notificación en el momento exacto.
+    // Los timeouts se limpian y reprograman cada vez que se llama.
+    const _reminderTimers = {};
+
+    function scheduleAllReminders() {
+        if (Notification.permission !== 'granted') return;
+        const reminders = loadReminders();
+        const lang = localStorage.getItem('appLang') || 'es';
+        const T = i18n[lang] || i18n.es;
+
+        // Cancelar timers previos
+        Object.values(_reminderTimers).forEach(ids => ids.forEach(clearTimeout));
+        for (const k in _reminderTimers) delete _reminderTimers[k];
+
+        const now = Date.now();
+
+        Object.entries(reminders).forEach(([actId, info]) => {
+            if (!info.date || !info.time) return;
+
+            // Construir fecha/hora de la actividad en hora local del dispositivo
+            const actMs = new Date(`${info.date}T${info.time}:00`).getTime();
+            if (isNaN(actMs)) return;
+
+            const timers = [];
+
+            // ── Recordatorio 1 día antes ──────────────────────────────────
+            const dayBefore = actMs - 24 * 60 * 60 * 1000;
+            const msUntilDay = dayBefore - now;
+            if (msUntilDay > 0 && msUntilDay < 7 * 24 * 60 * 60 * 1000) { // máximo 7 días adelante
+                const title = (T.reminder_day_before || 'Mañana: {name} a las {time}')
+                    .replace('{name}', info.name).replace('{time}', info.time);
+                timers.push(setTimeout(() => {
+                    fireNotification(title, T.reminder_body_day || 'Recordatorio de tu itinerario TaxUSA', actId);
+                }, msUntilDay));
+            }
+
+            // ── Recordatorio 1 hora antes ─────────────────────────────────
+            const hourBefore = actMs - 60 * 60 * 1000;
+            const msUntilHour = hourBefore - now;
+            if (msUntilHour > 0 && msUntilHour < 7 * 24 * 60 * 60 * 1000) {
+                const title = (T.reminder_hour_before || 'En 1 hora: {name}')
+                    .replace('{name}', info.name);
+                timers.push(setTimeout(() => {
+                    fireNotification(title, T.reminder_body_hour || 'Recordatorio de tu itinerario TaxUSA', actId);
+                }, msUntilHour));
+            }
+
+            if (timers.length) _reminderTimers[actId] = timers;
+        });
+    }
+
+    async function fireNotification(title, body, actId) {
+        if (Notification.permission !== 'granted') return;
+        // Preferir SW showNotification para que funcione en background
+        if ('serviceWorker' in navigator) {
+            try {
+                const reg = await navigator.serviceWorker.ready;
+                reg.showNotification(title, {
+                    body,
+                    icon : './assets/icon-192.png',
+                    badge: './assets/icon-192.png',
+                    tag  : 'reminder-' + actId,
+                    renotify: true,
+                    vibrate: [200, 100, 200],
+                    data: { url: './itinerario.html' },
+                });
+                return;
+            } catch(e) { /* fallback */ }
+        }
+        // Fallback: Notification API directa
+        new Notification(title, { body, icon: './assets/icon-192.png' });
+    }
+
+    function showReminderToast(msg) {
+        const t = document.getElementById('reminder-toast');
+        if (!t) return;
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    // Re-programar recordatorios cuando la página vuelve al foco (por si pasó tiempo)
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') scheduleAllReminders();
+    });
+    // ─────────────────────────────────────────────────────────────────────────
 </script>
 
 <!-- ═══════════════ TRANSPORTE PÚBLICO ═══════════════ -->
