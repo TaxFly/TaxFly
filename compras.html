@@ -416,6 +416,9 @@
         .scan-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
         .scan-btns .btn{margin-bottom:0;}
 
+        /* ── Notif banner: estado denied ── */
+        #btn-activar-notif.denied{background:rgba(239,68,68,.18)!important;border-color:rgba(239,68,68,.45)!important;}
+
         /* ── Offline Banner ── */
         #offline-toast{
             position:fixed;
@@ -921,7 +924,6 @@ initializeAppCheck(app, { provider: new ReCaptchaV3Provider('6LeK6cssAAAAALxcJy-
 // ── Service Worker registration ──
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
-        sessionStorage.setItem('taxfly_last_page', './compras.html');
 }
 
 let currentUser = null;
@@ -1384,8 +1386,15 @@ function updateBudgetDisplay(spent){
 
 // ── PUSH NOTIFICATIONS — sistema completo del lado cliente ──────────────────
 
-// VAPID public key — reemplazá con la tuya de Firebase o web-push
-const VAPID_PUBLIC_KEY = 'BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjZJn1SEkuGvVYxXRdyS3abcdefg';
+// VAPID public key — se lee desde localStorage (clave 'taxfly_vapid_key').
+// Si no hay una clave configurada, el push de servidor queda desactivado pero
+// las notificaciones locales (showNotification via SW) siguen funcionando.
+const VAPID_PUBLIC_KEY = localStorage.getItem('taxfly_vapid_key') || '';
+
+function isVapidConfigured(){
+    // Una clave VAPID real tiene exactamente 87 chars base64url y NO termina en 'abcdefg'
+    return VAPID_PUBLIC_KEY.length === 87 && !VAPID_PUBLIC_KEY.endsWith('abcdefg');
+}
 
 // Último porcentaje alertado (para no repetir)
 let _lastAlertedPct = null;
@@ -1410,12 +1419,15 @@ async function subscribeToPush(){
         const reg = await navigator.serviceWorker.ready;
         const existing = await reg.pushManager.getSubscription();
         if(existing) return existing;
+        // Solo suscribir a push del servidor si hay una clave VAPID real configurada
+        if(!isVapidConfigured()){
+            console.info('[Push] Sin clave VAPID configurada — solo notificaciones locales.');
+            return null;
+        }
         const sub = await reg.pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
         });
-        // Guardá la suscripción en Firestore si querés enviar push desde servidor
-        // await savePushSubToFirestore(sub);
         console.log('[Push] Suscripción creada:', sub.endpoint);
         return sub;
     }catch(e){
@@ -1491,17 +1503,37 @@ async function initPushNotifications(){
 
 // ── Botón para activar notificaciones (se muestra si no están activas) ──────
 window.activarNotificaciones = async function(){
-    const btn = document.getElementById('btn-activar-notif');
+    const lang = localStorage.getItem('appLang')||'es';
+    const btn  = document.getElementById('btn-activar-notif');
+    const banner = document.getElementById('notif-banner');
+
+    // Si ya está bloqueado, llevar a ajustes del sistema (no se puede pedir permiso otra vez)
+    if(Notification.permission === 'denied'){
+        const msgs = {
+            es:'Las notificaciones están bloqueadas. Para activarlas, andá a Ajustes del sistema → Notificaciones → tu navegador y habilitá los permisos para este sitio.',
+            en:'Notifications are blocked. To enable them, go to System Settings → Notifications → your browser and allow permissions for this site.',
+            pt:'As notificações estão bloqueadas. Para ativá-las, acesse Configurações → Notificações → seu navegador e permita as notificações para este site.',
+        };
+        alert(msgs[lang]||msgs.es);
+        return;
+    }
+
     const granted = await requestPushPermission();
     if(granted){
         await subscribeToPush();
-        if(btn) btn.style.display='none';
-        const lang=localStorage.getItem('appLang')||'es';
+        if(banner) banner.style.display = 'none';
+        if(btn){ btn.classList.remove('denied'); }
         const ok={es:'✅ Notificaciones activadas',en:'✅ Notifications enabled',pt:'✅ Notificações ativadas'};
         alert(ok[lang]||ok.es);
     } else {
-        const lang=localStorage.getItem('appLang')||'es';
-        const deny={es:'Activá las notificaciones desde los ajustes del navegador.',en:'Enable notifications in your browser settings.',pt:'Ative as notificações nas configurações do navegador.'};
+        // Acaba de rechazar — cambiar el banner al estado denied sin recargar
+        const msgs = {
+            es:'🔕 Notificaciones bloqueadas — activar en ajustes',
+            en:'🔕 Notifications blocked — enable in settings',
+            pt:'🔕 Notificações bloqueadas — ativar nas configurações',
+        };
+        if(btn){ btn.textContent = msgs[lang]||msgs.es; btn.classList.add('denied'); }
+        const deny={es:'Podés activarlas luego desde Ajustes del navegador.',en:'You can enable them later in browser Settings.',pt:'Você pode ativá-las depois nas Configurações do navegador.'};
         alert(deny[lang]||deny.es);
     }
 };
@@ -1770,10 +1802,27 @@ window.showSec=(s)=>{
 
 // Category tag selector
 document.addEventListener('DOMContentLoaded',()=>{
-    // Mostrar banner de notificaciones si no están activadas
-    if('Notification' in window && Notification.permission !== 'granted'){
+    // Banner de notificaciones: mostrar según estado real del permiso
+    if('Notification' in window){
         const banner = document.getElementById('notif-banner');
-        if(banner) banner.style.display = 'block';
+        const btn    = document.getElementById('btn-activar-notif');
+        const perm   = Notification.permission;
+        const lang   = localStorage.getItem('appLang')||'es';
+        const msgs   = {
+            es:{ default:'🔔 Activar alertas de presupuesto', denied:'🔕 Notificaciones bloqueadas — activar en ajustes' },
+            en:{ default:'🔔 Enable budget alerts',           denied:'🔕 Notifications blocked — enable in settings' },
+            pt:{ default:'🔔 Ativar alertas de orçamento',    denied:'🔕 Notificações bloqueadas — ativar nas configurações' },
+        };
+        const m = msgs[lang]||msgs.es;
+        if(perm === 'granted'){
+            if(banner) banner.style.display = 'none';
+        } else if(perm === 'denied'){
+            if(banner) banner.style.display = 'block';
+            if(btn){ btn.textContent = m.denied; btn.classList.add('denied'); }
+        } else { // 'default' — aún no preguntado
+            if(banner) banner.style.display = 'block';
+            if(btn) btn.textContent = m.default;
+        }
     }
     document.querySelectorAll('#cat-tag-row .cat-tag').forEach(btn=>{
         btn.addEventListener('click',()=>{
@@ -2195,25 +2244,6 @@ window.doLogout=()=>signOut(auth).then(()=>window.location.replace('login.html')
 window.doChangeEmail=async()=>{if(!currentUser)return;const l=localStorage.getItem('appLang')||'es',m={es:{p:"Ingresá tu nuevo correo:",s:"Verificación enviada.",e:"Error: "},en:{p:"Enter your new email:",s:"Verification sent.",e:"Error: "}},t=m[l],e=prompt(t.p);if(e){try{await verifyBeforeUpdateEmail(currentUser,e);alert(t.s);}catch(er){alert(t.e+er.message);}}};
 window.doChangePassword=async()=>{if(!currentUser)return;const l=localStorage.getItem('appLang')||'es',m={es:{s:"Correo de recuperación enviado.",e:"Error: "},en:{s:"Recovery email sent.",e:"Error: "}},t=m[l];try{await sendPasswordResetEmail(auth,currentUser.email);alert(t.s);}catch(er){alert(t.e+er.message);}};
 window.doDeleteAccount=async()=>{const l=localStorage.getItem('appLang')||'es',m={es:{c:"¿Eliminar cuenta permanentemente?",e:"Reautenticación requerida. Cerrá sesión y volvé a entrar para eliminar tu cuenta."},en:{c:"Permanently delete account?",e:"Re-authentication required. Please log out and back in to delete your account."}},t=m[l];if(!confirm(t.c))return;try{await deleteUser(currentUser);window.location.replace('login.html');}catch(e){alert(t.e);}};   
-// ── Cached connectivity probe ─────────────────────────────────────────────────
-async function probeConnectivity() {
-    const cached = sessionStorage.getItem('taxfly_connectivity');
-    if (cached !== null) return cached === '1';
-    try {
-        await fetch('https://www.gstatic.com/generate_204', {
-            method: 'HEAD', cache: 'no-store', mode: 'no-cors',
-            signal: AbortSignal.timeout(1500)
-        });
-        sessionStorage.setItem('taxfly_connectivity', '1');
-        return true;
-    } catch(e) {
-        sessionStorage.setItem('taxfly_connectivity', '0');
-        return false;
-    }
-}
-window.addEventListener('online',  () => sessionStorage.setItem('taxfly_connectivity', '1'));
-window.addEventListener('offline', () => sessionStorage.setItem('taxfly_connectivity', '0'));
-// ─────────────────────────────────────────────────────────────────────────────
 onAuthStateChanged(auth,async(user)=>{
     // Cargar presupuesto cacheado inmediatamente (antes de que Firebase resuelva)
     const cachedBudget = cargarPresupuestoDesdeCache();
@@ -2223,26 +2253,7 @@ onAuthStateChanged(auth,async(user)=>{
         if(inputFondo){ inputFondo.value=''; inputFondo.placeholder='USD 0'; }
         refreshBudgetInfoRow();
     }
-    if(!user){
-        // Verificar si es offline con sesión cacheada antes de redirigir
-        try {
-            await probeConnectivity();
-            window.location.replace('login.html'); return;
-        } catch(e) {
-            const pinHash = localStorage.getItem('taxusa_pin_hash');
-            const pinEmail = localStorage.getItem('taxusa_offline_email');
-            if(!pinHash || !pinEmail){ window.location.replace('login.html'); return; }
-            // Modo offline: cargar UI con datos cacheados
-            const nombre = localStorage.getItem('perfilActivoNombre') || pinEmail;
-            document.getElementById('userEmail').innerText = nombre;
-            const foto = localStorage.getItem('perfilActivoFoto') || '';
-            if(foto){const b=document.getElementById('btnSettings');b.style.backgroundImage=`url(${foto})`;b.innerText='';}
-            listenGastos(); // usa caché local automáticamente
-            const lang=localStorage.getItem('appLang')||'es';
-            window.changeLanguage(lang);
-            return;
-        }
-    }
+    if(!user){window.location.replace('login.html');return;}
     currentUser=user;
     const perfilNombre = localStorage.getItem('perfilActivoNombre');
 document.getElementById('userEmail').innerText = perfilNombre || user.email;
