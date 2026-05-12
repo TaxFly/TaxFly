@@ -315,6 +315,42 @@
         .drawer-btn{width:100%;padding:12px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--input-bg);color:var(--text);cursor:pointer;font-weight:700;margin-bottom:8px;font-size:.85rem;text-align:left;font-family:inherit;transition:var(--tr);display:flex;align-items:center;gap:10px;}
         .drawer-btn:hover{background:var(--surface-2);border-color:var(--primary);}
         .btn-danger{color:var(--danger)!important;border-color:rgba(239,68,68,.3)!important;}
+
+        /* ── Export Share Button ── */
+        .btn-export{width:100%;padding:14px;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;background:linear-gradient(135deg,var(--primary),var(--accent));color:white;box-shadow:0 4px 18px rgba(37,99,235,.35);}
+        .btn-export:active{transform:scale(.97);}
+        .btn-export:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+        /* ── Export card (snapshot target) ── */
+        #export-card{position:fixed;top:-9999px;left:-9999px;width:390px;background:#0f172a;border-radius:24px;padding:0;overflow:hidden;font-family:'DM Sans',-apple-system,sans-serif;}
+        .ec-header{background:linear-gradient(135deg,#1e3a8a,#4c1d95);padding:22px 22px 18px;display:flex;align-items:center;justify-content:space-between;}
+        .ec-logo{display:flex;align-items:center;gap:9px;font-size:1.25rem;font-weight:900;color:white;letter-spacing:-.4px;}
+        .ec-date{font-size:.68rem;font-weight:700;color:rgba(255,255,255,.65);text-align:right;}
+        .ec-budget-row{background:linear-gradient(135deg,#2563eb,#7c3aed);padding:18px 22px;display:flex;align-items:center;justify-content:space-between;}
+        .ec-budget-lbl{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.8);margin-bottom:4px;}
+        .ec-budget-val{font-size:2rem;font-weight:900;color:white;}
+        .ec-budget-rest{text-align:right;}
+        .ec-budget-rest .ec-budget-lbl{color:rgba(255,255,255,.7);}
+        .ec-budget-rest-val{font-size:1.1rem;font-weight:800;color:white;}
+        .ec-stats{display:grid;grid-template-columns:1fr 1fr 1fr;padding:16px 22px;gap:12px;background:#1e293b;border-bottom:1px solid #334155;}
+        .ec-stat{text-align:center;}
+        .ec-stat-val{font-size:1.05rem;font-weight:900;color:#f1f5f9;}
+        .ec-stat-lbl{font-size:.52rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#64748b;margin-top:2px;}
+        .ec-cats{padding:16px 22px;background:#1e293b;}
+        .ec-cats-title{font-size:.58rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#64748b;margin-bottom:12px;}
+        .ec-cat-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+        .ec-cat-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+        .ec-cat-name{font-size:.78rem;font-weight:700;color:#cbd5e1;flex:1;}
+        .ec-cat-amt{font-size:.78rem;font-weight:800;color:#f1f5f9;margin-right:6px;}
+        .ec-cat-pct{font-size:.7rem;font-weight:700;color:#64748b;min-width:28px;text-align:right;}
+        .ec-cat-bar-track{height:4px;background:#334155;border-radius:99px;overflow:hidden;flex:1;}
+        .ec-cat-bar-fill{height:100%;border-radius:99px;}
+        .ec-footer{background:#0f172a;padding:12px 22px;display:flex;align-items:center;justify-content:space-between;}
+        .ec-footer-brand{font-size:.62rem;font-weight:800;color:#475569;letter-spacing:.3px;}
+        .ec-footer-tag{font-size:.62rem;font-weight:700;color:#334155;}
+
+        /* ── Toast exportado ── */
+        .export-toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--success);border-radius:14px;padding:11px 18px;font-size:.82rem;font-weight:700;color:var(--success);box-shadow:var(--shadow-lg);z-index:9999;display:none;white-space:nowrap;}
+        .export-toast.show{display:block;animation:ddIn .2s ease;}
     
         @keyframes pinBoxIn{from{opacity:0;transform:scale(.88) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
 
@@ -584,8 +620,48 @@
 
                 <!-- Bar chart -->
                 <div class="cat-bars" id="cat-bars"></div>
+
+                <!-- ── Botón Compartir Resumen ── -->
+                <button class="btn-export" id="btn-export-share" onclick="exportarResumen()">
+                    <span>📤</span><span data-i18n="btn_export_share">COMPARTIR RESUMEN</span>
+                </button>
             </div>
         </div>
+
+        <!-- ── Tarjeta oculta para snapshot ── -->
+        <div id="export-card" aria-hidden="true">
+            <div class="ec-header">
+                <div class="ec-logo">
+                    <svg width="28" height="28" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#1e3a8a"/><rect x="0" y="10" width="32" height="4" fill="#ef4444"/><rect x="0" y="18" width="32" height="4" fill="#ef4444"/><polygon points="16,4 18.4,11 26,11 20,15.5 22.4,22.5 16,18 9.6,22.5 12,15.5 6,11 13.6,11" fill="#ffffff"/></svg>
+                    Tax<span style="color:#ef4444;">USA</span>
+                </div>
+                <div class="ec-date" id="ec-date-lbl"></div>
+            </div>
+            <div class="ec-budget-row">
+                <div>
+                    <div class="ec-budget-lbl" id="ec-spent-lbl">TOTAL GASTADO</div>
+                    <div class="ec-budget-val" id="ec-spent-val">$0.00</div>
+                </div>
+                <div class="ec-budget-rest">
+                    <div class="ec-budget-lbl" id="ec-rest-lbl">RESTANTE</div>
+                    <div class="ec-budget-rest-val" id="ec-rest-val">—</div>
+                </div>
+            </div>
+            <div class="ec-stats">
+                <div class="ec-stat"><div class="ec-stat-val" id="ec-count">0</div><div class="ec-stat-lbl" id="ec-count-lbl">Compras</div></div>
+                <div class="ec-stat"><div class="ec-stat-val" id="ec-avg">$0</div><div class="ec-stat-lbl" id="ec-avg-lbl">Promedio</div></div>
+                <div class="ec-stat"><div class="ec-stat-val" id="ec-top-val" style="font-size:.82rem;">—</div><div class="ec-stat-lbl" id="ec-top-lbl">Mayor gasto</div></div>
+            </div>
+            <div class="ec-cats">
+                <div class="ec-cats-title" id="ec-cats-title">POR CATEGORÍA</div>
+                <div id="ec-cats-list"></div>
+            </div>
+            <div class="ec-footer">
+                <div class="ec-footer-brand">TaxUSA · taxfly.app</div>
+                <div class="ec-footer-tag" id="ec-footer-tag"></div>
+            </div>
+        </div>
+        <div class="export-toast" id="export-toast">✅ Imagen guardada en tu galería</div>
 
         <div id="sec-talles" style="display:none;">
 
@@ -932,6 +1008,9 @@ const i18n = {
         offline_title:"Sin conexión", offline_sub:"El chat y los tipos de cambio no están disponibles",
         ocr_modal_title:"🧾 Ticket detectado — revisá los datos", ocr_items_title:"📦 Ítems detectados",
         ocr_cancel:"✕ Cancelar", ocr_save:"✅ Guardar Gasto",
+        btn_export_share:"COMPARTIR RESUMEN",
+        ec_spent:"TOTAL GASTADO", ec_rest:"RESTANTE", ec_count:"Compras", ec_avg:"Promedio", ec_top:"Mayor gasto", ec_by_cat:"POR CATEGORÍA", ec_footer_tag:"Generado con TaxUSA",
+        export_generating:"Generando imagen...", export_copied:"✅ Imagen copiada al portapapeles", export_saved:"✅ Imagen lista para compartir", export_error:"No se pudo generar la imagen.",
     },
     en:{
         nav_home:"HOME",nav_taxes:"TAXES",nav_itinerary:"ITINERARY",nav_routes:"ROUTES",nav_more:"MORE",nav_units:"Help & References",nav_tickets:"DOCUMENTS",nav_group:"GROUP",nav_units_desc:"Unit Converter & Utilities",nav_tickets_desc:"ESTA, insurance, check-in",nav_group_desc:"Shared expenses",
@@ -966,6 +1045,9 @@ const i18n = {
         offline_title:"No connection", offline_sub:"Chat and exchange rates are not available",
         ocr_modal_title:"🧾 Ticket detected — review your data", ocr_items_title:"📦 Detected items",
         ocr_cancel:"✕ Cancel", ocr_save:"✅ Save Expense",
+        btn_export_share:"SHARE SUMMARY",
+        ec_spent:"TOTAL SPENT", ec_rest:"REMAINING", ec_count:"Purchases", ec_avg:"Average", ec_top:"Biggest expense", ec_by_cat:"BY CATEGORY", ec_footer_tag:"Generated with TaxUSA",
+        export_generating:"Generating image...", export_copied:"✅ Image copied to clipboard", export_saved:"✅ Image ready to share", export_error:"Could not generate the image.",
     },
     pt:{
         nav_home:"INÍCIO",nav_taxes:"TAXES",nav_itinerary:"ITINERÁRIO",nav_routes:"ROTAS",nav_more:"MAIS",nav_units:"Ajuda e Referências",nav_tickets:"DOCUMENTOS",nav_group:"GRUPO",nav_units_desc:"Conversor de Unidades e Utilidades",nav_tickets_desc:"ESTA, seguros, check-in",nav_group_desc:"Gastos compartilhados",
@@ -1000,6 +1082,9 @@ const i18n = {
         offline_title:"Sem conexão", offline_sub:"Chat e cotações não estão disponíveis",
         ocr_modal_title:"🧾 Ticket detectado — revise seus dados", ocr_items_title:"📦 Itens detectados",
         ocr_cancel:"✕ Cancelar", ocr_save:"✅ Salvar Gasto",
+        btn_export_share:"COMPARTILHAR RESUMO",
+        ec_spent:"TOTAL GASTO", ec_rest:"RESTANTE", ec_count:"Compras", ec_avg:"Média", ec_top:"Maior gasto", ec_by_cat:"POR CATEGORIA", ec_footer_tag:"Gerado com TaxUSA",
+        export_generating:"Gerando imagem...", export_copied:"✅ Imagem copiada para a área de transferência", export_saved:"✅ Imagem pronta para compartilhar", export_error:"Não foi possível gerar a imagem.",
     }
 };
 
@@ -1425,6 +1510,162 @@ function renderDashboard(gastos){
     // Bars
     document.getElementById('cat-bars').innerHTML=cats.map(([cat,val])=>`<div class="cat-bar-row"><div class="cat-bar-top"><div class="cat-bar-name">${catLabel(cat)}</div><div class="cat-bar-amount">$${fmt(val)} <span style="color:var(--text-dim);font-weight:600;">${Math.round(val/total*100)}%</span></div></div><div class="cat-bar-track"><div class="cat-bar-fill" style="width:${Math.round(val/total*100)}%;background:${catColor(cat)};"></div></div></div>`).join('');
 }
+
+// ── EXPORTAR RESUMEN ─────────────────────────────────────────────────────────
+window.exportarResumen = async function(){
+    const lang = localStorage.getItem('appLang') || 'es';
+    const T = i18n[lang] || i18n.es;
+    const btn = document.getElementById('btn-export-share');
+
+    if(!allGastos || !allGastos.length){
+        const msg = {es:'No hay gastos para exportar.',en:'No expenses to export.',pt:'Nenhum gasto para exportar.'};
+        alert(msg[lang]||msg.es); return;
+    }
+
+    // ── 1. Poblar la tarjeta hidden ────────────────────────────────────────
+    const total   = allGastos.reduce((s,g)=>s+g.valor,0);
+    const count   = allGastos.length;
+    const avg     = total / count;
+    const top     = allGastos.reduce((a,b)=>b.valor>a.valor?b:a,allGastos[0]);
+    const rest    = presupuestoBase > 0 ? (presupuestoBase - total) : null;
+
+    // Fecha
+    const now = new Date();
+    const dateStr = now.toLocaleDateString(lang==='en'?'en-US':lang==='pt'?'pt-BR':'es-AR',{day:'2-digit',month:'short',year:'numeric'});
+    document.getElementById('ec-date-lbl').textContent = dateStr;
+
+    // Labels i18n
+    document.getElementById('ec-spent-lbl').textContent  = T.ec_spent   || 'TOTAL GASTADO';
+    document.getElementById('ec-rest-lbl').textContent   = T.ec_rest    || 'RESTANTE';
+    document.getElementById('ec-count-lbl').textContent  = T.ec_count   || 'Compras';
+    document.getElementById('ec-avg-lbl').textContent    = T.ec_avg     || 'Promedio';
+    document.getElementById('ec-top-lbl').textContent    = T.ec_top     || 'Mayor gasto';
+    document.getElementById('ec-cats-title').textContent = T.ec_by_cat  || 'POR CATEGORÍA';
+    document.getElementById('ec-footer-tag').textContent = T.ec_footer_tag || 'Generado con TaxUSA';
+
+    // Valores
+    document.getElementById('ec-spent-val').textContent = '$' + fmt(total);
+    document.getElementById('ec-rest-val').textContent  = rest !== null ? '$' + fmt(rest) : '—';
+    document.getElementById('ec-count').textContent     = count;
+    document.getElementById('ec-avg').textContent       = '$' + fmt(avg);
+    document.getElementById('ec-top-val').textContent   = top.nombre.length > 14 ? top.nombre.substring(0,14)+'…' : top.nombre;
+
+    // Color restante
+    const restEl = document.getElementById('ec-rest-val');
+    if(rest !== null) restEl.style.color = rest < 0 ? '#ef4444' : '#34d399';
+
+    // Categorías
+    const bycat = {};
+    allGastos.forEach(g=>{ const c=g.cat||'📦 Otros'; bycat[c]=(bycat[c]||0)+g.valor; });
+    const cats = Object.entries(bycat).sort((a,b)=>b[1]-a[1]);
+    document.getElementById('ec-cats-list').innerHTML = cats.map(([cat,val])=>{
+        const pct = Math.round(val/total*100);
+        const col = catColor(cat);
+        const label = catLabel(cat);
+        return `<div class="ec-cat-row">
+            <div class="ec-cat-dot" style="background:${col}"></div>
+            <div class="ec-cat-name">${label}</div>
+            <div class="ec-cat-bar-track"><div class="ec-cat-bar-fill" style="width:${pct}%;background:${col};"></div></div>
+            <div class="ec-cat-amt">$${fmt(val)}</div>
+            <div class="ec-cat-pct">${pct}%</div>
+        </div>`;
+    }).join('');
+
+    // ── 2. Cargar html2canvas (CDN, lazy) ─────────────────────────────────
+    btn.disabled = true;
+    btn.innerHTML = `<span>⏳</span><span>${T.export_generating||'Generando...'}</span>`;
+
+    try{
+        if(!window.html2canvas){
+            await new Promise((res,rej)=>{
+                const s = document.createElement('script');
+                s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+                s.onload=res; s.onerror=rej;
+                document.head.appendChild(s);
+            });
+        }
+    }catch(e){
+        btn.disabled=false; btn.innerHTML=`<span>📤</span><span>${T.btn_export_share||'COMPARTIR RESUMEN'}</span>`;
+        alert(T.export_error||'No se pudo cargar el generador de imágenes.'); return;
+    }
+
+    // ── 3. Renderizar canvas ───────────────────────────────────────────────
+    try{
+        const card = document.getElementById('export-card');
+        // Mover fuera del -9999 pero invisible para html2canvas
+        card.style.top  = '-9999px';
+        card.style.left = '0';
+
+        const canvas = await html2canvas(card, {
+            scale       : 2,
+            useCORS     : true,
+            backgroundColor: '#0f172a',
+            logging     : false,
+            width       : 390,
+            height      : card.scrollHeight,
+        });
+
+        card.style.left = '-9999px';
+
+        canvas.toBlob(async(blob)=>{
+            if(!blob){ throw new Error('blob null'); }
+
+            const file = new File([blob], `taxusa-resumen-${now.toISOString().slice(0,10)}.png`, {type:'image/png'});
+
+            // ── 4a. Web Share API (móvil nativo) ──────────────────────────
+            if(navigator.canShare && navigator.canShare({files:[file]})){
+                try{
+                    await navigator.share({
+                        title : 'TaxUSA — Resumen de gastos',
+                        text  : `💸 Gasté $${fmt(total)} USD${presupuestoBase>0?' de $'+fmt(presupuestoBase):''}`,
+                        files : [file],
+                    });
+                    showExportToast(T.export_saved||'✅ Imagen lista para compartir');
+                } catch(shareErr){
+                    if(shareErr.name !== 'AbortError') downloadBlob(blob, file.name);
+                }
+            }
+            // ── 4b. Clipboard API (desktop) ────────────────────────────────
+            else if(navigator.clipboard && window.ClipboardItem){
+                try{
+                    await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);
+                    showExportToast(T.export_copied||'✅ Imagen copiada al portapapeles');
+                }catch{
+                    downloadBlob(blob, file.name);
+                }
+            }
+            // ── 4c. Fallback: descarga directa ────────────────────────────
+            else{
+                downloadBlob(blob, file.name);
+            }
+
+            btn.disabled=false;
+            btn.innerHTML=`<span>📤</span><span>${T.btn_export_share||'COMPARTIR RESUMEN'}</span>`;
+        }, 'image/png');
+
+    }catch(e){
+        console.error('[Export]',e);
+        btn.disabled=false;
+        btn.innerHTML=`<span>📤</span><span>${T.btn_export_share||'COMPARTIR RESUMEN'}</span>`;
+        alert(T.export_error||'No se pudo generar la imagen.');
+    }
+};
+
+function downloadBlob(blob, filename){
+    const url = URL.createObjectURL(blob);
+    const a   = document.createElement('a');
+    a.href = url; a.download = filename; a.click();
+    setTimeout(()=>URL.revokeObjectURL(url), 5000);
+}
+
+function showExportToast(msg){
+    const t = document.getElementById('export-toast');
+    if(!t) return;
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'), 3200);
+}
+// ─────────────────────────────────────────────────────────────────────────────
 
 window.showSec=(s)=>{
     ['gastos','resumen','talles','comparador'].forEach(id=>{
