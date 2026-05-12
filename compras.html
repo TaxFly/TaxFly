@@ -351,6 +351,27 @@
         /* ── Toast exportado ── */
         .export-toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--success);border-radius:14px;padding:11px 18px;font-size:.82rem;font-weight:700;color:var(--success);box-shadow:var(--shadow-lg);z-index:9999;display:none;white-space:nowrap;}
         .export-toast.show{display:block;animation:ddIn .2s ease;}
+
+        /* ── Export bottom sheet ── */
+        @keyframes sheetIn{from{transform:translateY(100%)}to{transform:translateY(0)}}
+        #export-sheet-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:9990;align-items:flex-end;justify-content:center;padding:0;}
+        #export-sheet-overlay.open{display:flex;}
+        #export-sheet{background:var(--surface);border-radius:24px 24px 0 0;padding:20px 20px 36px;width:100%;max-width:460px;box-shadow:var(--shadow-lg);border:1px solid var(--border);border-bottom:none;animation:sheetIn .28s cubic-bezier(.34,1.26,.64,1);}
+        .sheet-handle{width:36px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 18px;}
+        .sheet-title{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--text-dim);margin-bottom:14px;text-align:center;}
+        .sheet-option{display:flex;align-items:center;gap:14px;padding:16px 16px;border-radius:16px;border:1.5px solid var(--border);background:var(--surface-2);cursor:pointer;transition:var(--tr);margin-bottom:10px;}
+        .sheet-option:hover,.sheet-option:active{border-color:var(--primary);background:var(--primary-dim);}
+        .sheet-option:active{transform:scale(.98);}
+        .sheet-opt-icon{font-size:1.8rem;flex-shrink:0;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:var(--surface);}
+        .sheet-opt-body{flex:1;}
+        .sheet-opt-name{font-size:.92rem;font-weight:800;color:var(--text);margin-bottom:3px;}
+        .sheet-opt-desc{font-size:.72rem;font-weight:600;color:var(--text-sub);line-height:1.4;}
+        .sheet-opt-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;}
+        .sheet-tag{font-size:.6rem;font-weight:700;padding:3px 8px;border-radius:20px;background:var(--primary-dim);color:var(--primary);}
+        .sheet-tag.green{background:rgba(16,185,129,.12);color:var(--success);}
+        .sheet-tag.purple{background:var(--accent-dim);color:var(--accent);}
+        .sheet-cancel{width:100%;padding:13px;border:1.5px solid var(--border);border-radius:14px;background:transparent;color:var(--text-sub);font-family:inherit;font-size:.85rem;font-weight:700;cursor:pointer;margin-top:4px;transition:var(--tr);}
+        .sheet-cancel:hover{background:var(--surface-2);}
     
         @keyframes pinBoxIn{from{opacity:0;transform:scale(.88) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
 
@@ -622,7 +643,7 @@
                 <div class="cat-bars" id="cat-bars"></div>
 
                 <!-- ── Botón Compartir Resumen ── -->
-                <button class="btn-export" id="btn-export-share" onclick="exportarResumen()">
+                <button class="btn-export" id="btn-export-share" onclick="abrirExportSheet()">
                     <span>📤</span><span data-i18n="btn_export_share">COMPARTIR RESUMEN</span>
                 </button>
             </div>
@@ -1010,7 +1031,11 @@ const i18n = {
         ocr_cancel:"✕ Cancelar", ocr_save:"✅ Guardar Gasto",
         btn_export_share:"COMPARTIR RESUMEN",
         ec_spent:"TOTAL GASTADO", ec_rest:"RESTANTE", ec_count:"Compras", ec_avg:"Promedio", ec_top:"Mayor gasto", ec_by_cat:"POR CATEGORÍA", ec_footer_tag:"Generado con TaxUSA",
-        export_generating:"Generando imagen...", export_copied:"✅ Imagen copiada al portapapeles", export_saved:"✅ Imagen lista para compartir", export_error:"No se pudo generar la imagen.",
+        export_generating:"Generando...", export_copied:"✅ Imagen copiada al portapapeles", export_saved:"✅ Listo para compartir", export_error:"No se pudo generar el archivo.",
+        sheet_title:"¿CÓMO QUERÉS COMPARTIRLO?",
+        sheet_img_name:"Imagen", sheet_img_desc:"Ideal para compartir al instante",
+        sheet_pdf_name:"PDF", sheet_pdf_desc:"Ideal para guardar o enviar formalmente",
+        sheet_cancel:"Cancelar",
     },
     en:{
         nav_home:"HOME",nav_taxes:"TAXES",nav_itinerary:"ITINERARY",nav_routes:"ROUTES",nav_more:"MORE",nav_units:"Help & References",nav_tickets:"DOCUMENTS",nav_group:"GROUP",nav_units_desc:"Unit Converter & Utilities",nav_tickets_desc:"ESTA, insurance, check-in",nav_group_desc:"Shared expenses",
@@ -1047,7 +1072,11 @@ const i18n = {
         ocr_cancel:"✕ Cancel", ocr_save:"✅ Save Expense",
         btn_export_share:"SHARE SUMMARY",
         ec_spent:"TOTAL SPENT", ec_rest:"REMAINING", ec_count:"Purchases", ec_avg:"Average", ec_top:"Biggest expense", ec_by_cat:"BY CATEGORY", ec_footer_tag:"Generated with TaxUSA",
-        export_generating:"Generating image...", export_copied:"✅ Image copied to clipboard", export_saved:"✅ Image ready to share", export_error:"Could not generate the image.",
+        export_generating:"Generating...", export_copied:"✅ Image copied to clipboard", export_saved:"✅ Ready to share", export_error:"Could not generate the file.",
+        sheet_title:"HOW DO YOU WANT TO SHARE IT?",
+        sheet_img_name:"Image", sheet_img_desc:"Best for instant sharing",
+        sheet_pdf_name:"PDF", sheet_pdf_desc:"Best for saving or sending formally",
+        sheet_cancel:"Cancel",
     },
     pt:{
         nav_home:"INÍCIO",nav_taxes:"TAXES",nav_itinerary:"ITINERÁRIO",nav_routes:"ROTAS",nav_more:"MAIS",nav_units:"Ajuda e Referências",nav_tickets:"DOCUMENTOS",nav_group:"GRUPO",nav_units_desc:"Conversor de Unidades e Utilidades",nav_tickets_desc:"ESTA, seguros, check-in",nav_group_desc:"Gastos compartilhados",
@@ -1084,7 +1113,11 @@ const i18n = {
         ocr_cancel:"✕ Cancelar", ocr_save:"✅ Salvar Gasto",
         btn_export_share:"COMPARTILHAR RESUMO",
         ec_spent:"TOTAL GASTO", ec_rest:"RESTANTE", ec_count:"Compras", ec_avg:"Média", ec_top:"Maior gasto", ec_by_cat:"POR CATEGORIA", ec_footer_tag:"Gerado com TaxUSA",
-        export_generating:"Gerando imagem...", export_copied:"✅ Imagem copiada para a área de transferência", export_saved:"✅ Imagem pronta para compartilhar", export_error:"Não foi possível gerar a imagem.",
+        export_generating:"Gerando...", export_copied:"✅ Imagem copiada para a área de transferência", export_saved:"✅ Pronto para compartilhar", export_error:"Não foi possível gerar o arquivo.",
+        sheet_title:"COMO VOCÊ QUER COMPARTILHAR?",
+        sheet_img_name:"Imagem", sheet_img_desc:"Ideal para compartilhar instantaneamente",
+        sheet_pdf_name:"PDF", sheet_pdf_desc:"Ideal para salvar ou enviar formalmente",
+        sheet_cancel:"Cancelar",
     }
 };
 
@@ -1512,152 +1545,208 @@ function renderDashboard(gastos){
 }
 
 // ── EXPORTAR RESUMEN ─────────────────────────────────────────────────────────
-window.exportarResumen = async function(){
+
+// Abre el bottom sheet para elegir formato
+window.abrirExportSheet = function(){
     const lang = localStorage.getItem('appLang') || 'es';
     const T = i18n[lang] || i18n.es;
-    const btn = document.getElementById('btn-export-share');
 
     if(!allGastos || !allGastos.length){
         const msg = {es:'No hay gastos para exportar.',en:'No expenses to export.',pt:'Nenhum gasto para exportar.'};
         alert(msg[lang]||msg.es); return;
     }
 
-    // ── 1. Poblar la tarjeta hidden ────────────────────────────────────────
-    const total   = allGastos.reduce((s,g)=>s+g.valor,0);
-    const count   = allGastos.length;
-    const avg     = total / count;
-    const top     = allGastos.reduce((a,b)=>b.valor>a.valor?b:a,allGastos[0]);
-    const rest    = presupuestoBase > 0 ? (presupuestoBase - total) : null;
+    // Traducir sheet
+    document.getElementById('sheet-title').textContent = T.sheet_title || '¿CÓMO QUERÉS COMPARTIRLO?';
+    document.querySelectorAll('[data-i18n="sheet_img_name"]').forEach(el=>el.textContent=T.sheet_img_name||'Imagen');
+    document.querySelectorAll('[data-i18n="sheet_img_desc"]').forEach(el=>el.textContent=T.sheet_img_desc||'Ideal para compartir al instante');
+    document.querySelectorAll('[data-i18n="sheet_pdf_name"]').forEach(el=>el.textContent=T.sheet_pdf_name||'PDF');
+    document.querySelectorAll('[data-i18n="sheet_pdf_desc"]').forEach(el=>el.textContent=T.sheet_pdf_desc||'Ideal para guardar o enviar formalmente');
+    document.querySelectorAll('[data-i18n="sheet_cancel"]').forEach(el=>el.textContent=T.sheet_cancel||'Cancelar');
 
-    // Fecha
-    const now = new Date();
-    const dateStr = now.toLocaleDateString(lang==='en'?'en-US':lang==='pt'?'pt-BR':'es-AR',{day:'2-digit',month:'short',year:'numeric'});
-    document.getElementById('ec-date-lbl').textContent = dateStr;
+    document.getElementById('export-sheet-overlay').classList.add('open');
+};
 
-    // Labels i18n
-    document.getElementById('ec-spent-lbl').textContent  = T.ec_spent   || 'TOTAL GASTADO';
-    document.getElementById('ec-rest-lbl').textContent   = T.ec_rest    || 'RESTANTE';
-    document.getElementById('ec-count-lbl').textContent  = T.ec_count   || 'Compras';
-    document.getElementById('ec-avg-lbl').textContent    = T.ec_avg     || 'Promedio';
-    document.getElementById('ec-top-lbl').textContent    = T.ec_top     || 'Mayor gasto';
-    document.getElementById('ec-cats-title').textContent = T.ec_by_cat  || 'POR CATEGORÍA';
+window.closeExportSheet = function(){
+    document.getElementById('export-sheet-overlay').classList.remove('open');
+};
+
+// ── Poblar la tarjeta hidden con los datos actuales ───────────────────────────
+function poblarExportCard(){
+    const lang = localStorage.getItem('appLang') || 'es';
+    const T    = i18n[lang] || i18n.es;
+    const total = allGastos.reduce((s,g)=>s+g.valor,0);
+    const count = allGastos.length;
+    const avg   = total / count;
+    const top   = allGastos.reduce((a,b)=>b.valor>a.valor?b:a,allGastos[0]);
+    const rest  = presupuestoBase > 0 ? (presupuestoBase - total) : null;
+    const now   = new Date();
+
+    const locale = lang==='en'?'en-US':lang==='pt'?'pt-BR':'es-AR';
+    document.getElementById('ec-date-lbl').textContent   = now.toLocaleDateString(locale,{day:'2-digit',month:'short',year:'numeric'});
+    document.getElementById('ec-spent-lbl').textContent  = T.ec_spent  || 'TOTAL GASTADO';
+    document.getElementById('ec-rest-lbl').textContent   = T.ec_rest   || 'RESTANTE';
+    document.getElementById('ec-count-lbl').textContent  = T.ec_count  || 'Compras';
+    document.getElementById('ec-avg-lbl').textContent    = T.ec_avg    || 'Promedio';
+    document.getElementById('ec-top-lbl').textContent    = T.ec_top    || 'Mayor gasto';
+    document.getElementById('ec-cats-title').textContent = T.ec_by_cat || 'POR CATEGORÍA';
     document.getElementById('ec-footer-tag').textContent = T.ec_footer_tag || 'Generado con TaxUSA';
 
-    // Valores
     document.getElementById('ec-spent-val').textContent = '$' + fmt(total);
     document.getElementById('ec-rest-val').textContent  = rest !== null ? '$' + fmt(rest) : '—';
+    document.getElementById('ec-rest-val').style.color  = rest !== null ? (rest < 0 ? '#ef4444' : '#34d399') : '#f1f5f9';
     document.getElementById('ec-count').textContent     = count;
     document.getElementById('ec-avg').textContent       = '$' + fmt(avg);
     document.getElementById('ec-top-val').textContent   = top.nombre.length > 14 ? top.nombre.substring(0,14)+'…' : top.nombre;
 
-    // Color restante
-    const restEl = document.getElementById('ec-rest-val');
-    if(rest !== null) restEl.style.color = rest < 0 ? '#ef4444' : '#34d399';
-
-    // Categorías
     const bycat = {};
     allGastos.forEach(g=>{ const c=g.cat||'📦 Otros'; bycat[c]=(bycat[c]||0)+g.valor; });
     const cats = Object.entries(bycat).sort((a,b)=>b[1]-a[1]);
     document.getElementById('ec-cats-list').innerHTML = cats.map(([cat,val])=>{
         const pct = Math.round(val/total*100);
         const col = catColor(cat);
-        const label = catLabel(cat);
         return `<div class="ec-cat-row">
             <div class="ec-cat-dot" style="background:${col}"></div>
-            <div class="ec-cat-name">${label}</div>
+            <div class="ec-cat-name">${catLabel(cat)}</div>
             <div class="ec-cat-bar-track"><div class="ec-cat-bar-fill" style="width:${pct}%;background:${col};"></div></div>
             <div class="ec-cat-amt">$${fmt(val)}</div>
             <div class="ec-cat-pct">${pct}%</div>
         </div>`;
     }).join('');
 
-    // ── 2. Cargar html2canvas (CDN, lazy) ─────────────────────────────────
+    return { total, now };
+}
+
+// ── Carga lazy de librerías externas ─────────────────────────────────────────
+async function loadScript(src){
+    return new Promise((res,rej)=>{
+        if(document.querySelector(`script[src="${src}"]`)&&window.html2canvas){res();return;}
+        const s=document.createElement('script');
+        s.src=src; s.onload=res; s.onerror=rej;
+        document.head.appendChild(s);
+    });
+}
+
+// ── Función principal — recibe 'image' o 'pdf' ────────────────────────────────
+window.exportarResumen = async function(formato){
+    closeExportSheet();
+    const lang = localStorage.getItem('appLang') || 'es';
+    const T    = i18n[lang] || i18n.es;
+    const btn  = document.getElementById('btn-export-share');
+
     btn.disabled = true;
     btn.innerHTML = `<span>⏳</span><span>${T.export_generating||'Generando...'}</span>`;
 
-    try{
-        if(!window.html2canvas){
-            await new Promise((res,rej)=>{
-                const s = document.createElement('script');
-                s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-                s.onload=res; s.onerror=rej;
-                document.head.appendChild(s);
-            });
-        }
-    }catch(e){
-        btn.disabled=false; btn.innerHTML=`<span>📤</span><span>${T.btn_export_share||'COMPARTIR RESUMEN'}</span>`;
-        alert(T.export_error||'No se pudo cargar el generador de imágenes.'); return;
-    }
+    const { total, now } = poblarExportCard();
+    const dateSlug = now.toISOString().slice(0,10);
 
-    // ── 3. Renderizar canvas ───────────────────────────────────────────────
     try{
+        // ── Cargar html2canvas (siempre necesario) ────────────────────────
+        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+
         const card = document.getElementById('export-card');
-        // Mover fuera del -9999 pero invisible para html2canvas
-        card.style.top  = '-9999px';
-        card.style.left = '0';
+        card.style.top = '-9999px'; card.style.left = '0';
 
         const canvas = await html2canvas(card, {
-            scale       : 2,
-            useCORS     : true,
+            scale: 2, useCORS: true,
             backgroundColor: '#0f172a',
-            logging     : false,
-            width       : 390,
-            height      : card.scrollHeight,
+            logging: false,
+            width: 390, height: card.scrollHeight,
         });
-
         card.style.left = '-9999px';
 
-        canvas.toBlob(async(blob)=>{
-            if(!blob){ throw new Error('blob null'); }
+        // ════════════════════════ IMAGEN ════════════════════════
+        if(formato === 'image'){
+            canvas.toBlob(async(blob)=>{
+                if(!blob) throw new Error('blob null');
+                const filename = `taxusa-resumen-${dateSlug}.png`;
+                const file = new File([blob], filename, {type:'image/png'});
 
-            const file = new File([blob], `taxusa-resumen-${now.toISOString().slice(0,10)}.png`, {type:'image/png'});
+                if(navigator.canShare && navigator.canShare({files:[file]})){
+                    try{
+                        await navigator.share({
+                            title: 'TaxUSA — Resumen de gastos',
+                            text : `💸 $${fmt(total)} USD${presupuestoBase>0?' / Presupuesto: $'+fmt(presupuestoBase):''}`,
+                            files: [file],
+                        });
+                        showExportToast(T.export_saved||'✅ Listo para compartir');
+                    } catch(err){
+                        if(err.name !== 'AbortError') downloadBlob(blob, filename);
+                    }
+                } else if(navigator.clipboard && window.ClipboardItem){
+                    try{
+                        await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);
+                        showExportToast(T.export_copied||'✅ Imagen copiada al portapapeles');
+                    } catch{ downloadBlob(blob, filename); }
+                } else {
+                    downloadBlob(blob, filename);
+                }
+                resetExportBtn(btn, T);
+            }, 'image/png');
 
-            // ── 4a. Web Share API (móvil nativo) ──────────────────────────
-            if(navigator.canShare && navigator.canShare({files:[file]})){
-                try{
+        // ════════════════════════ PDF ════════════════════════════
+        } else {
+            // Cargar jsPDF lazy
+            await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+
+            const { jsPDF } = window.jspdf;
+            const imgData   = canvas.toDataURL('image/png', 1.0);
+
+            // Dimensiones: ancho fijo A4-ish, altura proporcional
+            const pdfW = 210; // mm (A4 ancho)
+            const ratio = canvas.height / canvas.width;
+            const pdfH  = Math.round(pdfW * ratio);
+
+            const pdf = new jsPDF({
+                orientation: pdfH > pdfW ? 'portrait' : 'landscape',
+                unit: 'mm',
+                format: [pdfW, pdfH],
+            });
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfW, pdfH);
+
+            const filename = `taxusa-resumen-${dateSlug}.pdf`;
+
+            // Web Share con PDF (compatible en algunos móviles)
+            try{
+                const pdfBlob = pdf.output('blob');
+                const file    = new File([pdfBlob], filename, {type:'application/pdf'});
+                if(navigator.canShare && navigator.canShare({files:[file]})){
                     await navigator.share({
-                        title : 'TaxUSA — Resumen de gastos',
-                        text  : `💸 Gasté $${fmt(total)} USD${presupuestoBase>0?' de $'+fmt(presupuestoBase):''}`,
-                        files : [file],
+                        title: 'TaxUSA — Resumen de gastos',
+                        text : `💸 $${fmt(total)} USD`,
+                        files: [file],
                     });
-                    showExportToast(T.export_saved||'✅ Imagen lista para compartir');
-                } catch(shareErr){
-                    if(shareErr.name !== 'AbortError') downloadBlob(blob, file.name);
+                    showExportToast(T.export_saved||'✅ Listo para compartir');
+                } else {
+                    pdf.save(filename);
+                    showExportToast(T.export_saved||'✅ PDF guardado');
+                }
+            } catch(shareErr){
+                if(shareErr.name !== 'AbortError'){
+                    pdf.save(filename);
+                    showExportToast(T.export_saved||'✅ PDF guardado');
                 }
             }
-            // ── 4b. Clipboard API (desktop) ────────────────────────────────
-            else if(navigator.clipboard && window.ClipboardItem){
-                try{
-                    await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);
-                    showExportToast(T.export_copied||'✅ Imagen copiada al portapapeles');
-                }catch{
-                    downloadBlob(blob, file.name);
-                }
-            }
-            // ── 4c. Fallback: descarga directa ────────────────────────────
-            else{
-                downloadBlob(blob, file.name);
-            }
+            resetExportBtn(btn, T);
+        }
 
-            btn.disabled=false;
-            btn.innerHTML=`<span>📤</span><span>${T.btn_export_share||'COMPARTIR RESUMEN'}</span>`;
-        }, 'image/png');
-
-    }catch(e){
-        console.error('[Export]',e);
-        btn.disabled=false;
-        btn.innerHTML=`<span>📤</span><span>${T.btn_export_share||'COMPARTIR RESUMEN'}</span>`;
-        alert(T.export_error||'No se pudo generar la imagen.');
+    } catch(e){
+        console.error('[Export]', e);
+        resetExportBtn(btn, T);
+        alert(T.export_error||'No se pudo generar el archivo.');
     }
 };
 
+function resetExportBtn(btn, T){
+    btn.disabled = false;
+    btn.innerHTML = `<span>📤</span><span>${T.btn_export_share||'COMPARTIR RESUMEN'}</span>`;
+}
 function downloadBlob(blob, filename){
     const url = URL.createObjectURL(blob);
     const a   = document.createElement('a');
     a.href = url; a.download = filename; a.click();
     setTimeout(()=>URL.revokeObjectURL(url), 5000);
 }
-
 function showExportToast(msg){
     const t = document.getElementById('export-toast');
     if(!t) return;
@@ -2785,6 +2874,39 @@ window.compInit = function() {
 </div>
 
 <!-- ══════════ MODAL CAMBIAR APLICACIÓN ══════════ -->
+<!-- ── Export format bottom sheet ── -->
+<div id="export-sheet-overlay" onclick="if(event.target===this)closeExportSheet()">
+  <div id="export-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="sheet-title">¿CÓMO QUERÉS COMPARTIRLO?</div>
+    <div class="sheet-option" onclick="exportarResumen('image')">
+      <div class="sheet-opt-icon">🖼️</div>
+      <div class="sheet-opt-body">
+        <div class="sheet-opt-name" data-i18n="sheet_img_name">Imagen</div>
+        <div class="sheet-opt-desc" data-i18n="sheet_img_desc">Ideal para compartir al instante</div>
+        <div class="sheet-opt-tags">
+          <span class="sheet-tag">📱 WhatsApp</span>
+          <span class="sheet-tag green">📸 Fotos</span>
+          <span class="sheet-tag purple">📲 Instagram</span>
+        </div>
+      </div>
+    </div>
+    <div class="sheet-option" onclick="exportarResumen('pdf')">
+      <div class="sheet-opt-icon">📄</div>
+      <div class="sheet-opt-body">
+        <div class="sheet-opt-name" data-i18n="sheet_pdf_name">PDF</div>
+        <div class="sheet-opt-desc" data-i18n="sheet_pdf_desc">Ideal para guardar o enviar formalmente</div>
+        <div class="sheet-opt-tags">
+          <span class="sheet-tag">📧 Mail</span>
+          <span class="sheet-tag green">💾 Guardar</span>
+          <span class="sheet-tag purple">🖨️ Imprimir</span>
+        </div>
+      </div>
+    </div>
+    <button class="sheet-cancel" onclick="closeExportSheet()" data-i18n="sheet_cancel">Cancelar</button>
+  </div>
+</div>
+
 <div id="switchAppModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(12px);z-index:9999;align-items:center;justify-content:center;padding:20px;">
   <div style="background:var(--surface);border-radius:28px;padding:28px 24px;width:100%;max-width:340px;box-shadow:var(--shadow-lg);border:1px solid var(--border);text-align:center;">
     <div id="switchAppTitle" style="font-size:1.1rem;font-weight:900;color:var(--text);margin-bottom:6px;">Cambiar Aplicación</div>
