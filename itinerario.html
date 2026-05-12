@@ -897,19 +897,17 @@
     <div class="card">
         <span class="slabel" data-i18n="label_checklist">✅ Checklist de Viaje</span>
         
-        <div class="progress-card" id="checkProgressCard" style="display: none; margin: 10px 0 20px 0; background: var(--primary-dim); padding: 12px; border-radius: 12px;">
-            <div class="progress-info" style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; font-weight: 700;">
-                <span id="checkProgressLabel" data-i18n="checklist_progress_label">Preparativos</span>
-                <span id="checkProgressCount">0/0</span>
+        <div class="progress-card" id="checkProgressCard" style="display:none;">
+            <div class="progress-header">
+                <span class="progress-label" id="checkProgressLabel" data-i18n="checklist_progress_label">Preparativos</span>
+                <span class="progress-count" id="checkProgressCount">0/0</span>
             </div>
-            <div class="progress-bar" style="background: var(--border); height: 8px; border-radius: 4px; overflow: hidden;">
-                <div id="checkProgressFill" style="height: 100%; width: 0%; background: var(--success); transition: width 0.3s ease;"></div>
-            </div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="checkProgressFill" style="width:0%;"></div></div>
         </div>
 
-        <div style="display: flex; gap: 8px; margin-bottom: 15px;">
-            <input type="text" id="customCheckInput" data-i18n-placeholder="custom_check_placeholder" placeholder="Agregar ítem..." style="flex:1; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); font-size: 0.95rem;">
-            <button onclick="addCustomCheckItem()" style="background: var(--primary); color: white; border: none; border-radius: 10px; width: 40px; font-weight: bold; cursor: pointer;">+</button>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+            <input type="text" id="customCheckInput" data-i18n-placeholder="custom_check_placeholder" placeholder="Agregar ítem..." style="flex:1;margin-bottom:0;">
+            <button onclick="addCustomCheckItem()" class="btn btn-primary btn-sm">+</button>
         </div>
 
         <div id="travelChecklist"></div>
@@ -2350,11 +2348,21 @@ function renderChecklist(lang) {
         return `
             <div class="checklist-item">
                 <div class="cl-check ${isChecked ? 'checked' : ''}" onclick="toggleChecklist(${i})"></div>
-                <span class="cl-label" style="flex:1;${isChecked ? 'text-decoration:line-through;opacity:0.5;' : ''}">${item}</span>
+                <span class="cl-label" style="flex:1;">${item}</span>
                 ${isCustom ? `<button onclick="removeCustomItem(${i - baseItems.length})" style="background:none;border:none;color:var(--danger);cursor:pointer;font-weight:bold;padding:0 5px;">✕</button>` : ''}
             </div>
         `;
     }).join('');
+
+    // Update progress bar (same pattern as renderActivities)
+    const progressCard = document.getElementById('checkProgressCard');
+    const progressFill = document.getElementById('checkProgressFill');
+    const progressCount = document.getElementById('checkProgressCount');
+    const total = allItems.length;
+    const done = allItems.filter((_, i) => savedStatus[i]).length;
+    if (progressCard) progressCard.style.display = total > 0 ? 'block' : 'none';
+    if (progressCount) progressCount.textContent = `${done}/${total}`;
+    if (progressFill) progressFill.style.width = `${total ? Math.round((done / total) * 100) : 0}%`;
 }
 
 window.toggleChecklist = (idx) => {
