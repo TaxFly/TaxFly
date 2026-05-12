@@ -525,16 +525,27 @@
     applyLang();
 
     // ── Detección de conectividad real (misma lógica que login.html) ──
-    async function checkRealConnectivity() {
-        try {
-            await fetch('https://www.gstatic.com/generate_204', {
-                method: 'HEAD', cache: 'no-store', mode: 'no-cors',
-                signal: AbortSignal.timeout(1500)
-            });
-            return true;
-        } catch(e) {
-            return false;
-        }
+    // ── Cached connectivity probe ─────────────────────────────────────────────────
+async function probeConnectivity() {
+    const cached = sessionStorage.getItem('taxfly_connectivity');
+    if (cached !== null) return cached === '1';
+    try {
+        await fetch('https://www.gstatic.com/generate_204', {
+            method: 'HEAD', cache: 'no-store', mode: 'no-cors',
+            signal: AbortSignal.timeout(1500)
+        });
+        sessionStorage.setItem('taxfly_connectivity', '1');
+        return true;
+    } catch(e) {
+        sessionStorage.setItem('taxfly_connectivity', '0');
+        return false;
+    }
+}
+window.addEventListener('online',  () => sessionStorage.setItem('taxfly_connectivity', '1'));
+window.addEventListener('offline', () => sessionStorage.setItem('taxfly_connectivity', '0'));
+// ─────────────────────────────────────────────────────────────────────────────
+async function checkRealConnectivity() {
+        return await probeConnectivity();
     }
 
     // ── Carga perfiles desde localStorage (modo offline) ──
