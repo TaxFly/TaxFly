@@ -187,32 +187,6 @@
         .act-bell{background:none;border:none;font-size:.95rem;cursor:pointer;padding:4px 2px;flex-shrink:0;opacity:.45;transition:var(--tr);line-height:1;}
         .act-bell:hover{opacity:1;}
         .act-bell.on{opacity:1;filter:drop-shadow(0 0 4px rgba(124,58,237,.6));}
-
-        /* ── Panel gestión recordatorios ── */
-        .reminders-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:14px;overflow:hidden;}
-        .reminders-panel-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;user-select:none;}
-        .reminders-panel-header:hover{background:var(--surface-2);}
-        .rp-left{display:flex;align-items:center;gap:8px;}
-        .rp-title{font-size:.72rem;font-weight:800;color:var(--text);text-transform:uppercase;letter-spacing:.4px;}
-        .rp-badge{font-size:.58rem;font-weight:800;padding:2px 8px;border-radius:20px;background:var(--accent-dim);color:var(--accent);}
-        .rp-badge.empty{background:var(--border);color:var(--text-dim);}
-        .rp-chevron{font-size:.75rem;color:var(--text-dim);transition:transform .2s;}
-        .rp-chevron.open{transform:rotate(180deg);}
-        .reminders-list{border-top:1px solid var(--border);padding:8px;}
-        .reminder-row{display:flex;align-items:center;gap:10px;padding:10px 8px;border-radius:10px;transition:var(--tr);}
-        .reminder-row:hover{background:var(--surface-2);}
-        .rr-icon{font-size:1.1rem;flex-shrink:0;width:30px;text-align:center;}
-        .rr-body{flex:1;min-width:0;}
-        .rr-name{font-size:.82rem;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-        .rr-meta{font-size:.65rem;font-weight:600;color:var(--text-sub);margin-top:2px;}
-        .rr-times{display:flex;gap:5px;margin-top:4px;flex-wrap:wrap;}
-        .rr-time-chip{font-size:.58rem;font-weight:700;padding:2px 7px;border-radius:20px;background:var(--accent-dim);color:var(--accent);}
-        .rr-time-chip.past{background:var(--border);color:var(--text-dim);}
-        .rr-cancel{background:none;border:1.5px solid var(--border);border-radius:8px;padding:5px 10px;font-size:.65rem;font-weight:800;color:var(--danger);cursor:pointer;flex-shrink:0;transition:var(--tr);font-family:inherit;}
-        .rr-cancel:hover{background:rgba(239,68,68,.08);border-color:var(--danger);}
-        .rp-empty{padding:14px 8px;text-align:center;font-size:.78rem;font-weight:600;color:var(--text-dim);}
-        .rp-clear-all{width:100%;padding:10px;border:none;border-top:1px solid var(--border);background:transparent;color:var(--danger);font-family:inherit;font-size:.72rem;font-weight:800;cursor:pointer;transition:var(--tr);display:flex;align-items:center;justify-content:center;gap:6px;}
-        .rp-clear-all:hover{background:rgba(239,68,68,.06);}
         /* Toast recordatorio */
         .reminder-toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--primary);border-radius:14px;padding:11px 18px;font-size:.82rem;font-weight:700;color:var(--primary);box-shadow:var(--shadow-lg);z-index:9999;display:none;white-space:nowrap;max-width:calc(100vw - 32px);text-align:center;}
         .reminder-toast.show{display:block;animation:ddIn .2s ease;}
@@ -670,6 +644,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js').catch(() => {});
+        sessionStorage.setItem('taxfly_last_page', './itinerario.html');
             });
         }
     </script>
@@ -900,23 +875,8 @@
         </div>
         <div class="reminder-toast" id="reminder-toast"></div>
 
-        <!-- ── Panel: gestión de recordatorios activos ── -->
-        <div class="reminders-panel" id="reminders-panel" style="display:none;">
-            <div class="reminders-panel-header" onclick="toggleRemindersPanel()">
-                <div class="rp-left">
-                    <span>🔔</span>
-                    <span class="rp-title" id="rp-title-text">Recordatorios activos</span>
-                    <span class="rp-badge" id="rp-count-badge">0</span>
-                </div>
-                <span class="rp-chevron" id="rp-chevron">▼</span>
-            </div>
-            <div id="rp-body" style="display:none;">
-                <div class="reminders-list" id="rp-list"></div>
-                <button class="rp-clear-all" id="rp-clear-btn" onclick="clearAllReminders()">
-                    🗑️ <span id="rp-clear-label">Cancelar todos</span>
-                </button>
-            </div>
-        </div>
+
+            <div class="act-list" id="activitiesList">
                 <div class="empty-state">
                     <div class="empty-icon">🗺️</div>
                     <div class="empty-text" data-i18n="empty_activities">Todavía no agregaste actividades.<br>¡Empezá a planificar tu viaje!</div>
@@ -2679,7 +2639,26 @@ window.doLogout = () => signOut(auth).then(() => window.location.replace("login.
     window.deleteAccount = () => {};
 
     // ═══ Auth ═══
-    onAuthStateChanged(auth, async (user) => {
+    // ── Cached connectivity probe ─────────────────────────────────────────────────
+async function probeConnectivity() {
+    const cached = sessionStorage.getItem('taxfly_connectivity');
+    if (cached !== null) return cached === '1';
+    try {
+        await fetch('https://www.gstatic.com/generate_204', {
+            method: 'HEAD', cache: 'no-store', mode: 'no-cors',
+            signal: AbortSignal.timeout(1500)
+        });
+        sessionStorage.setItem('taxfly_connectivity', '1');
+        return true;
+    } catch(e) {
+        sessionStorage.setItem('taxfly_connectivity', '0');
+        return false;
+    }
+}
+window.addEventListener('online',  () => sessionStorage.setItem('taxfly_connectivity', '1'));
+window.addEventListener('offline', () => sessionStorage.setItem('taxfly_connectivity', '0'));
+// ─────────────────────────────────────────────────────────────────────────────
+onAuthStateChanged(auth, async (user) => {
         if (user) {
             currentUser = user;
             if (!perfilId) { window.location.replace("profiles.html"); return; }
@@ -2709,7 +2688,26 @@ window.doLogout = () => signOut(auth).then(() => window.location.replace("login.
             // Inicializar recordatorios
             initReminderBanner();
             scheduleAllReminders();
-        } else { window.location.replace("login.html"); }
+        } else {
+            // user=null: verificar si es offline antes de redirigir
+            try {
+                await probeConnectivity();
+                window.location.replace('login.html');
+            } catch(e) {
+                const pinHash  = localStorage.getItem('taxusa_pin_hash');
+                const pinEmail = localStorage.getItem('taxusa_offline_email');
+                if (!pinHash || !pinEmail) { window.location.replace('login.html'); return; }
+                // Offline con sesión cacheada: mostrar UI con datos locales
+                const nombre = localStorage.getItem('perfilActivoNombre') || pinEmail;
+                const el = document.getElementById('userEmail');
+                if (el) el.innerText = nombre;
+                const foto = localStorage.getItem('perfilActivoFoto') || '';
+                if (foto) { const btn = document.getElementById('btnSettings'); if(btn){ btn.style.backgroundImage=`url(${foto})`; btn.innerText=''; } }
+                renderCityData();
+                const lang = localStorage.getItem('appLang') || 'es';
+                window.changeLanguage(lang);
+            }
+        }
     });
 
     // ══════════════════════════════════════════════════
@@ -2736,49 +2734,15 @@ window.doLogout = () => signOut(auth).then(() => window.location.replace("login.
         const lang = localStorage.getItem('appLang') || 'es';
         const T = i18n[lang] || i18n.es;
         const banner = document.getElementById('reminder-banner');
-        const action = document.getElementById('rbn-action');
         if (!banner) return;
-
-        const perm = Notification.permission;
-
-        if (perm === 'granted') {
-            banner.style.display = 'none';
-            return;
-        }
-
-        // Textos para estado 'denied'
-        const deniedTexts = {
-            es: { title: '🔕 Recordatorios bloqueados', sub: 'Activá las notificaciones desde Ajustes del sistema', action: 'VER CÓMO' },
-            en: { title: '🔕 Reminders blocked',        sub: 'Enable notifications in your system Settings',      action: 'HOW TO'   },
-            pt: { title: '🔕 Lembretes bloqueados',     sub: 'Ative as notificações nas Configurações do sistema', action: 'COMO'    },
-        };
-
-        if (perm === 'denied') {
-            const d = deniedTexts[lang] || deniedTexts.es;
-            document.getElementById('rbn-title').textContent = d.title;
-            document.getElementById('rbn-sub').textContent   = d.sub;
-            if (action) { action.textContent = d.action; action.style.background = 'rgba(239,68,68,.15)'; action.style.color = 'var(--danger)'; }
-            banner.style.background = 'linear-gradient(135deg,rgba(239,68,68,.08),rgba(239,68,68,.04))';
-            banner.style.borderColor = 'rgba(239,68,68,.35)';
-            banner.onclick = () => {
-                const msgs = {
-                    es: 'Las notificaciones están bloqueadas. Andá a Ajustes del sistema → Notificaciones → tu navegador y habilitá los permisos para este sitio.',
-                    en: 'Notifications are blocked. Go to System Settings → Notifications → your browser and allow this site.',
-                    pt: 'Notificações bloqueadas. Acesse Configurações → Notificações → seu navegador e permita este site.',
-                };
-                alert(msgs[lang]||msgs.es);
-            };
+        document.getElementById('rbn-title').textContent  = T.rbn_title  || 'Activá los recordatorios';
+        document.getElementById('rbn-sub').textContent    = T.rbn_sub    || 'Te avisamos antes de cada actividad';
+        document.getElementById('rbn-action').textContent = T.rbn_action || 'ACTIVAR';
+        if (Notification.permission !== 'granted') {
+            banner.style.display = 'flex';
         } else {
-            // 'default' — aún no preguntado
-            document.getElementById('rbn-title').textContent  = T.rbn_title  || 'Activá los recordatorios';
-            document.getElementById('rbn-sub').textContent    = T.rbn_sub    || 'Te avisamos 1 día y 1 hora antes de cada actividad';
-            if (action) { action.textContent = T.rbn_action || 'ACTIVAR'; action.style.background = ''; action.style.color = ''; }
-            banner.style.background = '';
-            banner.style.borderColor = '';
-            banner.onclick = pedirPermisoRecordatorios;
+            banner.style.display = 'none';
         }
-
-        banner.style.display = 'flex';
     }
 
     // Pedir permiso y ocultar el banner
@@ -2790,10 +2754,9 @@ window.doLogout = () => signOut(auth).then(() => window.location.replace("login.
         if (result === 'granted') {
             document.getElementById('reminder-banner').style.display = 'none';
             scheduleAllReminders();
-            showReminderToast('🔔 ' + (T.rbn_enabled || T.rbn_title || 'Recordatorios activados'));
+            showReminderToast('🔔 ' + (T.rbn_title || 'Recordatorios activados'));
         } else {
-            // Acaba de rechazar — refrescar el banner al estado denied
-            initReminderBanner();
+            alert(T.reminder_denied || 'Activá las notificaciones desde los ajustes del navegador.');
         }
     };
 
@@ -2917,134 +2880,10 @@ window.doLogout = () => signOut(auth).then(() => window.location.replace("login.
         setTimeout(() => t.classList.remove('show'), 2800);
     }
 
-    // ══════════════════════════════════════════════════
-    // ── PANEL DE GESTIÓN DE RECORDATORIOS ─────────────
-    // ══════════════════════════════════════════════════
-
-    const TYPE_ICONS = { vuelo:'✈️', hotel:'🏨', parque:'🎡', comida:'🍽️', otro:'📌' };
-
-    function renderRemindersPanel() {
-        const lang = localStorage.getItem('appLang') || 'es';
-        const reminders = loadReminders();
-        const keys = Object.keys(reminders);
-        const panel = document.getElementById('reminders-panel');
-        const badge = document.getElementById('rp-count-badge');
-        const list  = document.getElementById('rp-list');
-        const title = document.getElementById('rp-title-text');
-        const clearBtn = document.getElementById('rp-clear-btn');
-        const clearLabel = document.getElementById('rp-clear-label');
-        if (!panel) return;
-
-        const labels = {
-            es: { title:'Recordatorios activos', empty:'No hay recordatorios activos.', cancel:'Cancelar', clearAll:'Cancelar todos',
-                  dayBefore:'1 día antes', hourBefore:'1 hora antes', past:'ya pasó' },
-            en: { title:'Active reminders',       empty:'No active reminders.',          cancel:'Cancel',    clearAll:'Cancel all',
-                  dayBefore:'1 day before',  hourBefore:'1 hour before', past:'passed' },
-            pt: { title:'Lembretes ativos',       empty:'Nenhum lembrete ativo.',        cancel:'Cancelar',  clearAll:'Cancelar todos',
-                  dayBefore:'1 dia antes',   hourBefore:'1 hora antes',  past:'passou' },
-        };
-        const L = labels[lang] || labels.es;
-
-        if (title) title.textContent = L.title;
-        if (clearLabel) clearLabel.textContent = L.clearAll;
-
-        if (keys.length === 0) {
-            panel.style.display = 'none';
-            return;
-        }
-
-        panel.style.display = 'block';
-        if (badge) { badge.textContent = keys.length; badge.className = 'rp-badge'; }
-
-        const now = Date.now();
-        list.innerHTML = keys.map(actId => {
-            const info = reminders[actId];
-            if (!info) return '';
-            const actMs = info.date && info.time ? new Date(`${info.date}T${info.time}:00`).getTime() : NaN;
-            const dayBefore  = actMs - 24 * 60 * 60 * 1000;
-            const hourBefore = actMs - 60 * 60 * 1000;
-            const dayChip  = !isNaN(actMs) ? `<span class="rr-time-chip ${dayBefore < now ? 'past' : ''}">${dayBefore < now ? '✓' : '⏰'} ${L.dayBefore}</span>` : '';
-            const hourChip = !isNaN(actMs) ? `<span class="rr-time-chip ${hourBefore < now ? 'past' : ''}">${hourBefore < now ? '✓' : '⏰'} ${L.hourBefore}</span>` : '';
-            // Find matching activity for icon/type
-            const actEl = document.getElementById('act-item-' + actId);
-            const type  = actEl ? (actEl.dataset.type || 'otro') : 'otro';
-            const icon  = TYPE_ICONS[type] || '📌';
-            // Format date
-            let dateStr = '';
-            if (info.date) {
-                try { dateStr = new Date(info.date + 'T12:00:00').toLocaleDateString(lang === 'en' ? 'en-US' : lang === 'pt' ? 'pt-BR' : 'es-AR', { weekday:'short', month:'short', day:'numeric' }); } catch(e) { dateStr = info.date; }
-            }
-            return `<div class="reminder-row">
-                <div class="rr-icon">${icon}</div>
-                <div class="rr-body">
-                    <div class="rr-name">${info.name || actId}</div>
-                    <div class="rr-meta">${dateStr}${info.time ? ' · ' + info.time : ''}</div>
-                    <div class="rr-times">${dayChip}${hourChip}</div>
-                </div>
-                <button class="rr-cancel" onclick="cancelReminderFromPanel('${actId}')">${L.cancel}</button>
-            </div>`;
-        }).join('');
-
-        if (!list.innerHTML.trim()) {
-            list.innerHTML = `<div class="rp-empty">${L.empty}</div>`;
-            if (clearBtn) clearBtn.style.display = 'none';
-        } else {
-            if (clearBtn) clearBtn.style.display = 'flex';
-        }
-    }
-
-    window.toggleRemindersPanel = function() {
-        const body    = document.getElementById('rp-body');
-        const chevron = document.getElementById('rp-chevron');
-        if (!body) return;
-        const isOpen = body.style.display !== 'none';
-        body.style.display    = isOpen ? 'none' : 'block';
-        if (chevron) chevron.classList.toggle('open', !isOpen);
-    };
-
-    window.cancelReminderFromPanel = function(actId) {
-        const reminders = loadReminders();
-        delete reminders[actId];
-        saveReminders(reminders);
-        // Update bell in activity list if visible
-        const bellBtn = document.querySelector(`#act-item-${actId} .act-bell`);
-        if (bellBtn) bellBtn.classList.remove('on');
-        scheduleAllReminders();
-        renderRemindersPanel();
-        const lang = localStorage.getItem('appLang') || 'es';
-        const T = i18n[lang] || i18n.es;
-        showReminderToast(T.bell_off || '🔕 Recordatorio cancelado');
-    };
-
-    window.clearAllReminders = function() {
-        const lang = localStorage.getItem('appLang') || 'es';
-        const msgs = { es:'¿Cancelar todos los recordatorios?', en:'Cancel all reminders?', pt:'Cancelar todos os lembretes?' };
-        if (!confirm(msgs[lang]||msgs.es)) return;
-        saveReminders({});
-        // Turn off all bells
-        document.querySelectorAll('.act-bell.on').forEach(b => b.classList.remove('on'));
-        scheduleAllReminders();
-        renderRemindersPanel();
-    };
-
-    // Llamar a renderRemindersPanel después de cada toggleReminder
-    const _origToggle = window.toggleReminder;
-    window.toggleReminder = function(actId, actName, actDate, actTime) {
-        _origToggle(actId, actName, actDate, actTime);
-        renderRemindersPanel();
-    };
-
     // Re-programar recordatorios cuando la página vuelve al foco (por si pasó tiempo)
     document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') {
-            scheduleAllReminders();
-            renderRemindersPanel();
-        }
+        if (document.visibilityState === 'visible') scheduleAllReminders();
     });
-
-    // Render inicial del panel con pequeño delay para que Firestore haya cargado
-    setTimeout(renderRemindersPanel, 500);
-
     // ─────────────────────────────────────────────────────────────────────────
 </script>
 
