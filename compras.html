@@ -921,6 +921,7 @@ initializeAppCheck(app, { provider: new ReCaptchaV3Provider('6LeK6cssAAAAALxcJy-
 // ── Service Worker registration ──
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
+        sessionStorage.setItem('taxfly_last_page', './compras.html');
 }
 
 let currentUser = null;
