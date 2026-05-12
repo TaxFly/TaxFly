@@ -290,7 +290,7 @@
         })();
         // El splash ya es visible; ocultar solo el resto del body vía clase
         document.documentElement.classList.add('splash-loading');
-        window._splashMinEnd = Date.now() + 2800; // garantizar splash mínimo 2.8s
+        window._splashMinEnd = Date.now() + 1200; // garantizar splash mínimo 1.2s
     </script>
 </head>
 <body>
@@ -1061,7 +1061,19 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 function goToApp() {
-    hideSplash(() => window.location.replace('selector.html'));
+    // Si hay un perfil activo cacheado, saltear profiles y ir directo al destino
+    const perfilId     = localStorage.getItem('perfilActivoId');
+    const perfilNombre = localStorage.getItem('perfilActivoNombre');
+    const cachedUid    = localStorage.getItem('taxusa_offline_uid');
+    const online       = isOnline();
+
+    if (!online && perfilId && perfilNombre && cachedUid) {
+        // Offline con perfil cacheado: ir directo a la app
+        const destino = localStorage.getItem('taxfly_destino') || 'usa';
+        hideSplash(() => window.location.replace(destino === 'europe' ? 'europe.html' : 'index.html'));
+    } else {
+        hideSplash(() => window.location.replace('selector.html'));
+    }
 }
 
 // ── Decide initial screen ──
