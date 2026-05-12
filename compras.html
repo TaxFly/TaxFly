@@ -126,6 +126,22 @@
         .pants-table td:nth-child(3){color:var(--cyan);font-weight:900;}
         .pants-table td:first-child{color:var(--text);font-weight:800;}
 
+        /* ── Sizes pills & brand tables ── */
+        .sz-pill{padding:6px 13px;border-radius:20px;font-size:.7rem;font-weight:800;border:1.5px solid var(--border);background:var(--surface-2);color:var(--text-sub);cursor:pointer;transition:var(--tr);text-transform:uppercase;letter-spacing:.3px;}
+        .sz-pill-active{background:var(--primary-dim);color:var(--primary);border-color:var(--primary);}
+        .sz-brand-card{border-radius:14px;border:1px solid var(--border);overflow:hidden;background:var(--surface-2);margin-bottom:12px;}
+        .sz-brand-header{padding:9px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);background:var(--input-bg);}
+        .sz-brand-badge{font-size:.65rem;font-weight:900;padding:3px 9px;border-radius:10px;}
+        .sz-table{width:100%;border-collapse:collapse;table-layout:auto;}
+        .sz-table th{font-size:.55rem;font-weight:900;color:var(--text-dim);padding:6px 8px;text-align:center;border-bottom:1px solid var(--border);background:var(--input-bg);text-transform:uppercase;letter-spacing:.4px;}
+        .sz-table td{font-size:.72rem;font-weight:700;padding:8px 8px;text-align:center;color:var(--text-sub);border-bottom:1px solid var(--border);}
+        .sz-table tr:last-child td{border-bottom:none;}
+        .sz-table tr:hover td{background:rgba(37,99,235,.04);}
+        .sz-table td.sz-hl{color:var(--primary);font-weight:900;}
+        .sz-table td.sz-row-lbl{color:var(--text);font-weight:800;text-align:left;}
+        .sz-table-wrap{overflow-x:auto;}
+        .sz-note{font-size:.72rem;color:var(--text-sub);font-weight:600;padding:10px 14px;border-top:1px solid var(--border);line-height:1.5;}
+
         /* ── Dashboard / Resumen ── */
         .donut-wrap{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:20px;background:linear-gradient(135deg,rgba(37,99,235,.05),rgba(124,58,237,.05));border:1px solid var(--border);border-radius:20px;padding:16px 14px;overflow:hidden;}
         .donut-svg{flex-shrink:0;filter:drop-shadow(0 6px 18px rgba(37,99,235,.2));}
@@ -689,108 +705,24 @@
 
         <div id="sec-talles" style="display:none;">
 
-            <!-- ── CALZADO ── -->
-            <div class="sizes-section-title">
-    <span class="sst-icon">👟</span>
-    <div>
-        <div class="sst-text" data-i18n="sizes_shoes_title">Calzado ARG → US</div>
-        <div class="sst-sub" data-i18n="sizes_shoes_sub">Zapatillas y zapatos</div>
-    </div>
-</div>
-<div class="sizes-gender-grid">
-    <div class="sizes-gender-card">
-        <div class="sizes-gender-header male" data-i18n="gender_male">👨 Hombre</div>
-        <div class="size-chip-grid">
-            <div class="size-chip-row"><div class="size-chip-header" data-i18n="col_arg">ARG</div><div class="size-chip-header" data-i18n="col_us">US</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">38</div><div class="size-chip-cell us">6</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">39</div><div class="size-chip-cell us">7</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">40</div><div class="size-chip-cell us">8</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">41</div><div class="size-chip-cell us">9</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">42</div><div class="size-chip-cell us">10</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">43</div><div class="size-chip-cell us">11</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">44</div><div class="size-chip-cell us">12</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">45</div><div class="size-chip-cell us">13</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">46</div><div class="size-chip-cell us">14</div></div>
-        </div>
-    </div>
-    <div class="sizes-gender-card">
-        <div class="sizes-gender-header female" data-i18n="gender_female">👩 Mujer</div>
-        <div class="size-chip-grid">
-            <div class="size-chip-row"><div class="size-chip-header" data-i18n="col_arg">ARG</div><div class="size-chip-header" data-i18n="col_us">US</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">35</div><div class="size-chip-cell us">5</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">36</div><div class="size-chip-cell us">6</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">37</div><div class="size-chip-cell us">7</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">38</div><div class="size-chip-cell us">8</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">39</div><div class="size-chip-cell us">9</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">40</div><div class="size-chip-cell us">10</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">41</div><div class="size-chip-cell us">11</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">42</div><div class="size-chip-cell us">12</div></div>
-        </div>
-    </div>
-</div>
+            <div style="margin-bottom:14px;">
+                <div class="slabel" data-i18n="sizes_filter_cat">Categoría</div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;" id="sz-cat-pills">
+                    <button class="sz-pill sz-pill-active" data-cat="remera" onclick="szSetCat(this)" data-i18n="sizes_cat_remera">Remeras</button>
+                    <button class="sz-pill" data-cat="pantalon" onclick="szSetCat(this)" data-i18n="sizes_cat_pantalon">Pantalones</button>
+                    <button class="sz-pill" data-cat="zapatilla" onclick="szSetCat(this)" data-i18n="sizes_cat_zapatilla">Zapatillas</button>
+                    <button class="sz-pill" data-cat="campera" onclick="szSetCat(this)" data-i18n="sizes_cat_campera">Camperas</button>
+                </div>
+            </div>
+            <div style="margin-bottom:16px;">
+                <div class="slabel" data-i18n="sizes_filter_gender">Género</div>
+                <div style="display:flex;gap:6px;" id="sz-gen-pills">
+                    <button class="sz-pill sz-pill-active" data-gen="H" onclick="szSetGen(this)" data-i18n="gender_male_short">Hombre</button>
+                    <button class="sz-pill" data-gen="M" onclick="szSetGen(this)" data-i18n="gender_female_short">Mujer</button>
+                </div>
+            </div>
 
-<!-- ── ROPA ── -->
-<div class="sizes-section-title">
-    <span class="sst-icon">👕</span>
-    <div>
-        <div class="sst-text" data-i18n="sizes_clothing_title">Ropa ARG → US</div>
-        <div class="sst-sub" data-i18n="sizes_clothing_sub">Un M arg. suele ser L en US</div>
-    </div>
-</div>
-<div class="sizes-gender-grid" style="margin-bottom:16px;">
-    <div class="sizes-gender-card">
-        <div class="sizes-gender-header male" data-i18n="sizes_tops">Remeras / Tops</div>
-        <div class="size-chip-grid">
-            <div class="size-chip-row"><div class="size-chip-header" data-i18n="col_arg">ARG</div><div class="size-chip-header" data-i18n="col_us">US</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">XS</div><div class="size-chip-cell us">S</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">S</div><div class="size-chip-cell us">M</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">M</div><div class="size-chip-cell us">L</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">L</div><div class="size-chip-cell us">XL</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">XL</div><div class="size-chip-cell us">2XL</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">2XL</div><div class="size-chip-cell us">3XL</div></div>
-        </div>
-    </div>
-    <div class="sizes-gender-card">
-        <div class="sizes-gender-header female" data-i18n="sizes_hoodies">Buzos / Camperas</div>
-        <div class="size-chip-grid">
-            <div class="size-chip-row"><div class="size-chip-header" data-i18n="col_arg">ARG</div><div class="size-chip-header" data-i18n="col_us">US</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">S</div><div class="size-chip-cell us">XS/S</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">M</div><div class="size-chip-cell us">S/M</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">L</div><div class="size-chip-cell us">M/L</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">XL</div><div class="size-chip-cell us">L/XL</div></div>
-            <div class="size-chip-row"><div class="size-chip-cell arg">XXL</div><div class="size-chip-cell us">XL/XXL</div></div>
-        </div>
-    </div>
-</div>
-
-<!-- ── PANTALONES ── -->
-<div class="sizes-section-title">
-    <span class="sst-icon">👖</span>
-    <div>
-        <div class="sst-text" data-i18n="sizes_pants_title">Pantalón ARG → US</div>
-        <div class="sst-sub" data-i18n="sizes_pants_sub">Cintura cm → US Waist</div>
-    </div>
-</div>
-<div class="pants-table-wrap">
-    <table class="pants-table">
-        <thead>
-            <tr>
-                <th data-i18n="pants_col_arg">ARG cm</th>
-                <th data-i18n="pants_col_waist">US Waist</th>
-                <th data-i18n="pants_col_size">Talle US</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr><td>70–72</td><td>28"</td><td>28</td></tr>
-            <tr><td>73–77</td><td>30"</td><td>30</td></tr>
-            <tr><td>78–82</td><td>32"</td><td>32</td></tr>
-            <tr><td>83–87</td><td>34"</td><td>34</td></tr>
-            <tr><td>88–92</td><td>36"</td><td>36</td></tr>
-            <tr><td>93–97</td><td>38"</td><td>38</td></tr>
-            <tr><td>98–102</td><td>40"</td><td>40</td></tr>
-        </tbody>
-    </table>
-</div>
+            <div id="sz-tables-out"></div>
 
         </div><!-- /sec-talles -->
 
@@ -1039,6 +971,19 @@ const i18n = {
         sheet_img_name:"Imagen", sheet_img_desc:"Ideal para compartir al instante",
         sheet_pdf_name:"PDF", sheet_pdf_desc:"Ideal para guardar o enviar formalmente",
         sheet_cancel:"Cancelar",
+        sizes_filter_cat:"Categoría", sizes_filter_gender:"Género",
+        sizes_cat_remera:"Remeras", sizes_cat_pantalon:"Pantalones", sizes_cat_zapatilla:"Zapatillas", sizes_cat_campera:"Camperas",
+        gender_male_short:"Hombre", gender_female_short:"Mujer",
+        sz_men:"Hombre", sz_women:"Mujer",
+        sz_note_nike_rem_h:"Nike y Tommy corren un poco más pequeños. En Gap podés pedir tu talle ARG habitual.",
+        sz_note_nike_rem_m:"En ropa de mujer las marcas varían mucho. Siempre probarse o revisar la guía de cm.",
+        sz_note_pant_h:"Los pantalones US se venden por Waist × Inseam (ej: 32×32). El Inseam es el largo interno de la pierna en pulgadas.",
+        sz_note_pant_m:"Gap usa talle numérico par (0, 2, 4…). Levi's para mujer usa cintura en pulgadas. H&M tiende a correr grande.",
+        sz_note_zap_h:"Nike y Adidas difieren hasta media talla entre sí. Converse recomienda pedir medio número más grande.",
+        sz_note_zap_m:"Para zapatillas de mujer, Nike y Adidas suelen estar alineadas. Converse sugiere pedir 0.5 más grande.",
+        sz_note_camp_h:"The North Face y Columbia son más generosos en el corte que Nike. Para TNF un M ARG suele ir bien en M US.",
+        sz_note_camp_m:"En camperas de abrigo el corte es más holgado que en ropa deportiva Nike.",
+        sz_chest_cm:"Pecho cm", sz_waist_us:"US Waist", sz_inseam:"Inseam", sz_foot_cm:"cm pie", sz_us_letter:"US (letra)", sz_us_num:"US (núm.)",
     },
     en:{
         nav_home:"HOME",nav_taxes:"TAXES",nav_itinerary:"ITINERARY",nav_routes:"ROUTES",nav_more:"MORE",nav_units:"Help & References",nav_tickets:"DOCUMENTS",nav_group:"GROUP",nav_units_desc:"Unit Converter & Utilities",nav_tickets_desc:"ESTA, insurance, check-in",nav_group_desc:"Shared expenses",
@@ -1080,6 +1025,19 @@ const i18n = {
         sheet_img_name:"Image", sheet_img_desc:"Best for instant sharing",
         sheet_pdf_name:"PDF", sheet_pdf_desc:"Best for saving or sending formally",
         sheet_cancel:"Cancel",
+        sizes_filter_cat:"Category", sizes_filter_gender:"Gender",
+        sizes_cat_remera:"T-Shirts", sizes_cat_pantalon:"Pants", sizes_cat_zapatilla:"Sneakers", sizes_cat_campera:"Jackets",
+        gender_male_short:"Men", gender_female_short:"Women",
+        sz_men:"Men", sz_women:"Women",
+        sz_note_nike_rem_h:"Nike and Tommy run a bit small. At Gap you can usually pick your ARG size.",
+        sz_note_nike_rem_m:"Women's sizing varies a lot between brands. Always try on or check the cm guide.",
+        sz_note_pant_h:"US pants are sold by Waist × Inseam (e.g. 32×32). Inseam is the inner leg length in inches.",
+        sz_note_pant_m:"Gap uses even number sizing (0, 2, 4…). Levi's women use waist in inches. H&M tends to run large.",
+        sz_note_zap_h:"Nike and Adidas can differ by half a size. Converse recommends going half a size up.",
+        sz_note_zap_m:"For women's sneakers, Nike and Adidas are usually aligned. Converse suggests going 0.5 up.",
+        sz_note_camp_h:"The North Face and Columbia cut more generously than Nike. An ARG M in TNF is usually a US M.",
+        sz_note_camp_m:"Winter jackets tend to have a looser cut compared to Nike sportswear.",
+        sz_chest_cm:"Chest cm", sz_waist_us:"US Waist", sz_inseam:"Inseam", sz_foot_cm:"Foot cm", sz_us_letter:"US (letter)", sz_us_num:"US (num)",
     },
     pt:{
         nav_home:"INÍCIO",nav_taxes:"TAXES",nav_itinerary:"ITINERÁRIO",nav_routes:"ROTAS",nav_more:"MAIS",nav_units:"Ajuda e Referências",nav_tickets:"DOCUMENTOS",nav_group:"GRUPO",nav_units_desc:"Conversor de Unidades e Utilidades",nav_tickets_desc:"ESTA, seguros, check-in",nav_group_desc:"Gastos compartilhados",
@@ -1121,6 +1079,19 @@ const i18n = {
         sheet_img_name:"Imagem", sheet_img_desc:"Ideal para compartilhar instantaneamente",
         sheet_pdf_name:"PDF", sheet_pdf_desc:"Ideal para salvar ou enviar formalmente",
         sheet_cancel:"Cancelar",
+        sizes_filter_cat:"Categoria", sizes_filter_gender:"Gênero",
+        sizes_cat_remera:"Camisetas", sizes_cat_pantalon:"Calças", sizes_cat_zapatilla:"Tênis", sizes_cat_campera:"Jaquetas",
+        gender_male_short:"Homem", gender_female_short:"Mulher",
+        sz_men:"Homem", sz_women:"Mulher",
+        sz_note_nike_rem_h:"Nike e Tommy tendem a ser menores. Na Gap você pode pedir seu tamanho ARG habitual.",
+        sz_note_nike_rem_m:"Os tamanhos femininos variam muito entre marcas. Sempre experimente ou consulte a guia em cm.",
+        sz_note_pant_h:"Calças nos EUA são vendidas por Waist × Inseam (ex: 32×32). Inseam é o comprimento interno da perna em polegadas.",
+        sz_note_pant_m:"Gap usa numeração par (0, 2, 4…). Levi's feminino usa cintura em polegadas. H&M tende a ser maior.",
+        sz_note_zap_h:"Nike e Adidas podem diferir em meio tamanho. Converse recomenda pedir meio número a mais.",
+        sz_note_zap_m:"Para tênis femininos, Nike e Adidas geralmente se alinham. Converse sugere pedir 0.5 a mais.",
+        sz_note_camp_h:"The North Face e Columbia têm corte mais folgado que a Nike. Um ARG M na TNF costuma ser um US M.",
+        sz_note_camp_m:"Jaquetas de inverno tendem a ter corte mais folgado do que o sportswear Nike.",
+        sz_chest_cm:"Peito cm", sz_waist_us:"US Waist", sz_inseam:"Inseam", sz_foot_cm:"Pé cm", sz_us_letter:"US (letra)", sz_us_num:"US (núm.)",
     }
 };
 
@@ -1201,9 +1172,169 @@ window.changeLanguage = (lang) => {
         emptyDash.innerHTML = '<span>🛍️</span>' + (parts[0]||'') + '<br>' + (parts[1]||'');
     }
     if (window.taxieUpdateLang) window.taxieUpdateLang(lang);
+    if (window.szReRender) window.szReRender();
     // Re-renderizar el dashboard con las etiquetas de categoría en el nuevo idioma
     if (typeof allGastos !== 'undefined' && allGastos.length) renderDashboard(allGastos);
 };
+
+/* ══════ TALLES POR MARCA ══════ */
+(function(){
+    const SZ_DATA = {
+        remera:{
+            H:{
+                cols:['ARG','XS','S','M','L','XL','2XL'],
+                brands:[
+                    {name:'Nike',   bg:'#E6F1FB',color:'#185FA5', noteKey:'sz_note_nike_rem_h',
+                     rows:[['sz_chest_cm','<86','86–91','91–97','97–102','102–107','107–112'],['US','XS','S','M','L','XL','2XL']]},
+                    {name:'Gap',    bg:'#E1F5EE',color:'#0F6E56', noteKey:'sz_note_nike_rem_h',
+                     rows:[['sz_chest_cm','<86','86–91','91–97','97–107','107–117','117–127'],['US','XS','S','M','L','XL','XXL']]},
+                    {name:"Levi's", bg:'#FAEEDA',color:'#854F0B', noteKey:'sz_note_nike_rem_h',
+                     rows:[['sz_chest_cm','<86','86–91','91–97','97–107','107–117','—'],['US','XS','S','M','L','XL','XXL']]},
+                    {name:'Tommy Hilfiger',bg:'#EEEDFE',color:'#534AB7', noteKey:'sz_note_nike_rem_h',
+                     rows:[['sz_chest_cm','<86','86–91','91–97','97–107','107–117','117–127'],['US','XS','S','M','L','XL','XXL']]},
+                    {name:'H&M',    bg:'#FAECE7',color:'#993C1D', noteKey:'sz_note_nike_rem_h',
+                     rows:[['sz_chest_cm','<86','86–91','91–97','97–102','102–112','112–122'],['US','XS','S','M','L','XL','2XL']]}
+                ]
+            },
+            M:{
+                cols:['ARG','XS','S','M','L','XL'],
+                brands:[
+                    {name:'Nike',   bg:'#E6F1FB',color:'#185FA5', noteKey:'sz_note_nike_rem_m',
+                     rows:[['sz_chest_cm','<81','81–86','86–91','91–97','97–107'],['US','XS','S','M','L','XL']]},
+                    {name:'Gap',    bg:'#E1F5EE',color:'#0F6E56', noteKey:'sz_note_nike_rem_m',
+                     rows:[['sz_chest_cm','<81','81–86','86–91','91–97','97–107'],['US','XS','S','M','L','XL']]},
+                    {name:'H&M',    bg:'#FAECE7',color:'#993C1D', noteKey:'sz_note_nike_rem_m',
+                     rows:[['sz_chest_cm','<80','80–85','85–90','90–96','96–104','—'],['US','XS','S','M','L','XL']]},
+                    {name:'Zara',   bg:'#EEEDFE',color:'#534AB7', noteKey:'sz_note_nike_rem_m',
+                     rows:[['sz_chest_cm','<80','80–84','84–88','88–96','96–104','—'],['US','XS','S','M','L','—']]}
+                ]
+            }
+        },
+        pantalon:{
+            H:{
+                cols:['cm','70–72','73–75','76–79','80–84','85–89','90–94','95–99','100–105'],
+                brands:[
+                    {name:"Levi's", bg:'#FAEEDA',color:'#854F0B', noteKey:'sz_note_pant_h',
+                     rows:[['sz_waist_us','28"','29"','30"','32"','34"','36"','38"','40"'],['sz_inseam','30','30','30','32','32','32','32','32']]},
+                    {name:'Gap',    bg:'#E1F5EE',color:'#0F6E56', noteKey:'sz_note_pant_h',
+                     rows:[['sz_waist_us','28','29','30','32','34','36','38','40'],['sz_inseam','30','30','30','32','32','32','32','32']]},
+                    {name:'Wrangler',bg:'#E6F1FB',color:'#185FA5', noteKey:'sz_note_pant_h',
+                     rows:[['sz_waist_us','28','29','30','32','34','36','38','40'],['sz_inseam','30','30','30','32','32','32','32','32']]}
+                ]
+            },
+            M:{
+                cols:['ARG','34','36','38','40','42','44','46','48'],
+                brands:[
+                    {name:"Levi's", bg:'#FAEEDA',color:'#854F0B', noteKey:'sz_note_pant_m',
+                     rows:[['sz_us_num','24','25','26','27–28','29–30','31–32','33–34','36']]},
+                    {name:'Gap',    bg:'#E1F5EE',color:'#0F6E56', noteKey:'sz_note_pant_m',
+                     rows:[['sz_us_letter','00','0','2','4–6','8–10','12–14','16','18']]},
+                    {name:'H&M',    bg:'#FAECE7',color:'#993C1D', noteKey:'sz_note_pant_m',
+                     rows:[['sz_us_letter','0','2','4','6–8','10–12','14','16','18']]}
+                ]
+            }
+        },
+        zapatilla:{
+            H:{
+                cols:['ARG','38','39','40','41','42','43','44','45','46'],
+                brands:[
+                    {name:'Nike',       bg:'#E6F1FB',color:'#185FA5', noteKey:'sz_note_zap_h',
+                     rows:[['US','6','7','8','9','10','11','12','13','14'],['sz_foot_cm','24','24.5','25','25.5','26','27','28','29','30']]},
+                    {name:'Adidas',     bg:'#E1F5EE',color:'#0F6E56', noteKey:'sz_note_zap_h',
+                     rows:[['US','6','7','7.5','8.5','9.5','10.5','11.5','12.5','13.5'],['sz_foot_cm','23.8','24.5','25.1','25.7','26.3','27','27.7','28.3','29']]},
+                    {name:'New Balance',bg:'#FAEEDA',color:'#854F0B', noteKey:'sz_note_zap_h',
+                     rows:[['US','6','7','7.5','8.5','9.5','10.5','11.5','12.5','13.5'],['sz_foot_cm','24','24.5','25','25.7','26.3','27','27.6','28.3','29']]},
+                    {name:'Converse',   bg:'#EEEDFE',color:'#534AB7', noteKey:'sz_note_zap_h',
+                     rows:[['US','5','6','7','8','9','10','11','12','13'],['sz_foot_cm','23.5','24.1','24.8','25.4','26','26.7','27.3','28','28.6']]}
+                ]
+            },
+            M:{
+                cols:['ARG','35','36','37','38','39','40','41','42'],
+                brands:[
+                    {name:'Nike',   bg:'#E6F1FB',color:'#185FA5', noteKey:'sz_note_zap_m',
+                     rows:[['US','5','6','7','8','9','10','11','12'],['sz_foot_cm','21.6','22.2','22.9','23.5','24.1','24.8','25.4','26']]},
+                    {name:'Adidas', bg:'#E1F5EE',color:'#0F6E56', noteKey:'sz_note_zap_m',
+                     rows:[['US','4.5','5.5','6.5','7.5','8.5','9.5','10.5','11.5'],['sz_foot_cm','21.6','22.2','22.9','23.5','24.1','24.8','25.4','26']]},
+                    {name:'Converse',bg:'#EEEDFE',color:'#534AB7', noteKey:'sz_note_zap_m',
+                     rows:[['US','4','5','6','7','8','9','10','11'],['sz_foot_cm','21','21.6','22.2','23','23.5','24.1','24.8','25.4']]}
+                ]
+            }
+        },
+        campera:{
+            H:{
+                cols:['ARG','XS','S','M','L','XL','2XL'],
+                brands:[
+                    {name:'Nike',          bg:'#E6F1FB',color:'#185FA5', noteKey:'sz_note_camp_h',
+                     rows:[['sz_chest_cm','<86','86–91','91–97','97–102','102–112','112–122'],['US','XS','S','M','L','XL','2XL']]},
+                    {name:'The North Face',bg:'#E1F5EE',color:'#0F6E56', noteKey:'sz_note_camp_h',
+                     rows:[['sz_chest_cm','<86','86–91','91–97','97–107','107–117','117–127'],['US','XS','S','M','L','XL','XXL']]},
+                    {name:'Columbia',      bg:'#FAEEDA',color:'#854F0B', noteKey:'sz_note_camp_h',
+                     rows:[['sz_chest_cm','86–91','91–97','97–107','107–117','117–127','127–137'],['US','S','M','L','XL','2XL','3XL']]}
+                ]
+            },
+            M:{
+                cols:['ARG','XS','S','M','L','XL'],
+                brands:[
+                    {name:'Nike',          bg:'#E6F1FB',color:'#185FA5', noteKey:'sz_note_camp_m',
+                     rows:[['sz_chest_cm','<81','81–86','86–91','91–97','97–107'],['US','XS','S','M','L','XL']]},
+                    {name:'The North Face',bg:'#E1F5EE',color:'#0F6E56', noteKey:'sz_note_camp_m',
+                     rows:[['sz_chest_cm','<81','81–86','86–91','91–97','97–107'],['US','XS','S','M','L','XL']]}
+                ]
+            }
+        }
+    };
+
+    let szCat='remera', szGen='H';
+
+    function szT(key){
+        const lang=localStorage.getItem('appLang')||'es';
+        return (i18n[lang]&&i18n[lang][key])||key;
+    }
+
+    function szRender(){
+        const out=document.getElementById('sz-tables-out');
+        if(!out)return;
+        const d=SZ_DATA[szCat]&&SZ_DATA[szCat][szGen];
+        if(!d){out.innerHTML='';return;}
+        let html='';
+        d.brands.forEach(b=>{
+            const colHdr=d.cols.map(c=>`<th>${c}</th>`).join('');
+            const rowsHtml=b.rows.map((row,ri)=>{
+                const cells=row.map((cell,ci)=>{
+                    if(ci===0) return `<td class="sz-table td sz-row-lbl">${szT(cell)||cell}</td>`;
+                    return `<td class="${ri===0?'sz-hl':''}">${cell}</td>`;
+                }).join('');
+                return `<tr>${cells}</tr>`;
+            }).join('');
+            const note=szT(b.noteKey);
+            html+=`<div class="sz-brand-card">
+                <div class="sz-brand-header">
+                    <span class="sz-brand-badge" style="background:${b.bg};color:${b.color}">${b.name}</span>
+                </div>
+                <div class="sz-table-wrap"><table class="sz-table"><thead><tr>${colHdr}</tr></thead><tbody>${rowsHtml}</tbody></table></div>
+                ${note?`<div class="sz-note">💡 ${note}</div>`:''}
+            </div>`;
+        });
+        out.innerHTML=html;
+    }
+
+    window.szSetCat=function(btn){
+        szCat=btn.dataset.cat;
+        document.querySelectorAll('#sz-cat-pills .sz-pill').forEach(p=>p.classList.remove('sz-pill-active'));
+        btn.classList.add('sz-pill-active');
+        szRender();
+    };
+    window.szSetGen=function(btn){
+        szGen=btn.dataset.gen;
+        document.querySelectorAll('#sz-gen-pills .sz-pill').forEach(p=>p.classList.remove('sz-pill-active'));
+        btn.classList.add('sz-pill-active');
+        szRender();
+    };
+    window.szReRender=szRender;
+
+    document.addEventListener('DOMContentLoaded',szRender);
+})();
+
 
 async function fetchRates(){
     try{
